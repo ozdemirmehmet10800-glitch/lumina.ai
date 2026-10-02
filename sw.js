@@ -3,17 +3,17 @@
  * Enables offline caching and mobile home-screen installation.
  */
 
-const CACHE_NAME = 'lumina-cache-v1';
+const CACHE_NAME = 'lumina-cache-v2';
 const ASSETS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/css/style.css',
-  '/js/audio.js',
-  '/js/storage.js',
-  '/js/ai-service.js',
-  '/js/app.js',
-  '/assets/logo.jpg',
-  '/manifest.json'
+  './',
+  './index.html',
+  './css/style.css',
+  './js/audio.js',
+  './js/storage.js',
+  './js/ai-service.js',
+  './js/app.js',
+  './assets/logo.jpg',
+  './manifest.json'
 ];
 
 self.addEventListener('install', (event) => {
@@ -39,7 +39,6 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Network first, fallback to cache
   event.respondWith(
     fetch(event.request)
       .then((response) => {
