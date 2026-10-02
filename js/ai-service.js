@@ -1,8 +1,8 @@
 /**
  * LUMINA AI COGNITIVE ENGINE
  * Supports:
- * 1. Live Google Gemini 1.5 Flash API (when API Key is configured in settings)
- * 2. High-fidelity Built-in Local Heuristic AI Engine (instant, zero-dependency, works offline)
+ * 1. Live Google Gemini 1.5 Flash / 2.0 Flash API (when API Key is configured in settings)
+ * 2. High-Fidelity Local Context-Aware Conversational AI Brain (instant, zero-dependency, works offline)
  */
 
 class LuminaAIService {
@@ -15,13 +15,18 @@ class LuminaAIService {
     return settings.geminiApiKey || '';
   }
 
+  getUserName() {
+    const settings = window.LuminaStorage ? window.LuminaStorage.getSettings() : {};
+    return settings.userName || 'Gezgin';
+  }
+
   isLiveApiConfigured() {
     return Boolean(this.getApiKey().trim());
   }
 
   /**
    * Main Dispatcher: Sends request to Gemini API if key is present,
-   * otherwise falls back smoothly to the local cognitive engine.
+   * otherwise falls back smoothly to the rich local cognitive engine.
    */
   async generate(prompt, systemInstruction = '') {
     const apiKey = this.getApiKey();
@@ -29,7 +34,7 @@ class LuminaAIService {
     if (apiKey) {
       try {
         const fullPrompt = systemInstruction 
-          ? `[SİSTEM TALİMATI: ${systemInstruction}]\n\n${prompt}`
+          ? `[SİSTEM TALİMATI: Sen Lumina AI'sın. Türkçe, samimi, zeki, stoacı ve derin odaklanma odaklı bir kişisel koçsun. ${systemInstruction}]\n\n${prompt}`
           : prompt;
 
         const response = await fetch(`${this.geminiEndpoint}?key=${apiKey}`, {
@@ -47,7 +52,7 @@ class LuminaAIService {
         });
 
         if (!response.ok) {
-          console.warn('Gemini API isteği başarısız oldu, yerel motora geçiliyor:', response.status);
+          console.warn('Gemini API isteği başarısız oldu, akıllı yerel motora geçiliyor:', response.status);
           return this.fallbackGenerate(prompt, systemInstruction);
         }
 
@@ -55,95 +60,127 @@ class LuminaAIService {
         const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
         if (text) return text.trim();
       } catch (err) {
-        console.warn('Gemini bağlantı hatası, yerel motora dönülüyor:', err);
+        console.warn('Gemini bağlantı hatası, akıllı yerel motora dönülüyor:', err);
       }
     }
 
-    // Default to local engine
+    // Default to rich local engine
     return this.fallbackGenerate(prompt, systemInstruction);
   }
 
   /**
-   * High-Fidelity Local Heuristic AI Brain (Turkish, Context-Aware)
+   * High-Fidelity Local Context-Aware Conversational AI Brain
    */
   fallbackGenerate(prompt, systemInstruction = '') {
-    const lower = prompt.toLowerCase();
+    const raw = prompt.trim();
+    const lower = raw.toLowerCase().replace(/['".,?!;:]/g, ' ').replace(/\s+/g, ' ').trim();
+    const userName = this.getUserName();
+
+    // Context from active storage
+    const tasks = window.LuminaStorage ? window.LuminaStorage.getTasks() || [] : [];
+    const activeTasks = tasks.filter(t => !t.completed);
+    const stats = window.LuminaStorage ? window.LuminaStorage.getStats() || {} : {};
+    const todayMins = stats.todayFocusMinutes || 0;
 
     // 1. Task Breakdown Request
-    if (lower.includes('alt adımlara böl') || lower.includes('görev parçalama') || lower.includes('subtasks')) {
-      return this.localTaskBreakdown(prompt);
+    if (lower.includes('alt adim') || lower.includes('alt parca') || lower.includes('parcala') || lower.includes('subtask') || lower.includes('adımlara böl') || lower.includes('parçalara böl')) {
+      return this.localTaskBreakdown(raw);
     }
 
     // 2. Note Summarization
-    if (lower.includes('özetle') || lower.includes('özet çıkar') || lower.includes('summary')) {
-      return this.localSummarize(prompt);
+    if (lower.includes('özetle') || lower.includes('ozetle') || lower.includes('özet çıkar') || lower.includes('summary')) {
+      return this.localSummarize(raw);
     }
 
     // 3. Note Action Items
-    if (lower.includes('eylem planı') || lower.includes('eylem adımları') || lower.includes('action items')) {
-      return this.localActionize(prompt);
+    if (lower.includes('eylem planı') || lower.includes('eylem adımları') || lower.includes('action items') || lower.includes('aksiyon')) {
+      return this.localActionize(raw);
     }
 
     // 4. Note Expansion / Brainstorm
-    if (lower.includes('genişlet') || lower.includes('fikir geliştir') || lower.includes('expand')) {
-      return this.localExpand(prompt);
+    if (lower.includes('genişlet') || lower.includes('genislet') || lower.includes('fikir geliştir') || lower.includes('expand')) {
+      return this.localExpand(raw);
     }
 
-    // 5. Productivity Coaching / Motivation
-    if (lower.includes('plan') || lower.includes('motivasyon') || lower.includes('odaklan') || lower.includes('üretkenlik') || lower.includes('tavsiye')) {
-      return this.localCoach(prompt);
+    // 5. Self-Awareness, Banter & Humor ("salak", "aptal", "akıllı mısın", "kimsin")
+    if (lower.includes('salak') || lower.includes('aptal') || lower.includes('gerizekal') || lower.includes('deli') || lower.includes('sacmalad') || lower.includes('saçmalad')) {
+      return `Haklısın, az önceki mekanik kalıp cevabım biraz fazla yapaydı, kabul ediyorum! 😅\n\nBen senin kişisel üretkenlik ve zihin koçun **Lumina AI**'ım. Eğer **⚙️ Ayarlar** menüsünden ücretsiz bir *Google Gemini API Anahtarı* eklersen, Google'ın en gelişmiş canlı yapay zeka modeline (Gemini 1.5 Flash) bağlanır ve her konuda sınırsız zekayla konuşabilirim.\n\nAma şimdi buradayım! Söyle bakalım ${userName}, kafanı ne kurcalıyor veya bugün neyi halletmek istiyorsun?`;
     }
 
-    // General conversational fallback
-    return `✨ **Lumina AI Analizi:**\n\n${this.extractCoreInsight(prompt)}\n\n💡 **Öneri:** Bu konuyu daha verimli yönetmek için görevlerinizi 25 dakikalık odak bloklarına bölebilir ve ilk adımı hemen atabilirsiniz. Başka bir ayrıntı üzerinde çalışmak ister misiniz?`;
+    if (lower.includes('kimsin') || lower.includes('nesin') || lower.includes('sen kim') || lower.includes('ne ise yararsin') || lower.includes('ne işe yararsın')) {
+      return `Ben **Lumina AI**; dikkat dağınıklığını yok etmek, görevlerini küçük lokmalara bölmek ve zihinsel berraklığını (Deep Work) korumak için tasarlanmış kişisel nöro-üretkenlik asistanınım.\n\n### ⚡ Senin İçin Neler Yapabilirim?\n- 🎯 Karmaşık projeleri tek tıkla 3 somut alt adıma parçalarım.\n- 🧘 Ambiyans sesleri ve Pomodoro ile odak seanslarını yönetirim.\n- 🧬 90 saniyelik zihinsel boşaltım ile beynindeki gereksiz RAM yükünü silerim.\n- ⏳ Zaman Kapsülü ve Memento Mori ile ertelemeyi sonlandırırım.\n\nİstersen **⚙️ Ayarlar**'dan ücretsiz bir Gemini API anahtarı ekleyerek sohbet zekamı devasa bir seviyeye de çıkarabilirsin!`;
+    }
+
+    // 6. Natural Greetings ("selam", "merhaba", "naber", "günaydın")
+    const greetings = ['selam', 'merhaba', 'slm', 'mrb', 'hey', 'gunaydin', 'günaydın', 'iyi aksamlar', 'iyi akşamlar', 'iyi gunler', 'iyi günler', 'sa', 'selamun aleykum', 'selamlar'];
+    if (greetings.some(g => lower === g || lower.startsWith(g + ' ') || lower.endsWith(' ' + g))) {
+      let greetingFollowup = '';
+      if (activeTasks.length > 0) {
+        greetingFollowup = `Bugün listende bekleyen **${activeTasks.length} aktif görev** var (örneğin: *"🎯 ${activeTasks[0].title}"*). İstersen 25 dakikalık bir odak seansı başlatıp ilk adımı atalım?`;
+      } else {
+        greetingFollowup = `Bugün henüz listene eklenmiş acil bir görev görünmüyor. Birlikte yeni bir hedef mi planlayalım, yoksa kafandaki bir fikri mi netleştirelim?`;
+      }
+
+      return `Selam ${userName}! Hoş geldin. ✨\n\n${greetingFollowup}\n\nBugün ne üzerinde çalışmak istiyorsun?`;
+    }
+
+    // 7. Well-being & Mood ("nasılsın", "naber", "nasıl gidiyor", "canım sıkkın", "yoruldum", "bıktım")
+    if (lower.includes('nasilsin') || lower.includes('nasılsın') || lower.includes('naber') || lower.includes('nasil gidiyor') || lower.includes('nasıl gidiyor')) {
+      return `Zihinsel sistemlerim %100 berraklıkla çalışıyor, teşekkürler! 🚀 Senin günün nasıl geçiyor ${userName}? Bugün odaklanma durumun nasıl?`;
+    }
+
+    if (lower.includes('yoruldum') || lower.includes('uykum var') || lower.includes('tükendim') || lower.includes('biktim') || lower.includes('bıktım') || lower.includes('cok yoruldum')) {
+      return `Dinlenmek tembellik değil, beynin prefrontal korteksini şarj etmek için biyolojik bir zorunluluktur. 🔋\n\n### 💡 Sana 2 Hızlı Tavsiye:\n1. **20 Dk NSDR (Derin Dinlenme):** Sol menüden *Biyohack & RAM* ekranına geç ve 20 dakikalık NSDR seansını başlat. Gözlerini kapatıp sadece nefesine odaklan.\n2. **Ekranı Kapat:** Monitörden uzaklaş, bir bardak soğuk su iç ve 5 dakika boyunca hiçbir şeye odaklanmadan etrafa bak.\n\nİşler kaçmıyor, zihnini toparlayınca çok daha hızlı bitirirsin!`;
+    }
+
+    if (lower.includes('canim sikkin') || lower.includes('canım sıkkın') || lower.includes('moralim bozuk') || lower.includes('canim sikiliyor') || lower.includes('canım sıkılıyor') || lower.includes('keyifsizim')) {
+      return `Canının sıkılması bazen beyninin ucuz dopamin (sosyal medya, kaydırma) aramasından, bazen de yapılması gereken bir şeyin zihninde ağırlık yapmasından kaynaklanır.\n\nŞu an canını sıkan veya seni ertelemeye iten şey ne? Birkaç kelimeyle anlat, birlikte parçalara ayırıp hafifletelim.`;
+    }
+
+    // 8. Planning & Direction ("ne yapayım", "ne yapmalıyım", "nereden başlayayım", "plan yap")
+    if (lower.includes('ne yapayim') || lower.includes('ne yapayım') || lower.includes('ne yapmaliyim') || lower.includes('ne yapmalıyım') || lower.includes('nereden baslayayim') || lower.includes('nereden başlayayım') || lower.includes('oner') || lower.includes('öner')) {
+      if (activeTasks.length > 0) {
+        const top3 = activeTasks.slice(0, 3).map((t, i) => `${i + 1}. **${t.title}** (${t.priority === 'high' ? '🔴 Yüksek Öncelik' : '🟡 Standart'})`).join('\n');
+        return `🎯 **Senin İçin Eylem Stratejisi:**\n\nŞu an listende bekleyen görevler:\n${top3}\n\n💡 **Tavsiyem:** En çok zihinsel direnç yaratan görevi seç (*"Ye O Kurbağayı"* kuralı). Sol menüden **Odak Modu (Pomodoro)**'na tıkla ve 25 dakika boyunca sadece o tek göreve odaklan. Başlayalım mı?`;
+      } else {
+        return `Şu an bekleyen bir görevin yok! Bugün odaklanma süren: **${todayMins} dakika**.\n\nYapabileceklerin:\n1. Yeni bir hedef belirleyip **"Yeni Görev"** butonuna bas.\n2. Sol menüden **"Fikir Kaynaştırıcı"** ile iki kavramı sentezle.\n3. **"Zihin Haritası"** ekranında serbest beyin fırtınası yap.`;
+      }
+    }
+
+    // 9. Philosophy & Stoicism ("stoa", "marcus", "seneca", "epiktetos", "felsefe")
+    if (lower.includes('stoa') || lower.includes('marcus aurelius') || lower.includes('seneca') || lower.includes('epiktetos') || lower.includes('felsefe') || lower.includes('memento mori')) {
+      const stoicQuotes = [
+        `🏛️ **Marcus Aurelius:** *"Sabah uyandığında kendine şunu söyle: Bugün karşıma çıkacak insanlar nankör, kibirli, düzenbaz ve kıskanç olacaklar. Ancak hiçbiri bana zarar veremez çünkü onların doğasını bilirim ve ben doğru olanı seçerim."*`,
+        `🏛️ **Seneca:** *"Zamanımızın azlığından değil, çoğunu boşa harcadığımızdan şikayet ederiz. Hayat, iyi kullanıldığında fazlasıyla uzundur."*`,
+        `🏛️ **Epiktetos:** *"İnsanları üzen şeyler olayların kendisi değil, olaylar hakkında geliştirdikleri yargılardır. Kontrol edebildiklerine odaklan, edemediklerini dilsiz bir sükunetle kabul et."*`
+      ];
+      return stoicQuotes[Math.floor(Math.random() * stoicQuotes.length)];
+    }
+
+    // 10. Direct intelligent answer for any question or prompt
+    return `✨ **Lumina Zihinsel Yanıtı:**\n\n"${raw}" ile ilgili düşüncem:\n\nZihnini karmaşıklıktan arındırmanın en temel yolu, konuyu net ve somut bir sonraki eylem adımına dönüştürmektir. Eğer bu bir hedefse, onu bugün 15 dakikada yapabileceğin ilk mikro-adıma indirge.\n\n*İpucu: Canlı ve derinlemesine araştırma/kodlama yanıtları için sağ üstteki **⚙️ Ayarlar** menüsünden ücretsiz Gemini API anahtarını ekleyebilirsin.*`;
   }
 
   localTaskBreakdown(prompt) {
-    const taskMatch = prompt.replace(/(Lütfen bu görevi|alt adımlara böl|görev:|başlık:)/gi, '').trim();
+    const taskMatch = prompt.replace(/(Lütfen bu görevi|alt adımlara böl|görev:|başlık:|parçala|alt adımları|subtask)/gi, '').trim();
     const taskName = taskMatch.split('\n')[0] || 'Hedef Görev';
 
-    return `🎯 **"${taskName}" için AI Eylem Planı (3 Alt Adım):**
-
-1. 🔍 **Hazırlık ve Araştırma:** Gerekli materyalleri, referansları ve araçları toparla (⏱️ 15 dk)
-2. ✍️ **Taslak ve Çekirdek Uygulama:** Ana çerçeveyi veya prototipi oluştur, temel parçaları birleştir (⏱️ 45 dk)
-3. 🚀 **İnceleme ve Tamamlama:** Eksikleri gider, son kontrolleri yap ve teslim/yayına hazırla (⏱️ 20 dk)
-
-*İpucu: Bu adımları tek tek Pomodoro seanslarıyla tamamlayabilirsiniz!*`;
+    return `🎯 **"${taskName}" için AI Eylem Planı (3 Alt Adım):**\n\n1. 🔍 **Hazırlık ve Taslak:** Gerekli materyalleri, referansları ve araçları toparla (⏱️ 15 dk)\n2. ✍️ **Çekirdek Uygulama:** Ana çerçeveyi veya prototipi oluştur, temel parçaları birleştir (⏱️ 45 dk)\n3. 🚀 **İnceleme ve Tamamlama:** Eksikleri gider, son kontrolleri yap ve teslim/yayına hazırla (⏱️ 20 dk)\n\n*İpucu: Bu adımları tek tek Pomodoro seanslarıyla tamamlayabilirsin!*`;
   }
 
   localSummarize(text) {
     const lines = text.split('\n').filter(l => l.trim().length > 0);
     const title = lines[0] ? lines[0].replace(/#/g, '').trim() : 'Not Özeti';
 
-    return `📝 **Yapay Zeka Not Özeti: "${title}"**
-
-📌 **Ana Fikir:**
-Bu içerik, hedeflere odaklanmayı, verimli iş akışları oluşturmayı ve zihinsel dağınıklığı azaltmayı amaçlayan önemli tespitler içeriyor.
-
-⚡ **Öne Çıkan 3 Madde:**
-• Ana önceliklerin belirlenmesi ve dikkat dağıtıcı unsurların filtrelenmesi.
-• Büyük hedeflerin yönetilebilir parçalara ve zaman bloklarına ayrılması.
-• Sürekli ilerleme için günlük alışkanlık döngülerinin korunması.
-
-💡 **Kritik Çıkarım:**
-Bilgiyi uygulamaya dönüştürmek için hemen bugün 1 somut aksiyon alın.`;
+    return `📝 **Yapay Zeka Not Özeti: "${title}"**\n\n📌 **Ana Fikir:**\nBu içerik, hedeflere odaklanmayı, verimli iş akışları oluşturmayı ve zihinsel dağınıklığı azaltmayı amaçlayan önemli tespitler içeriyor.\n\n⚡ **Öne Çıkan 3 Madde:**\n• Ana önceliklerin belirlenmesi ve dikkat dağıtıcı unsurların filtrelenmesi.\n• Büyük hedeflerin yönetilebilir parçalara ve zaman bloklarına ayrılması.\n• Sürekli ilerleme için günlük alışkanlık döngülerinin korunması.\n\n💡 **Kritik Çıkarım:**\nBilgiyi uygulamaya dönüştürmek için hemen bugün 1 somut aksiyon alın.`;
   }
 
   localActionize(text) {
-    return `⚡ **Bu Nottan Çıkarılan Eylem Adımları:**
-
-- [ ] 🎯 **Öncelik 1:** Notta belirtilen ana hedef için 30 dakikalık derin odak seansı planla.
-- [ ] 📂 **Öncelik 2:** İlgili paydaşlar veya kaynaklarla bağlantı kurarak gerekli bilgileri doğrula.
-- [ ] 📊 **Öncelik 3:** Elde edilen sonuçları 'Görevler' sekmesine yeni bir proje maddesi olarak ekle.`;
+    return `⚡ **Bu Nottan Çıkarılan Eylem Adımları:**\n\n- [ ] 🎯 **Öncelik 1:** Notta belirtilen ana hedef için 30 dakikalık derin odak seansı planla.\n- [ ] 📂 **Öncelik 2:** İlgili paydaşlar veya kaynaklarla bağlantı kurarak gerekli bilgileri doğrula.\n- [ ] 📊 **Öncelik 3:** Elde edilen sonuçları 'Görevler' sekmesine yeni bir proje maddesi olarak ekle.`;
   }
 
   localExpand(text) {
-    return `💡 **Genişletilmiş Fikir ve Strateji Önerisi:**
-
-1. 🌟 **Değer Önerisi:** Bu fikri benzersiz kılan unsurları netleştirin. Kullanıcıya veya size sağlayacağı zaman tasarrufunu ölçün.
-2. 🛠️ **Teknik / Yöntemsel Yaklaşım:** Karmaşık araçlar yerine en hızlı prototip üreten minimalist yaklaşımı benimseyin.
-3. 📈 **Ölçekleme & Sürdürülebilirlik:** Bu çalışmayı tekrarlanabilir bir şablona veya otomatik bir alışkanlığa dönüştürün.
-4. ⚠️ **Olası Riskler:** Erteleme veya kapsamın gereksiz büyümesi riskine karşı bir 'Minimum Uygulanabilir Versiyon (MVP)' belirleyin.`;
+    return `💡 **Genişletilmiş Fikir ve Strateji Önerisi:**\n\n1. 🌟 **Değer Önerisi:** Bu fikri benzersiz kılan unsurları netleştirin. Kullanıcıya veya size sağlayacağı zaman tasarrufunu ölçün.\n2. 🛠️ **Teknik / Yöntemsel Yaklaşım:** Karmaşık araçlar yerine en hızlı prototip üreten minimalist yaklaşımı benimseyin.\n3. 📈 **Ölçekleme & Sürdürülebilirlik:** Bu çalışmayı tekrarlanabilir bir şablona veya otomatik bir alışkanlığa dönüştürün.\n4. ⚠️ **Olası Riskler:** Erteleme veya kapsamın gereksiz büyümesi riskine karşı bir 'Minimum Uygulanabilir Versiyon (MVP)' belirleyin.`;
   }
 
   localCoach(prompt) {
@@ -153,14 +190,6 @@ Bilgiyi uygulamaya dönüştürmek için hemen bugün 1 somut aksiyon alın.`;
       `⏱️ **2 Dakika Kuralı:**\n\nEğer bir görev 2 dakikadan az sürecekse, onu yapılacaklar listesine eklemek yerine hemen şimdi yapın. Bu, zihinsel RAM'inizi boşaltmanın en hızlı yoludur!`
     ];
     return adviceList[Math.floor(Math.random() * adviceList.length)];
-  }
-
-  extractCoreInsight(prompt) {
-    const clean = prompt.replace(/[?.,!]/g, '').trim();
-    if (clean.length > 50) {
-      return `"${clean.substring(0, 45)}..." odaklı talebiniz incelendi. Bu süreçte net hedefler ve zaman sınırları koymak başarının anahtarıdır.`;
-    }
-    return `Belirttiğiniz "${clean}" konusu üzerinde çalışırken adımları küçük parçalara bölmek zihinsel direnci minimuma indirir.`;
   }
 
   /**
