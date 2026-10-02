@@ -145,6 +145,19 @@ document.addEventListener('DOMContentLoaded', () => {
   // 3. NAVIGATION CONTROLLER
   // ==========================================
   function switchView(viewName) {
+    // Map legacy views to 5 Master Spaces
+    if (viewName === 'focus') {
+      viewName = 'sanctum';
+      setTimeout(() => activateSanctumChamber('focus'), 50);
+    } else if (viewName === 'chronos') {
+      viewName = 'sanctum';
+      setTimeout(() => activateSanctumChamber('memento'), 50);
+    } else if (viewName === 'habits' || viewName === 'codex' || viewName === 'life-os') {
+      viewName = 'biohack';
+    } else if (viewName === 'galaxy' || viewName === 'synthesizer' || viewName === 'twin' || viewName === 'trajectory') {
+      viewName = 'notes';
+    }
+
     state.currentView = viewName;
 
     dom.navItems.forEach(item => {
@@ -161,21 +174,32 @@ document.addEventListener('DOMContentLoaded', () => {
       dom.sidebar.classList.remove('mobile-open');
     }
 
-    // Refresh view-specific content
-    if (viewName === 'dashboard') renderDashboard();
-    if (viewName === 'tasks') renderTasks();
-    if (viewName === 'notes') renderNotes();
-    if (viewName === 'focus') updateTimerDisplay();
-    if (viewName === 'habits') renderHabitsAndChart();
-    if (viewName === 'sanctum') initSanctumView();
-    if (viewName === 'galaxy') initGalaxyView();
-    if (viewName === 'twin') initTwinView();
-    if (viewName === 'trajectory') initTrajectoryView();
-    if (viewName === 'life-os') initLifeOsView();
-    if (viewName === 'chronos') initChronosView();
-    if (viewName === 'biohack') initBiohackView();
-    if (viewName === 'synthesizer') initSynthesizerView();
-    if (viewName === 'codex') initCodexView();
+    // Refresh view-specific content safely
+    try {
+      if (viewName === 'dashboard') renderDashboard();
+      if (viewName === 'tasks') renderTasks();
+      if (viewName === 'notes') renderNotes();
+      if (viewName === 'sanctum') initSanctumView();
+      if (viewName === 'biohack') {
+        if (typeof initBiohackView === 'function') initBiohackView();
+        renderHabitsAndChart();
+      }
+    } catch (err) {
+      console.warn('View render exception:', err);
+    }
+  }
+
+  function activateSanctumChamber(chamberName) {
+    const chamberTabs = document.querySelectorAll('.sanctum-chamber-tabs .chamber-tab');
+    const chamberPanels = document.querySelectorAll('.sanctum-panels-container .chamber-panel');
+    chamberTabs.forEach(t => t.classList.toggle('active', t.getAttribute('data-chamber') === chamberName));
+    chamberPanels.forEach(p => p.classList.toggle('active', p.id === `chamber-panel-${chamberName}`));
+    if (chamberName === 'void' && window.LuminaSanctum) {
+      setTimeout(() => {
+        window.LuminaSanctum.resizeCanvas();
+        window.LuminaSanctum.initVoid('sanctum-void-canvas');
+      }, 50);
+    }
   }
 
   dom.navItems.forEach(item => {
@@ -670,6 +694,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const offset = CIRCLE_CIRCUMFERENCE * (1 - progressFraction);
       dom.timerCircleProgress.style.strokeDashoffset = offset;
     }
+
+    syncSanctumTimerDisplay();
   }
 
   function toggleTimer() {
@@ -1300,29 +1326,72 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 50);
     }
 
-    renderMementoMori();
-    renderCouncil();
-    renderDilemmas();
-    renderDreamHistory();
-    updateDopamineFastDisplay();
-
-    // Chambers 13-25 Renderers
-    renderRPGView();
-    renderCircadian();
-    renderDichotomy();
-    renderCapsules();
-    renderCosmic();
-    renderStoicAudit();
-    renderJungQuestions();
-    renderKaizenView();
+    renderSanctumMementoMori();
+    updateVoidCounterDisplay();
 
     if (sanctumInitialized) return;
     sanctumInitialized = true;
     setupSanctumEventListeners();
   }
 
+  function updateVoidCounterDisplay() {
+    const count = localStorage.getItem('lumina_void_count') || '0';
+    const c1 = document.getElementById('sanctum-void-counter');
+    const c2 = document.getElementById('sanctum-hero-void-counter');
+    if (c1) c1.textContent = `Yok Edilen Yük: ${count}`;
+    if (c2) c2.textContent = `Yok Edilen Yük: ${count}`;
+  }
+
+  function renderSanctumMementoMori(userAge) {
+    const grid = document.getElementById('memento-interactive-grid');
+    const ageInput = document.getElementById('memento-user-age');
+    const livedBadge = document.getElementById('memento-lived-badge');
+    const remainingBadge = document.getElementById('memento-remaining-badge');
+    if (!grid || !window.LuminaSanctum) return;
+
+    const age = userAge || (ageInput ? parseInt(ageInput.value, 10) : 25) || 25;
+    const data = window.LuminaSanctum.calculateMementoMori(age);
+
+    if (livedBadge) livedBadge.textContent = `Yaşanan: ${data.livedWeeks.toLocaleString('tr-TR')} Hafta (%${data.livedPct})`;
+    if (remainingBadge) remainingBadge.textContent = `Kalan: ${data.remainingWeeks.toLocaleString('tr-TR')} Hafta (%${data.remainingPct})`;
+
+    // 4,160 dots fragment
+    const fragment = document.createDocumentFragment();
+    for (let i = 0; i < data.totalWeeks; i++) {
+      const dot = document.createElement('div');
+      dot.className = `memento-dot ${i < data.livedWeeks ? 'lived' : 'remaining'}`;
+      dot.title = `Hafta ${i + 1} (${Math.floor(i / 52)}. Yaş)`;
+      fragment.appendChild(dot);
+    }
+    grid.innerHTML = '';
+    grid.appendChild(fragment);
+  }
+
+  function syncSanctumTimerDisplay() {
+    const timeDisplay = document.getElementById('timer-display-time-sanctum');
+    const statusText = document.getElementById('timer-status-text-sanctum');
+    const circleProgress = document.getElementById('timer-circle-progress-sanctum');
+
+    const mins = Math.floor(state.timer.remaining / 60);
+    const secs = state.timer.remaining % 60;
+    const timeStr = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
+    if (timeDisplay) timeDisplay.textContent = timeStr;
+    if (statusText) {
+      statusText.textContent = state.timer.isRunning ? 'Odak Seansı Devam Ediyor...' : 'Derin Nöro-Akış Seansı';
+    }
+
+    if (circleProgress) {
+      const progressFraction = (state.timer.duration - state.timer.remaining) / state.timer.duration;
+      const radius = 115;
+      const circumference = 2 * Math.PI * radius;
+      const offset = circumference * (1 - progressFraction);
+      circleProgress.style.strokeDashoffset = offset;
+    }
+  }
+
   function setupSanctumEventListeners() {
-    // Tab switching
+    // 1. Tab switching
     const chamberTabs = document.querySelectorAll('.sanctum-chamber-tabs .chamber-tab');
     const chamberPanels = document.querySelectorAll('.sanctum-panels-container .chamber-panel');
 
@@ -1333,39 +1402,104 @@ document.addEventListener('DOMContentLoaded', () => {
         chamberPanels.forEach(p => p.classList.toggle('active', p.id === `chamber-panel-${targetChamber}`));
 
         if (targetChamber === 'void' && window.LuminaSanctum) {
-          setTimeout(() => window.LuminaSanctum.initVoid('sanctum-void-canvas'), 50);
+          setTimeout(() => {
+            window.LuminaSanctum.resizeCanvas();
+            window.LuminaSanctum.initVoid('sanctum-void-canvas');
+          }, 50);
+        } else if (targetChamber === 'memento') {
+          renderSanctumMementoMori();
         }
       });
     });
 
-    // 1. Void
+    // 2. Void Purge Shredder
     const voidBtn = document.getElementById('sanctum-void-shred-btn');
     const voidInput = document.getElementById('sanctum-void-input');
-    const voidCounter = document.getElementById('sanctum-void-counter');
-
-    function updateVoidCounter() {
-      if (voidCounter) {
-        const count = JSON.parse(localStorage.getItem('lumina_void_count') || '0');
-        voidCounter.textContent = `Yok Edilen Yük: ${count}`;
-      }
-    }
-    updateVoidCounter();
 
     if (voidBtn && voidInput) {
-      voidBtn.addEventListener('click', () => {
+      const handlePurge = () => {
         const text = voidInput.value.trim();
         if (!text) {
-          showToast('Lütfen boşluğa fırlatılacak bir düşünce yazın.', 'warning');
+          showToast('Lütfen tekilliğe fırlatılacak bir yük veya kaygı yazın.', 'warning');
           return;
         }
         window.LuminaSanctum.feedVoidWithText(text);
         voidInput.value = '';
-        updateVoidCounter();
-        showToast('Zihinsel yük yerçekimsel tekillikte parçalandı 🌌', 'success');
+        updateVoidCounterDisplay();
+        showToast('Zihinsel yük yerçekimsel tekillikte parçalandı 🌌 (+25 XP)', 'success');
+      };
+
+      voidBtn.addEventListener('click', handlePurge);
+      voidInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) handlePurge();
       });
     }
 
-    // 2. Alter-Ego
+    // 3. Ambient Synthesizer Sliders
+    const tracks = ['rain', 'waves', 'forest', 'binaural'];
+    tracks.forEach(track => {
+      const slider = document.getElementById(`ambient-vol-${track}`);
+      if (slider) {
+        slider.addEventListener('input', (e) => {
+          const val = parseFloat(e.target.value);
+          window.LuminaSanctum.setAmbientTrackVolume(track, val);
+        });
+      }
+    });
+
+    const stopAmbientBtn = document.getElementById('btn-stop-all-ambient');
+    if (stopAmbientBtn) {
+      stopAmbientBtn.addEventListener('click', () => {
+        window.LuminaSanctum.stopAllAmbient();
+        tracks.forEach(track => {
+          const slider = document.getElementById(`ambient-vol-${track}`);
+          if (slider) slider.value = 0;
+        });
+        showToast('Tüm sentetik sesler susturuldu 🔇', 'info');
+      });
+    }
+
+    // 4. Sanctum Pomodoro Controls
+    const sanctumToggleBtn = document.getElementById('btn-toggle-timer-sanctum');
+    const sanctumResetBtn = document.getElementById('btn-reset-timer-sanctum');
+    const sanctumModeBtns = document.querySelectorAll('#chamber-panel-focus .mode-btn');
+
+    if (sanctumToggleBtn) {
+      sanctumToggleBtn.addEventListener('click', () => {
+        toggleTimer();
+        syncSanctumTimerDisplay();
+      });
+    }
+    if (sanctumResetBtn) {
+      sanctumResetBtn.addEventListener('click', () => {
+        resetTimer();
+        syncSanctumTimerDisplay();
+      });
+    }
+    sanctumModeBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        sanctumModeBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const mode = btn.getAttribute('data-mode');
+        setTimerMode(mode);
+        syncSanctumTimerDisplay();
+      });
+    });
+
+    // 5. Memento Mori Recalculate
+    const recalcBtn = document.getElementById('btn-recalc-memento');
+    const ageInput = document.getElementById('memento-user-age');
+    if (recalcBtn && ageInput) {
+      recalcBtn.addEventListener('click', () => {
+        renderSanctumMementoMori(parseInt(ageInput.value, 10));
+        showToast('Yaşam kum saati güncellendi ⏳', 'info');
+      });
+      ageInput.addEventListener('change', () => {
+        renderSanctumMementoMori(parseInt(ageInput.value, 10));
+      });
+    }
+
+    // 6. Alter-Ego Chat
     const egoBtn = document.getElementById('sanctum-alterego-send-btn');
     const egoInput = document.getElementById('sanctum-alterego-input');
     const egoHistory = document.getElementById('sanctum-alterego-output');
@@ -1376,8 +1510,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!text) return;
 
         const userBubble = document.createElement('div');
-        userBubble.className = 'alterego-bubble user';
-        userBubble.textContent = text;
+        userBubble.style.padding = '0.5rem 0.75rem';
+        userBubble.style.background = 'rgba(56, 189, 248, 0.15)';
+        userBubble.style.borderRadius = '8px';
+        userBubble.style.marginBottom = '0.5rem';
+        userBubble.style.color = '#38bdf8';
+        userBubble.textContent = `Sen: "${text}"`;
         egoHistory.appendChild(userBubble);
         egoInput.value = '';
         egoHistory.scrollTop = egoHistory.scrollHeight;
@@ -1385,11 +1523,16 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
           const resp = window.LuminaSanctum.generateAlterEgoResponse(text);
           const egoBubble = document.createElement('div');
-          egoBubble.className = 'alterego-bubble ego';
-          egoBubble.innerHTML = resp.replace(/\n/g, '<br>');
+          egoBubble.style.padding = '0.65rem 0.85rem';
+          egoBubble.style.background = 'rgba(168, 85, 247, 0.15)';
+          egoBubble.style.borderLeft = '3px solid #a855f7';
+          egoBubble.style.borderRadius = '8px';
+          egoBubble.style.marginBottom = '0.5rem';
+          egoBubble.style.color = '#f1f5f9';
+          egoBubble.innerHTML = resp;
           egoHistory.appendChild(egoBubble);
           egoHistory.scrollTop = egoHistory.scrollHeight;
-        }, 400);
+        }, 300);
       };
 
       egoBtn.addEventListener('click', handleEgoSubmit);
@@ -1398,637 +1541,38 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // 3. Multiverse
+    // 7. Multiverse Simulator
     const multiBtn = document.getElementById('sanctum-multiverse-btn');
-    const choiceAInput = document.getElementById('sanctum-choice-a');
-    const choiceBInput = document.getElementById('sanctum-choice-b');
+    const choiceA = document.getElementById('sanctum-choice-a');
+    const choiceB = document.getElementById('sanctum-choice-b');
     const multiOutput = document.getElementById('sanctum-multiverse-output');
 
-    if (multiBtn && choiceAInput && choiceBInput && multiOutput) {
+    if (multiBtn && choiceA && choiceB && multiOutput) {
       multiBtn.addEventListener('click', () => {
-        const a = choiceAInput.value.trim();
-        const b = choiceBInput.value.trim();
+        const a = choiceA.value.trim() || 'Konfor alanında kalmak';
+        const b = choiceB.value.trim() || 'Cesur hamleyi yapmak';
         const res = window.LuminaSanctum.simulateMultiverse(a, b);
 
-        multiOutput.style.display = 'grid';
+        multiOutput.style.display = 'block';
         multiOutput.innerHTML = `
-          <div class="multiverse-card branch-a">
-            <h4 style="color:#f59e0b; margin-bottom:0.75rem; font-weight:700;">${res.universeA.title}</h4>
-            <div class="multiverse-year-step">${res.universeA.year1}</div>
-            <div class="multiverse-year-step">${res.universeA.year5}</div>
-            <div class="multiverse-year-step">${res.universeA.year10}</div>
-          </div>
-          <div class="multiverse-card branch-b">
-            <h4 style="color:#06b6d4; margin-bottom:0.75rem; font-weight:700;">${res.universeB.title}</h4>
-            <div class="multiverse-year-step">${res.universeB.year1}</div>
-            <div class="multiverse-year-step">${res.universeB.year5}</div>
-            <div class="multiverse-year-step">${res.universeB.year10}</div>
-          </div>
-        `;
-        showToast('Paralel zaman çizgileri hesaplandı 🌌', 'info');
-      });
-    }
-
-    // 4. Council
-    const councilAskBtn = document.getElementById('sanctum-council-ask-btn');
-    const councilInput = document.getElementById('sanctum-council-input');
-
-    if (councilAskBtn && councilInput) {
-      councilAskBtn.addEventListener('click', () => {
-        const q = councilInput.value.trim();
-        renderCouncil(q);
-        showToast('Kadim Konsey kararını bildirdi 🏛️', 'info');
-      });
-    }
-
-    // 5. Memento Mori
-    const mementoCalcBtn = document.getElementById('sanctum-memento-calc-btn');
-    if (mementoCalcBtn) {
-      mementoCalcBtn.addEventListener('click', renderMementoMori);
-    }
-
-    // 6. Vagus Breathing
-    const breathToggleBtn = document.getElementById('sanctum-breath-toggle-btn');
-    const breathOrb = document.getElementById('sanctum-breath-orb');
-    const breathText = document.getElementById('sanctum-breath-text');
-    let currentBreathMode = 'box';
-
-    document.querySelectorAll('.breath-mode-selector .mode-pill').forEach(pill => {
-      pill.addEventListener('click', () => {
-        document.querySelectorAll('.breath-mode-selector .mode-pill').forEach(p => p.classList.remove('active'));
-        pill.classList.add('active');
-        currentBreathMode = pill.getAttribute('data-bmode') || 'box';
-        if (window.LuminaSanctum.isBreathingActive) {
-          window.LuminaSanctum.stopBreathing();
-          window.LuminaSanctum.startBreathing(breathOrb, breathText, currentBreathMode);
-        }
-      });
-    });
-
-    if (breathToggleBtn && breathOrb && breathText) {
-      breathToggleBtn.addEventListener('click', () => {
-        if (window.LuminaSanctum.isBreathingActive) {
-          window.LuminaSanctum.stopBreathing();
-          breathToggleBtn.innerHTML = '<span>Nefes Seansını Başlat (432Hz)</span>';
-          breathText.textContent = 'Nefes Seansı Tamamlandı 🙏';
-          breathOrb.style.transform = 'scale(1.0)';
-        } else {
-          window.LuminaSanctum.startBreathing(breathOrb, breathText, currentBreathMode);
-          breathToggleBtn.innerHTML = '<span>Seansı Durdur</span>';
-        }
-      });
-    }
-
-    // 7. Shadow
-    const shadowBtn = document.getElementById('sanctum-shadow-btn');
-    const shadowInput = document.getElementById('sanctum-shadow-input');
-    const shadowOutput = document.getElementById('sanctum-shadow-output');
-
-    if (shadowBtn && shadowInput && shadowOutput) {
-      shadowBtn.addEventListener('click', () => {
-        const text = shadowInput.value.trim();
-        if (!text) {
-          showToast('Lütfen duygunuzu veya krizinizi ifade edin.', 'warning');
-          return;
-        }
-        const res = window.LuminaSanctum.analyzeArchetype(text);
-        shadowOutput.style.display = 'block';
-        shadowOutput.innerHTML = `
-          <div style="display:flex; align-items:center; gap:0.6rem; margin-bottom:0.75rem;">
-            <span style="font-size:1.8rem;">${res.icon}</span>
-            <div>
-              <h4 style="font-size:1.1rem; font-weight:800; color:#c084fc;">${res.name}</h4>
-              <span style="font-size:0.8rem; color:#f43f5e; font-weight:600;">Gölge Enerjisi: ${res.energy}</span>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:12px; padding:1rem;">
+              <h4 style="color:#ef4444; font-weight:700; margin-bottom:0.5rem;">${res.universeA.title}</h4>
+              <p style="font-size:0.8rem; margin-bottom:0.35rem; color:#cbd5e1;">${res.universeA.year1}</p>
+              <p style="font-size:0.8rem; margin-bottom:0.35rem; color:#cbd5e1;">${res.universeA.year5}</p>
+              <p style="font-size:0.8rem; color:#94a3b8;">${res.universeA.year10}</p>
+            </div>
+            <div style="background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); border-radius:12px; padding:1rem;">
+              <h4 style="color:#10b981; font-weight:700; margin-bottom:0.5rem;">${res.universeB.title}</h4>
+              <p style="font-size:0.8rem; margin-bottom:0.35rem; color:#cbd5e1;">${res.universeB.year1}</p>
+              <p style="font-size:0.8rem; margin-bottom:0.35rem; color:#cbd5e1;">${res.universeB.year5}</p>
+              <p style="font-size:0.8rem; color:#94a3b8;">${res.universeB.year10}</p>
             </div>
           </div>
-          <div style="margin-bottom:0.75rem; font-size:0.9rem; color:var(--text-main);">
-            <strong>Bilinçaltı Teşhisi:</strong> ${res.diagnosis}
-          </div>
-          <div style="background:rgba(168, 85, 247, 0.15); border-left:3px solid #a855f7; padding:0.65rem 0.85rem; border-radius:4px; font-size:0.88rem; color:#e9d5ff;">
-            <strong>🛡️ Bilişsel Panzehir:</strong> ${res.antidote}
-          </div>
         `;
-        showToast('Gölge arketipi çözümlendi 🔮', 'success');
+        showToast('Kozmik çoklu evren projeksiyonu hesaplandı 🌌', 'info');
       });
     }
-
-    // 8. CBT
-    const cbtBtn = document.getElementById('sanctum-cbt-btn');
-    const cbtInput = document.getElementById('sanctum-cbt-input');
-    const cbtOutput = document.getElementById('sanctum-cbt-output');
-
-    if (cbtBtn && cbtInput && cbtOutput) {
-      cbtBtn.addEventListener('click', () => {
-        const text = cbtInput.value.trim();
-        if (!text) {
-          showToast('Lütfen olumsuz düşünceyi yazın.', 'warning');
-          return;
-        }
-        const res = window.LuminaSanctum.reframeCognitiveDistortion(text);
-        cbtOutput.style.display = 'block';
-        cbtOutput.innerHTML = `
-          <div style="font-weight:700; color:#f43f5e; margin-bottom:0.5rem;">${res.distortionIdentified}</div>
-          <div style="background:rgba(255, 255, 255, 0.03); padding:0.75rem; border-radius:6px; margin-bottom:0.75rem; font-size:0.88rem; white-space:pre-line;">${res.rationalReframing}</div>
-          <div style="font-weight:700; color:#10b981; font-size:0.92rem;">${res.affirmation}</div>
-        `;
-        showToast('Bilişsel panzehir üretildi 🛡️', 'success');
-      });
-    }
-
-    // 9. Dream Lab
-    const dreamBtn = document.getElementById('sanctum-dream-btn');
-    const dreamInput = document.getElementById('sanctum-dream-input');
-    const dreamOutput = document.getElementById('sanctum-dream-output');
-
-    if (dreamBtn && dreamInput && dreamOutput) {
-      dreamBtn.addEventListener('click', () => {
-        const text = dreamInput.value.trim();
-        if (!text) {
-          showToast('Lütfen rüyanızı anlatın.', 'warning');
-          return;
-        }
-        const res = window.LuminaSanctum.analyzeDream(text);
-        dreamOutput.style.display = 'block';
-        dreamOutput.innerHTML = `
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
-            <h4 style="font-size:1rem; font-weight:800; color:#38bdf8;">🌙 Bilinçaltı Sembol Çözümü</h4>
-            <span style="font-size:0.8rem; font-weight:600; color:#10b981;">Berraklık: %${res.lucidity}</span>
-          </div>
-          <div style="margin-bottom:0.75rem;">
-            ${res.symbols.map(s => `
-              <div style="margin-bottom:0.4rem; font-size:0.88rem;">
-                <strong style="color:#f472b6;">🔹 ${s.symbol}:</strong> ${s.archetype} — <span style="color:var(--text-muted);">${s.interpretation}</span>
-              </div>
-            `).join('')}
-          </div>
-          <div style="padding:0.65rem; background:rgba(6, 182, 212, 0.15); border-radius:6px; font-size:0.88rem; color:#e0f2fe;">
-            <strong>✨ Uyanık Hayata Mesaj:</strong> ${res.coreMessage}
-          </div>
-        `;
-        dreamInput.value = '';
-        renderDreamHistory();
-        showToast('Rüya analiz edildi ve günlüğe kaydedildi 🌙', 'success');
-      });
-    }
-
-    // 10. Dopamine Fasting
-    const fastStartBtn = document.getElementById('sanctum-fast-start-btn');
-    const urgeBtn = document.getElementById('sanctum-urge-btn');
-    const urgeCountdown = document.getElementById('sanctum-urge-countdown');
-    const brownBtn = document.getElementById('sanctum-brown-btn');
-
-    let selectedFastHours = 2;
-    document.querySelectorAll('.fast-pill').forEach(pill => {
-      pill.addEventListener('click', () => {
-        document.querySelectorAll('.fast-pill').forEach(p => p.classList.remove('active'));
-        pill.classList.add('active');
-        selectedFastHours = parseInt(pill.getAttribute('data-fast-hours') || '2');
-      });
-    });
-
-    if (fastStartBtn) {
-      fastStartBtn.addEventListener('click', () => {
-        window.LuminaSanctum.startDopamineFast(selectedFastHours);
-        updateDopamineFastDisplay();
-        showToast(`${selectedFastHours} saatlik dopamin orucu başlatıldı ⚡`, 'success');
-      });
-    }
-
-    if (urgeBtn && urgeCountdown) {
-      urgeBtn.addEventListener('click', () => {
-        urgeCountdown.style.display = 'block';
-        urgeBtn.disabled = true;
-        window.LuminaSanctum.startUrgeSurfing(
-          (secs) => {
-            urgeCountdown.textContent = `Dürtü Dalgası Sönüyor: ${secs} sn (Derin nefes al)`;
-          },
-          () => {
-            urgeCountdown.textContent = '🎉 Dalga Atlatıldı! Prefrontal korteks kontrolü geri aldı.';
-            urgeBtn.disabled = false;
-            setTimeout(() => { urgeCountdown.style.display = 'none'; }, 4000);
-          }
-        );
-      });
-    }
-
-    if (brownBtn) {
-      brownBtn.addEventListener('click', () => {
-        isBrownNoiseActive = !isBrownNoiseActive;
-        window.LuminaSanctum.toggleBrownNoise(isBrownNoiseActive);
-        brownBtn.textContent = isBrownNoiseActive ? 'Brown Noise Durdur' : 'Brown Noise Başlat';
-        if (isBrownNoiseActive) brownBtn.classList.add('btn-primary');
-        else brownBtn.classList.remove('btn-primary');
-      });
-    }
-
-    // 12. Neuro-Waves
-    const binauralPlayBtn = document.getElementById('sanctum-binaural-play-btn');
-    const binauralStopBtn = document.getElementById('sanctum-binaural-stop-btn');
-    const binauralStatus = document.getElementById('sanctum-binaural-status');
-
-    document.querySelectorAll('#sanctum-wave-presets .wave-preset-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('#sanctum-wave-presets .wave-preset-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const carrier = parseFloat(btn.getAttribute('data-carrier') || '200');
-        const beat = parseFloat(btn.getAttribute('data-beat') || '10');
-        activeBinauralPreset = { carrier, beat };
-
-        if (isBinauralActive) {
-          window.LuminaSanctum.playBinauralBeat(carrier, beat, 0.15);
-          if (binauralStatus) binauralStatus.textContent = `Frekans Aktif: ${beat} Hz Binaural Dalga`;
-        }
-      });
-    });
-
-    if (binauralPlayBtn) {
-      binauralPlayBtn.addEventListener('click', () => {
-        isBinauralActive = true;
-        window.LuminaSanctum.playBinauralBeat(activeBinauralPreset.carrier, activeBinauralPreset.beat, 0.15);
-        if (binauralStatus) binauralStatus.textContent = `Frekans Aktif: ${activeBinauralPreset.beat} Hz Binaural Dalga (Kulaklık)`;
-        showToast(`${activeBinauralPreset.beat}Hz Nöro-Dalga başlatıldı 🧠`, 'success');
-      });
-    }
-
-    if (binauralStopBtn) {
-      binauralStopBtn.addEventListener('click', () => {
-        isBinauralActive = false;
-        window.LuminaSanctum.stopBinauralBeat();
-        if (binauralStatus) binauralStatus.textContent = 'Frekans: Kapalı';
-        showToast('Nöro-Dalga durduruldu', 'info');
-      });
-    }
-
-    // 13. RPG Topbar Jump
-    const topbarRpgPill = document.getElementById('topbar-rpg-pill');
-    if (topbarRpgPill) {
-      topbarRpgPill.addEventListener('click', () => {
-        switchView('sanctum');
-        const rpgTab = document.querySelector('.sanctum-chamber-tabs .chamber-tab[data-chamber="rpg"]');
-        if (rpgTab) rpgTab.click();
-      });
-    }
-
-    // 14. Circadian Rhythm
-    document.querySelectorAll('.chronotype-selector .chronotype-pill').forEach(pill => {
-      pill.addEventListener('click', () => {
-        document.querySelectorAll('.chronotype-selector .chronotype-pill').forEach(p => p.classList.remove('active'));
-        pill.classList.add('active');
-        const ctype = pill.getAttribute('data-chrono') || 'bear';
-        renderCircadian(ctype);
-        if (window.LuminaRPG) window.LuminaRPG.addXP(15, 'vitality', 'Sirkadiyen Profil');
-      });
-    });
-
-    const calcCaffeineBtn = document.getElementById('btn-calc-caffeine');
-    const bedtimeInput = document.getElementById('circadian-bedtime-input');
-    const caffeineOutput = document.getElementById('circadian-caffeine-output');
-    if (calcCaffeineBtn && bedtimeInput && caffeineOutput) {
-      calcCaffeineBtn.addEventListener('click', () => {
-        const bedtime = bedtimeInput.value || '23:00';
-        const parts = bedtime.split(':');
-        let h = parseInt(parts[0], 10);
-        const m = parts[1] || '00';
-        let cutoffH = (h - 9 + 24) % 24;
-        const cutoffStr = `${String(cutoffH).padStart(2, '0')}:${m}`;
-        caffeineOutput.textContent = `☕ Kafein Kesilme Saati: En geç ${cutoffStr}! Bu saatten sonra alınan kafein adenosin reseptörlerini bloke ederek derin uyku (delta dalgaları) kaliteni %40 düşürür.`;
-        caffeineOutput.style.display = 'block';
-      });
-    }
-
-    // 15. Mental Models Matrix
-    const modelBtn = document.getElementById('sanctum-model-btn');
-    const modelInput = document.getElementById('sanctum-model-input');
-    const modelOutput = document.getElementById('sanctum-model-output');
-    if (modelBtn && modelInput && modelOutput) {
-      modelBtn.addEventListener('click', () => {
-        const text = modelInput.value.trim();
-        if (!text) {
-          showToast('Lütfen deşifre edilecek bir problem veya karar yazın.', 'warning');
-          return;
-        }
-        const res = window.LuminaSanctum.applyMentalModels(text);
-        modelOutput.style.display = 'grid';
-        modelOutput.innerHTML = `
-          <div class="model-result-card">
-            <h4>⚛️ 1. İlk İlkeler (First Principles)</h4>
-            <p>${res.firstPrinciples}</p>
-          </div>
-          <div class="model-result-card">
-            <h4>🔄 2. Tersine Çevirme (Inversion)</h4>
-            <p>${res.inversion}</p>
-          </div>
-          <div class="model-result-card">
-            <h4>🌊 3. İkinci Derece Düşünce (Second-Order)</h4>
-            <p>${res.secondOrder}</p>
-          </div>
-          <div class="model-result-card">
-            <h4>✂️ 4. Ockham'ın Usturası (Occam's Razor)</h4>
-            <p>${res.occamsRazor}</p>
-          </div>
-        `;
-        if (window.LuminaRPG) window.LuminaRPG.addXP(25, 'intellect', 'Zihinsel Model Analizi');
-        showToast('Problem 4 zihinsel modelle parçalandı 🧩', 'success');
-      });
-    }
-
-    // 16. Dichotomy of Control
-    const dichAddBtn = document.getElementById('sanctum-dichotomy-add-btn');
-    const dichInput = document.getElementById('sanctum-dichotomy-input');
-    const dichType = document.getElementById('sanctum-dichotomy-type');
-    const dichPurgeBtn = document.getElementById('sanctum-dichotomy-purge-btn');
-
-    if (dichAddBtn && dichInput && dichType) {
-      dichAddBtn.addEventListener('click', () => {
-        const text = dichInput.value.trim();
-        if (!text) return;
-        const type = dichType.value;
-        const items = JSON.parse(localStorage.getItem('lumina_dichotomy_items') || '{"internal":[], "external":[]}');
-        items[type].push(text);
-        localStorage.setItem('lumina_dichotomy_items', JSON.stringify(items));
-        dichInput.value = '';
-        renderDichotomy();
-        showToast('Madde kontrol panosuna yerleştirildi 🏛️', 'success');
-      });
-    }
-
-    if (dichPurgeBtn) {
-      dichPurgeBtn.addEventListener('click', () => {
-        const items = JSON.parse(localStorage.getItem('lumina_dichotomy_items') || '{"internal":[], "external":[]}');
-        if (items.external.length === 0) {
-          showToast('Buharlaştırılacak dışsal kaygı yok.', 'info');
-          return;
-        }
-        const count = items.external.length;
-        items.external = [];
-        localStorage.setItem('lumina_dichotomy_items', JSON.stringify(items));
-        renderDichotomy();
-        if (window.LuminaRPG) window.LuminaRPG.addXP(20, 'willpower', 'Dışsal Kaygılar Buharlaştırıldı');
-        showToast(`${count} dışsal kaygı zihinden buharlaştırıldı! Sadece kontrol edebildiklerine odaklan. 💨`, 'success');
-      });
-    }
-
-    // 17. Cosmic Perspective Zoom
-    const cosmicSlider = document.getElementById('cosmic-zoom-slider');
-    if (cosmicSlider) {
-      cosmicSlider.addEventListener('input', () => {
-        const lvl = parseInt(cosmicSlider.value, 10);
-        const data = window.LuminaSanctum.getCosmicPerspective(lvl);
-        const vis = document.getElementById('cosmic-visual');
-        const tit = document.getElementById('cosmic-title');
-        const sca = document.getElementById('cosmic-scale');
-        const quo = document.getElementById('cosmic-quote');
-        if (vis) vis.textContent = data.visual;
-        if (tit) tit.textContent = data.title;
-        if (sca) sca.textContent = `Ölçek: ${data.scale}`;
-        if (quo) quo.textContent = data.quote;
-      });
-
-      cosmicSlider.addEventListener('change', () => {
-        if (window.LuminaRPG) window.LuminaRPG.addXP(15, 'mindfulness', 'Kozmik Perspektif Seansı');
-      });
-    }
-
-    // 18. Time Capsule
-    const sealBtn = document.getElementById('sanctum-capsule-seal-btn');
-    const capTitle = document.getElementById('sanctum-capsule-title');
-    const capDuration = document.getElementById('sanctum-capsule-duration');
-    const capLetter = document.getElementById('sanctum-capsule-letter');
-    if (sealBtn && capTitle && capDuration && capLetter) {
-      sealBtn.addEventListener('click', () => {
-        const title = capTitle.value.trim();
-        const letter = capLetter.value.trim();
-        const months = parseInt(capDuration.value, 10) || 12;
-        if (!title || !letter) {
-          showToast('Lütfen kapsül başlığı ve geleceğe mektubunuzu yazın.', 'warning');
-          return;
-        }
-        window.LuminaSanctum.sealTimeCapsule(title, letter, months);
-        capTitle.value = '';
-        capLetter.value = '';
-        renderCapsules();
-        if (window.LuminaRPG) window.LuminaRPG.addXP(30, 'mindfulness', 'Zaman Kapsülü Mühürlendi');
-        showToast('Kapsül geleceğe mühürlendi 📜', 'success');
-      });
-    }
-
-    // 19. Socratic Interrogator
-    const socraticBtn = document.getElementById('sanctum-socratic-btn');
-    const socraticInput = document.getElementById('sanctum-socratic-input');
-    const socraticOutput = document.getElementById('sanctum-socratic-output');
-    if (socraticBtn && socraticInput && socraticOutput) {
-      socraticBtn.addEventListener('click', () => {
-        const text = socraticInput.value.trim();
-        if (!text) {
-          showToast('Lütfen sorgulanacak katı bir inanç yazın.', 'warning');
-          return;
-        }
-        const res = window.LuminaSanctum.generateSocraticQuestions(text);
-        socraticOutput.style.display = 'block';
-        socraticOutput.innerHTML = `
-          <div style="font-weight:700; color:#c084fc; font-size:1.05rem; margin-bottom:0.75rem;">🗣️ Sokratik Çapraz Sorgu:</div>
-          <div style="display:flex; flex-direction:column; gap:0.65rem; margin-bottom:1rem;">
-            ${res.questions.map(q => `<div style="padding:0.75rem 1rem; background:rgba(255,255,255,0.03); border-left:3px solid #38bdf8; border-radius:4px; font-size:0.9rem; color:var(--text-main);">${q}</div>`).join('')}
-          </div>
-          <div style="font-size:0.85rem; color:#a78bfa; font-style:italic;">${res.insight}</div>
-        `;
-        if (window.LuminaRPG) window.LuminaRPG.addXP(25, 'intellect', 'Sokratik Sorgulama');
-        showToast('Dogma Sokratik diyalogla parçalandı ⚡', 'success');
-      });
-    }
-
-    // 20. Stoic Ritual
-    const btnMorning = document.getElementById('btn-stoic-morning');
-    const btnEvening = document.getElementById('btn-stoic-evening');
-    const morningView = document.getElementById('stoic-morning-view');
-    const eveningView = document.getElementById('stoic-evening-view');
-    if (btnMorning && btnEvening && morningView && eveningView) {
-      btnMorning.addEventListener('click', () => {
-        btnMorning.classList.add('active');
-        btnEvening.classList.remove('active');
-        morningView.style.display = 'block';
-        eveningView.style.display = 'none';
-      });
-      btnEvening.addEventListener('click', () => {
-        btnEvening.classList.add('active');
-        btnMorning.classList.remove('active');
-        eveningView.style.display = 'block';
-        morningView.style.display = 'none';
-        renderStoicAudit();
-      });
-    }
-
-    const stoicSaveBtn = document.getElementById('sanctum-stoic-save-btn');
-    if (stoicSaveBtn) {
-      stoicSaveBtn.addEventListener('click', () => {
-        const q1 = (document.getElementById('stoic-audit-q1') || {}).value || '';
-        const q2 = (document.getElementById('stoic-audit-q2') || {}).value || '';
-        const q3 = (document.getElementById('stoic-audit-q3') || {}).value || '';
-        if (!q1 && !q2 && !q3) {
-          showToast('Lütfen en az bir muhasebe sorusunu yanıtlayın.', 'warning');
-          return;
-        }
-        window.LuminaSanctum.saveEveningAudit({ q1, q2, q3 });
-        renderStoicAudit();
-        if (window.LuminaRPG) window.LuminaRPG.addXP(25, 'willpower', 'Akşam Muhasebesi');
-        showToast('Seneca Akşam Muhasebesi kaydedildi ⚖️', 'success');
-      });
-    }
-
-    // 21. Jungian Archetype Radar
-    const calcJungBtn = document.getElementById('btn-calc-jung-radar');
-    if (calcJungBtn) {
-      calcJungBtn.addEventListener('click', () => {
-        const answers = [];
-        document.querySelectorAll('.jung-q-card').forEach(card => {
-          const arch = card.getAttribute('data-arch');
-          const activeOpt = card.querySelector('.jung-opt-btn.active');
-          const val = activeOpt ? parseInt(activeOpt.getAttribute('data-val'), 10) : 3;
-          answers.push({ arch, val });
-        });
-        const profile = window.LuminaSanctum.calculateArchetypeProfile(answers);
-        const resultBox = document.getElementById('jung-radar-result');
-        if (resultBox) {
-          resultBox.style.display = 'grid';
-          resultBox.innerHTML = `
-            <div style="text-align:center;">
-              <svg viewBox="0 0 300 300" style="width:100%; max-width:280px; height:auto; overflow:visible;">
-                <polygon points="150,50 220,79 250,150 220,221 150,250 80,221 50,150 80,79" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-                <polygon points="150,85 195,103 215,150 195,197 150,215 105,197 85,150 105,103" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
-                <polygon points="150,115 175,125 185,150 175,175 150,185 125,175 115,150 125,125" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
-                <polygon points="${profile.polygonPoints}" fill="rgba(168, 85, 247, 0.35)" stroke="#a855f7" stroke-width="2.5"/>
-                ${profile.polygonPoints.split(' ').map(pt => `<circle cx="${pt.split(',')[0]}" cy="${pt.split(',')[1]}" r="4" fill="#38bdf8"/>`).join('')}
-                ${profile.labels.map(l => `<text x="${l.x}" y="${l.y}" font-size="10" fill="#94a3b8" text-anchor="middle" alignment-baseline="middle">${l.icon} ${l.key}</text>`).join('')}
-              </svg>
-            </div>
-            <div>
-              <div style="display:flex; gap:0.5rem; align-items:center; margin-bottom:0.75rem;">
-                <span style="font-size:2rem;">${profile.dominant.icon}</span>
-                <div>
-                  <div style="font-size:0.75rem; color:var(--secondary); font-weight:700;">DOMİNANT ARKETİP</div>
-                  <h3 style="font-size:1.35rem; font-weight:800; color:${profile.dominant.color};">${profile.dominant.name} (%${profile.dominant.score})</h3>
-                </div>
-              </div>
-              <p style="font-size:0.88rem; color:var(--text-main); line-height:1.5; margin-bottom:0.75rem;">${profile.dominant.desc}</p>
-              <div style="background:rgba(239,68,68,0.1); border-left:3px solid #ef4444; padding:0.6rem 0.8rem; border-radius:4px; font-size:0.82rem; color:#fca5a5; margin-bottom:0.75rem;">
-                <strong>⚠️ Gölge Tehlikesi (${profile.shadow.name}):</strong> ${profile.shadow.shadow}
-              </div>
-              <p style="font-size:0.82rem; color:var(--text-muted); font-style:italic;">${profile.advice}</p>
-            </div>
-          `;
-          if (window.LuminaRPG) window.LuminaRPG.addXP(35, 'mindfulness', 'Jung Arketip Radarı');
-          showToast('Bilinçaltı arketip radarı çıkarıldı 🎯', 'success');
-        }
-      });
-    }
-
-    // 22. Quantum Decision Collapser
-    const quantumBtn = document.getElementById('btn-collapse-quantum');
-    const qChoiceA = document.getElementById('quantum-choice-a');
-    const qChoiceB = document.getElementById('quantum-choice-b');
-    const qResultBox = document.getElementById('quantum-result-container');
-    if (quantumBtn && qChoiceA && qChoiceB && qResultBox) {
-      quantumBtn.addEventListener('click', () => {
-        const a = qChoiceA.value.trim();
-        const b = qChoiceB.value.trim();
-        if (!a || !b) {
-          showToast('Lütfen iki yol ayrımını da yazın.', 'warning');
-          return;
-        }
-        const res = window.LuminaSanctum.collapseQuantumDecision(a, b);
-        qResultBox.style.display = 'block';
-        qResultBox.innerHTML = `
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-            <h4 style="font-size:1.15rem; font-weight:800; color:#38bdf8;">⚛️ Dalga Fonksiyonu Çöktürüldü</h4>
-            <span class="badge-tag" style="background:rgba(6,182,212,0.2); color:#06b6d4;">Tip-2 Karar (Geri Döndürülebilir)</span>
-          </div>
-          <div class="quantum-grid-box">
-            <div style="padding:1rem; background:rgba(255,255,255,0.03); border-left:3px solid #10b981; border-radius:6px;">
-              <div style="font-size:0.8rem; font-weight:700; color:#34d399; margin-bottom:0.35rem;">🏆 BEZOS 80 YAŞ PİŞMANLIK TESTİ:</div>
-              <p style="font-size:0.88rem; color:var(--text-main); line-height:1.5;">${res.bezos80YearTest.reason}</p>
-            </div>
-            <div style="padding:1rem; background:rgba(255,255,255,0.03); border-left:3px solid #ef4444; border-radius:6px;">
-              <div style="font-size:0.8rem; font-weight:700; color:#f87171; margin-bottom:0.35rem;">⏳ HAREKETSİZLİĞİN BEDELİ:</div>
-              <p style="font-size:0.88rem; color:var(--text-main); line-height:1.5;">${res.fearSettingAudit.inactionCost}</p>
-            </div>
-          </div>
-          <div style="padding:1rem; background:rgba(99, 102, 241, 0.15); border:1px solid rgba(99, 102, 241, 0.4); border-radius:8px;">
-            <div style="font-size:0.85rem; font-weight:800; color:#c084fc; margin-bottom:0.25rem;">⚡ 48 SAATLİK DÜŞÜK RİSKLİ MİKRO-DENEY:</div>
-            <p style="font-size:0.9rem; color:#f8fafc; line-height:1.5;">${res.recommendedExperiment}</p>
-          </div>
-        `;
-        if (window.LuminaRPG) window.LuminaRPG.addXP(30, 'intellect', 'Kuantum Karar Simülasyonu');
-        showToast('Kuantum belirsizliği çöktürüldü ⚛️', 'success');
-      });
-    }
-
-    // 23. Kaizen Compound
-    const kaizenBtn = document.getElementById('btn-kaizen-pledge');
-    const kaizenStatus = document.getElementById('kaizen-pledge-status');
-    if (kaizenBtn) {
-      kaizenBtn.addEventListener('click', () => {
-        localStorage.setItem('lumina_kaizen_pledged', new Date().toDateString());
-        if (kaizenStatus) kaizenStatus.textContent = '✅ Bugünün taahhüdü verildi! İlerleme kaydedildi.';
-        if (window.LuminaRPG) window.LuminaRPG.addXP(20, 'vitality', 'Kaizen %1 Taahhüdü');
-        showToast('2 dakikalık atomik eylem taahhüt edildi (+20 XP) 📈', 'success');
-      });
-    }
-
-    // 24. Solfeggio Audio Synth
-    document.querySelectorAll('.btn-solfeggio-play').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const freq = parseFloat(btn.getAttribute('data-freq') || '528');
-        const success = window.LuminaSanctum.playSolfeggioTone(freq);
-        if (success) {
-          document.querySelectorAll('.solfeggio-card').forEach(c => c.classList.remove('active-playing'));
-          const parentCard = btn.closest('.solfeggio-card');
-          if (parentCard) parentCard.classList.add('active-playing');
-          const statusBar = document.getElementById('solfeggio-status-bar');
-          if (statusBar) statusBar.textContent = `Ses Durumu: ▶️ ${freq} Hz Saf Sinüs Frekansı Çalıyor (Derin nefes alın)`;
-          showToast(`${freq} Hz frekansı başlatıldı 🎵`, 'success');
-          if (window.LuminaRPG) window.LuminaRPG.addXP(15, 'mindfulness', 'Solfeggio Frekans Seansı');
-        }
-      });
-    });
-
-    const stopSolfeggioBtn = document.getElementById('btn-stop-all-solfeggio');
-    if (stopSolfeggioBtn) {
-      stopSolfeggioBtn.addEventListener('click', () => {
-        window.LuminaSanctum.stopSolfeggioTone();
-        document.querySelectorAll('.solfeggio-card').forEach(c => c.classList.remove('active-playing'));
-        const statusBar = document.getElementById('solfeggio-status-bar');
-        if (statusBar) statusBar.textContent = 'Ses Durumu: Dinleniyor — Bir frekans seçin';
-        showToast('Frekans sesi durduruldu', 'info');
-      });
-    }
-
-    // 25. Delphi Oracle 3D Flip
-    const drawOracleBtn = document.getElementById('btn-draw-oracle');
-    const oracleCardScene = document.getElementById('oracle-card-scene');
-    const oracleCard3D = document.getElementById('oracle-card-3d');
-
-    function handleDrawOracle() {
-      const card = window.LuminaSanctum.drawOracleCard();
-      const phil = document.getElementById('oracle-philosopher');
-      const tit = document.getElementById('oracle-card-title');
-      const quo = document.getElementById('oracle-card-quote');
-      const par = document.getElementById('oracle-card-paradox');
-      const act = document.getElementById('oracle-card-action');
-
-      if (phil) phil.textContent = card.philosopher;
-      if (tit) tit.textContent = card.title;
-      if (quo) quo.textContent = `"${card.quote}"`;
-      if (par) par.textContent = card.paradox;
-      if (act) act.textContent = card.action;
-
-      if (oracleCard3D) {
-        oracleCard3D.classList.toggle('flipped');
-      }
-      if (window.LuminaRPG) window.LuminaRPG.addXP(15, 'mindfulness', 'Delphi Kehanet Kartı Çekildi');
-    }
-
-    if (drawOracleBtn) drawOracleBtn.addEventListener('click', handleDrawOracle);
-    if (oracleCardScene) oracleCardScene.addEventListener('click', handleDrawOracle);
   }
 
   // Helper renderers

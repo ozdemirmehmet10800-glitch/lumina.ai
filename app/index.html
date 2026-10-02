@@ -34,71 +34,37 @@
       </div>
 
       <nav class="nav-menu" aria-label="Ana Menü">
+        <!-- 1. KOKPİT -->
         <a href="#dashboard" class="nav-item active" data-view="dashboard">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
-          <span>Genel Bakış</span>
+          <span>Kokpit (Genel Bakış)</span>
         </a>
-        <a href="#tasks" class="nav-item" data-view="tasks">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-          <span>Görevler & Projeler</span>
-          <span class="nav-badge" id="sidebar-task-count">3</span>
-        </a>
-        <a href="#notes" class="nav-item" data-view="notes">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-          <span>AI Not Defteri</span>
-        </a>
-        <a href="#focus" class="nav-item" data-view="focus">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          <span>Derin Odak & Ses</span>
-        </a>
-        <a href="#habits" class="nav-item" data-view="habits">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
-          <span>Alışkanlık & Veri</span>
-        </a>
+
+        <!-- 2. ZİHİN MABEDİ (SANCTUM) -->
         <a href="#sanctum" class="nav-item sanctum-nav-glow" data-view="sanctum">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/><path d="M3 12h18"/><circle cx="12" cy="12" r="4"/></svg>
           <span>Zihin Mabedi 🔮</span>
-          <span class="nav-badge" style="background:linear-gradient(135deg, #a855f7, #6366f1); color:#fff; font-size:0.68rem; padding:0.15rem 0.4rem;">25 Sistem</span>
+          <span class="nav-badge" style="background:linear-gradient(135deg, #a855f7, #6366f1); color:#fff; font-size:0.68rem; padding:0.15rem 0.5rem; font-weight:700;">Portal</span>
         </a>
-        <a href="#galaxy" class="nav-item galaxy-nav-glow" data-view="galaxy">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><circle cx="19" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><circle cx="5" cy="5" r="2"/><line x1="12" y1="9" x2="12" y2="3"/><line x1="12" y1="15" x2="12" y2="21"/><line x1="9.5" y1="10.5" x2="6.5" y2="6.5"/><line x1="14.5" y1="13.5" x2="17.5" y2="17.5"/></svg>
-          <span>Zihin Galaksisi 🌌</span>
-          <span class="nav-badge" style="background:#06b6d4; color:#fff; font-size:0.65rem;">3D Ağ</span>
+
+        <!-- 3. GÖREVLER & STRATEJİ -->
+        <a href="#tasks" class="nav-item" data-view="tasks">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          <span>Görevler & Strateji</span>
+          <span class="nav-badge" id="sidebar-task-count">3</span>
         </a>
-        <a href="#twin" class="nav-item" data-view="twin">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          <span>Zihin İkizim 👁️</span>
-          <span class="nav-badge" style="background:#a855f7; color:#fff; font-size:0.65rem;">Klon</span>
+
+        <!-- 4. İKİNCİ BEYİN & SENTEZ -->
+        <a href="#notes" class="nav-item" data-view="notes">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          <span>İkinci Beyin & Notlar</span>
         </a>
-        <a href="#trajectory" class="nav-item" data-view="trajectory">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M6 9v3a6 6 0 0 0 6 6h3"/></svg>
-          <span>Gelecek Ağacı 🔮</span>
-          <span class="nav-badge" style="background:#10b981; color:#fff; font-size:0.65rem;">Yollar</span>
-        </a>
-        <a href="#life-os" class="nav-item" data-view="life-os">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polygon points="12 2 15 8 21 9 17 14 18 20 12 17 6 20 7 14 3 9 9 8 12 2"/></svg>
-          <span>Yaşam Dengesi ☸️</span>
-          <span class="nav-badge" style="background:#f59e0b; color:#fff; font-size:0.65rem;">360°</span>
-        </a>
-        <a href="#chronos" class="nav-item" data-view="chronos">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
-          <span>Chronos & Memento ⏳</span>
-          <span class="nav-badge" style="background:#8b5cf6; color:#fff; font-size:0.65rem;">Zaman</span>
-        </a>
+
+        <!-- 5. BİYO-RİTİM & ANAYASA -->
         <a href="#biohack" class="nav-item" data-view="biohack">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-          <span>Biyohack & RAM 🧬</span>
-          <span class="nav-badge" style="background:#10b981; color:#fff; font-size:0.65rem;">Nöro</span>
-        </a>
-        <a href="#synthesizer" class="nav-item" data-view="synthesizer">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-          <span>Sentez & Sokrat 🔬</span>
-          <span class="nav-badge" style="background:#ec4899; color:#fff; font-size:0.65rem;">Simya</span>
-        </a>
-        <a href="#codex" class="nav-item" data-view="codex">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-          <span>Anayasa & Biyopsi 📜</span>
-          <span class="nav-badge" style="background:#f59e0b; color:#fff; font-size:0.65rem;">Rapor</span>
+          <span>Biyo-Ritim & Anayasa</span>
+          <span class="nav-badge" style="background:#10b981; color:#fff; font-size:0.65rem;">Bio-OS</span>
         </a>
       </nav>
 
@@ -610,896 +576,277 @@
              VIEW 6: SANCTUM (ZİHİN MABEDİ - 12 ODA)
              ========================================== -->
         <section class="view-section" id="view-sanctum">
-          <div class="page-header">
-            <div>
-              <h2 class="page-title">🔮 Zihin Mabedi (Sanctum)</h2>
-              <p class="page-subtitle">Bilinçaltı çözümleme, varoluşsal felsefe, bilişsel panzehirler ve nöro-akış laboratuvarı.</p>
-            </div>
-            <div class="sanctum-badge">
-              <span class="pulse-dot-purple"></span>
-              <span>25 Derin Sistem & Zihin Odası Aktif</span>
+          <!-- Sanctum Hero Portal Card with Image -->
+          <div class="sanctum-hero-portal-card">
+            <img src="assets/sanctum_portal.jpg" alt="Sanctum Cosmic Portal" class="sanctum-hero-bg-art">
+            <div class="sanctum-hero-content">
+              <div class="sanctum-hero-pill">
+                <span class="void-pulse-dot"></span>
+                <span>BİLİŞSEL İŞLETİM SİSTEMİ & TEKİLLİK</span>
+              </div>
+              <h2 class="sanctum-hero-title">Zihin Mabedi (Sanctum)</h2>
+              <p class="sanctum-hero-desc">
+                Zihinsel gürültüyü yerçekimsel tekillikte yok et, sentetik ambiyans laboratuvarında nöro-akışa gir ve Stoacı farkındalıkla yaşam süreni optimize et.
+              </p>
+              <div class="sanctum-hero-stats">
+                <div class="sanctum-stat-item">
+                  <span>🌌</span>
+                  <span id="sanctum-hero-void-counter">Yok Edilen Yük: 0</span>
+                </div>
+                <div class="sanctum-stat-item">
+                  <span>⏱️</span>
+                  <span>Derin Odak & Nöro-Ses</span>
+                </div>
+                <div class="sanctum-stat-item">
+                  <span>⏳</span>
+                  <span>4.160 Hafta Memento Mori</span>
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- Chamber Selector Pills (Horizontally scrollable) -->
+          <!-- Master Chamber Navigation Tabs -->
           <div class="sanctum-chamber-tabs" id="sanctum-chamber-tabs">
-            <button class="chamber-tab active" data-chamber="void">🌌 Kara Delik</button>
-            <button class="chamber-tab" data-chamber="alterego">🪞 Acımasız Ayna</button>
-            <button class="chamber-tab" data-chamber="multiverse">🌌 Çoklu Evren</button>
-            <button class="chamber-tab" data-chamber="council">🏛️ Kadim Konsey</button>
-            <button class="chamber-tab" data-chamber="memento">⏳ Memento Mori</button>
-            <button class="chamber-tab" data-chamber="vagus">🧘 432Hz Zen Nefesi</button>
-            <button class="chamber-tab" data-chamber="shadow">🔮 Gölge Arketipi</button>
-            <button class="chamber-tab" data-chamber="cbt">🛡️ Bilişsel Panzehir</button>
-            <button class="chamber-tab" data-chamber="dream">🌙 Rüya Laboratuvarı</button>
-            <button class="chamber-tab" data-chamber="dopamine">⚡ Dopamin Orucu</button>
-            <button class="chamber-tab" data-chamber="dilemma">⚖️ Etik İkilemler</button>
-            <button class="chamber-tab" data-chamber="neurowaves">🧠 Nöro-Dalgalar</button>
-            <button class="chamber-tab" data-chamber="rpg">🎮 Karakter & RPG</button>
-            <button class="chamber-tab" data-chamber="circadian">🧬 Biyolojik Saat</button>
-            <button class="chamber-tab" data-chamber="models">🧩 Zihinsel Modeller</button>
-            <button class="chamber-tab" data-chamber="dichotomy">🏛️ Kontrol İkiliği</button>
-            <button class="chamber-tab" data-chamber="cosmic">🌌 Kozmik Perspektif</button>
-            <button class="chamber-tab" data-chamber="capsule">📜 Zaman Kapsülü</button>
-            <button class="chamber-tab" data-chamber="socratic">🗣️ Sokratik Diyalog</button>
-            <button class="chamber-tab" data-chamber="stoic">🌅 Sabah & Akşam Ritüeli</button>
-            <button class="chamber-tab" data-chamber="radar">🎯 Arketip Radarı</button>
-            <button class="chamber-tab" data-chamber="quantum">⚛️ Kuantum Karar</button>
-            <button class="chamber-tab" data-chamber="kaizen">📈 Kaizen %1</button>
-            <button class="chamber-tab" data-chamber="solfeggio">🎵 528Hz Biyo-Akort</button>
-            <button class="chamber-tab" data-chamber="oracle">🔮 Delphi Kahini</button>
+            <button class="chamber-tab active" data-chamber="void">
+              <span>🌀</span>
+              <span>Kara Delik & Düşünce Öğütücü</span>
+            </button>
+            <button class="chamber-tab" data-chamber="focus">
+              <span>🎧</span>
+              <span>Derin Odak & Ambiyans Mikseri</span>
+            </button>
+            <button class="chamber-tab" data-chamber="memento">
+              <span>⏳</span>
+              <span>Memento Mori (Yaşam Saati)</span>
+            </button>
+            <button class="chamber-tab" data-chamber="mirror">
+              <span>🪞</span>
+              <span>Acımasız Ayna & Çoklu Evren</span>
+            </button>
           </div>
 
           <!-- Chamber Panels Container -->
           <div class="sanctum-panels-container">
             
-            <!-- 1. THE VOID PANEL -->
+            <!-- CHAMBER 1: THE COSMIC VOID (KARA DELİK & PURGE) -->
             <div class="chamber-panel active" id="chamber-panel-void">
-              <div class="glass-card sanctum-card">
-                <div class="card-header-flex">
-                  <div>
-                    <h3 class="card-title">🌌 Kara Delik (The Void)</h3>
-                    <p class="card-subtitle">Korkularını, kaygılarını ve zihinsel yüklerini yerçekimsel tekilliğe fırlat. Parçalanıp yok oluşlarını izle.</p>
-                  </div>
-                  <span class="badge-purple" id="sanctum-void-counter">Yok Edilen Yük: 0</span>
-                </div>
-
+              <div class="void-grid-layout">
+                <!-- Left: 60FPS Black Hole Canvas -->
                 <div class="void-canvas-wrapper">
                   <canvas id="sanctum-void-canvas"></canvas>
-                  <div class="void-overlay-hint">Tekillik Aktif — Madde & Düşünce Çekimi</div>
-                </div>
-
-                <div class="void-input-group">
-                  <textarea id="sanctum-void-input" class="sanctum-textarea" placeholder="Zihnini kemiren korkuyu, suçluluk duygusunu, öfkeyi ya da zihinsel yükünü buraya yaz..."></textarea>
-                  <button class="btn-void-fire" id="sanctum-void-shred-btn">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
-                    <span>Boşluğa Fırlat & Yok Et</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- 2. THE ALTER-EGO PANEL -->
-            <div class="chamber-panel" id="chamber-panel-alterego">
-              <div class="glass-card sanctum-card">
-                <div class="card-header-flex">
-                  <div>
-                    <h3 class="card-title">🪞 Acımasız Ayna (The Alter-Ego)</h3>
-                    <p class="card-subtitle">Kibar yalanlar yok. Beyninin uydurduğu bahaneleri yaz; ikinci benliğin seni en çıplak gerçekle yüzleştirsin.</p>
+                  <div class="void-overlay-hint">
+                    <span class="void-pulse-dot"></span>
+                    <span>Kozmik Tekillik Aktif — 60 FPS Madde & Düşünce Çekimi</span>
                   </div>
                 </div>
 
-                <div class="alterego-chat-area">
-                  <div class="alterego-history" id="sanctum-alterego-output">
-                    <div class="alterego-bubble intro">
-                      🪞 <em>"Bana kendini kandırmak için kullandığın bahaneyi anlat. Bakalım arkasında ne saklıyorsun..."</em>
+                <!-- Right: Thought Shredder Controls -->
+                <div class="void-control-card">
+                  <div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                      <div>
+                        <h3 style="font-size:1.25rem; font-weight:800; color:#ffffff; margin-bottom:0.25rem;">Düşünce Öğütücü</h3>
+                        <p style="font-size:0.82rem; color:#94a3b8;">Zihnini kemiren kaygıları tekilliğe fırlat.</p>
+                      </div>
+                      <span class="badge-purple" id="sanctum-void-counter" style="background:rgba(168,85,247,0.2); border:1px solid rgba(168,85,247,0.4); color:#c084fc; padding:0.35rem 0.85rem; border-radius:9999px; font-size:0.82rem; font-weight:700;">Yok Edilen Yük: 0</span>
+                    </div>
+
+                    <div class="void-input-group">
+                      <textarea id="sanctum-void-input" class="sanctum-textarea" placeholder="Seni bloke eden korkuyu, pişmanlığı, suçluluk duygusunu ya da bitmeyen kaygıyı buraya yaz..."></textarea>
+                      <button class="btn-void-fire" id="sanctum-void-shred-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
+                        <span>Boşluğa Fırlat & Yok Et</span>
+                      </button>
                     </div>
                   </div>
 
-                  <div class="alterego-input-row">
-                    <input type="text" id="sanctum-alterego-input" class="form-input" placeholder="Ertelediğin şeyi ya da bahaneni yaz (örn: 'Çok yorgunum, yarın başlarım')">
-                    <button class="btn-primary" id="sanctum-alterego-send-btn">Yüzleş</button>
+                  <div class="void-philosophy-quote">
+                    🌌 "Düşünceler sadece zihninden geçen bulutlardır; gökyüzünün kendisi daima berrak ve sarsılmazdır."
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- 3. THE MULTIVERSE PANEL -->
-            <div class="chamber-panel" id="chamber-panel-multiverse">
-              <div class="glass-card sanctum-card">
-                <div class="card-header-flex">
-                  <div>
-                    <h3 class="card-title">🌌 Çoklu Evren Simülatörü (Parallel Timelines)</h3>
-                    <p class="card-subtitle">Bir kararın iki farklı yolunu simüle et: Konfor alanında kalmak vs Cesur adımı atmak.</p>
+            <!-- CHAMBER 2: DEEP FOCUS & AMBIENT MIXER -->
+            <div class="chamber-panel" id="chamber-panel-focus">
+              <div class="focus-chamber-grid">
+                <!-- Left: Circular Pomodoro Timer -->
+                <div class="glass-card timer-card" style="padding:2rem;">
+                  <div class="timer-mode-selector" style="margin-bottom:1.5rem;">
+                    <button class="mode-btn active" data-mode="pomodoro">Odaklan (25d)</button>
+                    <button class="mode-btn" data-mode="shortBreak">Kısa Mola (5d)</button>
+                    <button class="mode-btn" data-mode="longBreak">Uzun Mola (15d)</button>
+                  </div>
+
+                  <div class="circular-timer-wrapper">
+                    <svg class="timer-svg" viewBox="0 0 260 260">
+                      <defs>
+                        <linearGradient id="sanctumTimerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stop-color="#a855f7"/>
+                          <stop offset="100%" stop-color="#06b6d4"/>
+                        </linearGradient>
+                      </defs>
+                      <circle class="timer-circle-bg" cx="130" cy="130" r="115"/>
+                      <circle class="timer-circle-progress" id="timer-circle-progress-sanctum" cx="130" cy="130" r="115" stroke="url(#sanctumTimerGrad)"/>
+                    </svg>
+
+                    <div class="timer-display">
+                      <div class="timer-time" id="timer-display-time-sanctum">25:00</div>
+                      <div class="timer-status-text" id="timer-status-text-sanctum">Derin Nöro-Akış Seansı</div>
+                    </div>
+                  </div>
+
+                  <div class="timer-controls" style="margin-top:1.5rem;">
+                    <button class="timer-secondary-btn" id="btn-reset-timer-sanctum" title="Sıfırla">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                    </button>
+                    <button class="timer-main-btn" id="btn-toggle-timer-sanctum" title="Başlat / Duraklat">
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    </button>
                   </div>
                 </div>
 
-                <div class="multiverse-input-grid">
-                  <div class="form-group">
-                    <label class="form-label">Yol A (Mevcut Durum / Konfor Alanı)</label>
-                    <input type="text" id="sanctum-choice-a" class="form-input" value="Eski alışkanlıklarla devam et, risk alma">
+                <!-- Right: Synthesized Web Audio Mixer -->
+                <div class="ambient-synthesizer-card">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+                    <div>
+                      <h3 style="font-size:1.2rem; font-weight:800; color:#ffffff;">Ambiyans Ses Laboratuvarı</h3>
+                      <p style="font-size:0.78rem; color:#94a3b8;">Web Audio API ile gerçek zamanlı üretilen sentetik frekanslar.</p>
+                    </div>
+                    <button id="btn-stop-all-ambient" class="btn-secondary" style="padding:0.35rem 0.75rem; font-size:0.75rem;">Sesi Kapat</button>
                   </div>
-                  <div class="form-group">
-                    <label class="form-label">Yol B (Cesur Atılım / Bilinmezlik)</label>
-                    <input type="text" id="sanctum-choice-b" class="form-input" value="Korkularıma rağmen o projeyi başlat ve disipline gir">
+
+                  <div class="ambient-tracks-list">
+                    <!-- Rain -->
+                    <div class="ambient-track-item">
+                      <div class="ambient-track-meta">
+                        <span class="ambient-track-icon">🌧️</span>
+                        <div>
+                          <div class="ambient-track-name">Dinlendirici Yağmur</div>
+                          <div class="ambient-track-desc">Düşük geçiren pembe gürültü</div>
+                        </div>
+                      </div>
+                      <div class="ambient-slider-wrapper">
+                        <input type="range" min="0" max="1" step="0.05" value="0" class="ambient-range-slider" id="ambient-vol-rain">
+                      </div>
+                    </div>
+
+                    <!-- Ocean Waves -->
+                    <div class="ambient-track-item">
+                      <div class="ambient-track-meta">
+                        <span class="ambient-track-icon">🌊</span>
+                        <div>
+                          <div class="ambient-track-name">Okyanus Dalgaları</div>
+                          <div class="ambient-track-desc">Rezonanslı derin ritim</div>
+                        </div>
+                      </div>
+                      <div class="ambient-slider-wrapper">
+                        <input type="range" min="0" max="1" step="0.05" value="0" class="ambient-range-slider" id="ambient-vol-waves">
+                      </div>
+                    </div>
+
+                    <!-- Night Forest -->
+                    <div class="ambient-track-item">
+                      <div class="ambient-track-meta">
+                        <span class="ambient-track-icon">🌲</span>
+                        <div>
+                          <div class="ambient-track-name">Gece Ormanı</div>
+                          <div class="ambient-track-desc">Esinti & yaprak hışırtısı</div>
+                        </div>
+                      </div>
+                      <div class="ambient-slider-wrapper">
+                        <input type="range" min="0" max="1" step="0.05" value="0" class="ambient-range-slider" id="ambient-vol-forest">
+                      </div>
+                    </div>
+
+                    <!-- 432Hz Binaural Alpha Beats -->
+                    <div class="ambient-track-item">
+                      <div class="ambient-track-meta">
+                        <span class="ambient-track-icon">🧠</span>
+                        <div>
+                          <div class="ambient-track-name">432Hz Alfa Dalgaları</div>
+                          <div class="ambient-track-desc">10Hz fark ile çift kulaklı odak</div>
+                        </div>
+                      </div>
+                      <div class="ambient-slider-wrapper">
+                        <input type="range" min="0" max="1" step="0.05" value="0" class="ambient-range-slider" id="ambient-vol-binaural">
+                      </div>
+                    </div>
                   </div>
-                </div>
-
-                <button class="btn-primary" id="sanctum-multiverse-btn" style="margin-bottom: 1.5rem;">
-                  <span>⚡ 10 Yıllık Zaman Çizgilerini Simüle Et</span>
-                </button>
-
-                <div class="multiverse-results-grid" id="sanctum-multiverse-output" style="display:none;">
-                  <!-- Dynamically rendered -->
                 </div>
               </div>
             </div>
 
-            <!-- 4. THE PHILOSOPHICAL COUNCIL PANEL -->
-            <div class="chamber-panel" id="chamber-panel-council">
-              <div class="glass-card sanctum-card">
-                <div class="card-header-flex">
-                  <div>
-                    <h3 class="card-title">🏛️ Kadim Konsey (The Philosophical Council)</h3>
-                    <p class="card-subtitle">Tarihin en bilge 6 zihni (Marcus Aurelius, Nietzsche, Seneca, Sokrates, Schopenhauer, Lao Tzu) krizini inceliyor.</p>
-                  </div>
-                </div>
-
-                <div class="council-query-box">
-                  <input type="text" id="sanctum-council-input" class="form-input" placeholder="Konseye danışmak istediğin konuyu veya krizini yaz... (örn: 'Sürekli onaylanma ihtiyacı duyuyorum')">
-                  <button class="btn-primary" id="sanctum-council-ask-btn">Konseyi Topla</button>
-                </div>
-
-                <div class="council-cards-grid" id="sanctum-council-cards">
-                  <!-- Dynamically populated with philosopher verdicts -->
-                </div>
-              </div>
-            </div>
-
-            <!-- 5. MEMENTO MORI PANEL -->
+            <!-- CHAMBER 3: MEMENTO MORI (4,160 WEEKS) -->
             <div class="chamber-panel" id="chamber-panel-memento">
-              <div class="glass-card sanctum-card">
-                <div class="card-header-flex">
-                  <div>
-                    <h3 class="card-title">⏳ Memento Mori (Yaşam Izgarası)</h3>
-                    <p class="card-subtitle">Ortalama 80 yıllık bir ömürde 4.160 hafta vardır. Zamanını nasıl harcadığını gör.</p>
+              <div class="memento-chamber-card">
+                <div class="memento-controls-bar">
+                  <div class="memento-age-input-group">
+                    <label for="memento-user-age" style="font-size:0.9rem; font-weight:700; color:#f1f5f9;">Şu Anki Yaşınız:</label>
+                    <input type="number" id="memento-user-age" class="memento-age-input" min="1" max="99" value="25">
+                    <button class="btn-primary" id="btn-recalc-memento" style="padding:0.45rem 1rem; font-size:0.82rem;">Hesapla</button>
+                  </div>
+
+                  <div class="memento-stats-badges">
+                    <div class="memento-badge-lived" id="memento-lived-badge">Yaşanan: 1.300 Hafta (%31)</div>
+                    <div class="memento-badge-remaining" id="memento-remaining-badge">Kalan: 2.860 Hafta (%69)</div>
                   </div>
                 </div>
 
-                <div class="memento-controls">
-                  <div style="display:flex; align-items:center; gap:0.75rem;">
-                    <label class="form-label" style="margin:0;">Şu Anki Yaşınız:</label>
-                    <input type="number" id="sanctum-memento-age" class="form-input" style="width:90px;" min="1" max="100" value="23">
-                    <button class="btn-secondary" id="sanctum-memento-calc-btn">Hesapla</button>
-                  </div>
+                <div style="margin-bottom:1rem; display:flex; justify-content:space-between; align-items:center; font-size:0.78rem; color:#64748b;">
+                  <span>■ Doğumdan Bugüne (Geçmiş)</span>
+                  <span>□ Kalan Potansiyel (Gelecek - 80 Yıl Varsayımı)</span>
                 </div>
 
-                <div class="memento-stats-strip" id="sanctum-memento-stats">
-                  <!-- Populated by JS -->
+                <div class="memento-weeks-grid" id="memento-interactive-grid">
+                  <!-- Dynamically rendered 4,160 stardust dots -->
                 </div>
 
-                <div class="memento-weeks-container">
-                  <div class="memento-weeks-legend">
-                    <span class="legend-item"><span class="legend-box lived"></span> Yaşanan Haftalar</span>
-                    <span class="legend-item"><span class="legend-box remaining"></span> Kalan Haftalar</span>
-                  </div>
-                  <div class="memento-weeks-grid" id="sanctum-memento-grid">
-                    <!-- Populated by JS -->
-                  </div>
+                <div style="margin-top:1.5rem; text-align:center; font-style:italic; font-size:0.88rem; color:#94a3b8;">
+                  ⏳ "Bize verilen ömür kısa değildir; biz onun çoğunu boşa harcarız." — Seneca
                 </div>
               </div>
             </div>
 
-            <!-- 6. VAGUS 432HZ BREATHING PANEL -->
-            <div class="chamber-panel" id="chamber-panel-vagus">
-              <div class="glass-card sanctum-card" style="text-align: center;">
-                <div class="card-header-flex" style="justify-content: center; text-align: center;">
-                  <div>
-                    <h3 class="card-title">🧘 Vagus Siniri & 432Hz Zen Nefesi</h3>
-                    <p class="card-subtitle">Parasempatik sinir sistemini aktive eden polivagal nefes ritmi ve saf 432Hz rezonans tonu.</p>
-                  </div>
-                </div>
-
-                <div class="breath-mode-selector">
-                  <button class="mode-pill active" id="breath-mode-box" data-bmode="box">4-4-4-4 Kutu Nefesi (Box Breathing)</button>
-                  <button class="mode-pill" id="breath-mode-coherence" data-bmode="coherence">5-5 Kalp Tutarlılığı (Heart Coherence)</button>
-                </div>
-
-                <div class="breath-visualizer-container">
-                  <div class="breath-circle-outer">
-                    <div class="breath-circle-inner" id="sanctum-breath-orb"></div>
-                  </div>
-                  <div class="breath-phase-caption" id="sanctum-breath-text">Nefes Döngüsüne Hazırlan</div>
-                </div>
-
-                <div style="margin-top: 1.5rem;">
-                  <button class="btn-primary" id="sanctum-breath-toggle-btn">
-                    <span>Nefes Seansını Başlat (432Hz)</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- 7. JUNGIAN SHADOW PANEL -->
-            <div class="chamber-panel" id="chamber-panel-shadow">
-              <div class="glass-card sanctum-card">
-                <div class="card-header-flex">
-                  <div>
-                    <h3 class="card-title">🔮 Gölge Arketipi & Bilinçaltı Aynası</h3>
-                    <p class="card-subtitle">Jungian psikolojiye göre en çok tepki verdiğin şey, gölgende gizlenen kabul edilmemiş gücündür.</p>
-                  </div>
-                </div>
-
-                <div class="shadow-input-box">
-                  <label class="form-label">Şu an içinde en yoğun hissettiğin duygu veya seni en çok öfkelendiren/korkutan durum nedir?</label>
-                  <textarea id="sanctum-shadow-input" class="sanctum-textarea" placeholder="İçtenlikle yaz... (örn: 'İnsanların beni hafife almasına ve kontrolü kaybetmeye aşırı öfkeleniyorum')"></textarea>
-                  <button class="btn-primary" id="sanctum-shadow-btn">Gölgeyi Teşhis Et</button>
-                </div>
-
-                <div class="shadow-output-card" id="sanctum-shadow-output" style="display:none;">
-                  <!-- Populated by JS -->
-                </div>
-              </div>
-            </div>
-
-            <!-- 8. CBT COGNITIVE ANTIDOTE PANEL -->
-            <div class="chamber-panel" id="chamber-panel-cbt">
-              <div class="glass-card sanctum-card">
-                <div class="card-header-flex">
-                  <div>
-                    <h3 class="card-title">🛡️ Bilişsel Panzehir & Felaket Savar (CBT)</h3>
-                    <p class="card-subtitle">Bilişsel Davranışçı Terapi motoru: Zihninin ürettiği felaket senaryolarını rasyonel teste tabi tut.</p>
-                  </div>
-                </div>
-
-                <div class="cbt-input-box">
-                  <label class="form-label">Zihninde yankılanan olumsuz veya felaketleştirici düşünceyi yaz:</label>
-                  <input type="text" id="sanctum-cbt-input" class="form-input" placeholder="Örn: 'Bu sınavı/mülakatı geçemezsem bütün hayatım mahvolacak'">
-                  <button class="btn-primary" id="sanctum-cbt-btn" style="margin-top:0.75rem;">Panzehir Üret</button>
-                </div>
-
-                <div class="cbt-output-card" id="sanctum-cbt-output" style="display:none;">
-                  <!-- Populated by JS -->
-                </div>
-              </div>
-            </div>
-
-            <!-- 9. DREAM LABORATORY PANEL -->
-            <div class="chamber-panel" id="chamber-panel-dream">
-              <div class="glass-card sanctum-card">
-                <div class="card-header-flex">
-                  <div>
-                    <h3 class="card-title">🌙 Rüya Laboratuvarı & Bilinçaltı Kod Çözücü</h3>
-                    <p class="card-subtitle">Rüyalarını kaydet. Jungian ve Freudian sembol motoru bilinçaltının uyanık hayatına mesajını çözsün.</p>
-                  </div>
-                </div>
-
-                <div class="dream-input-box">
-                  <textarea id="sanctum-dream-input" class="sanctum-textarea" placeholder="Gördüğün rüyayı detaylarıyla anlat (örn: 'Yüksek bir kulenin tepesinden okyanusa doğru uçuyordum ama kanatlarım zayıflıyordu...')"></textarea>
-                  <button class="btn-primary" id="sanctum-dream-btn">Sembolleri & Mesajı Çöz</button>
-                </div>
-
-                <div class="dream-result-card" id="sanctum-dream-output" style="display:none;">
-                  <!-- Populated by JS -->
-                </div>
-
-                <div class="dream-history-section" style="margin-top:2rem;">
-                  <h4 style="font-size:0.95rem; font-weight:700; color:var(--text-main); margin-bottom:0.75rem;">📖 Kayıtlı Rüyalarım & Bilinçaltı Arşivi</h4>
-                  <div class="dream-history-list" id="sanctum-dream-history">
-                    <!-- Populated by JS -->
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 10. NEUROCHEMICAL DOPAMINE FAST PANEL -->
-            <div class="chamber-panel" id="chamber-panel-dopamine">
-              <div class="glass-card sanctum-card">
-                <div class="card-header-flex">
-                  <div>
-                    <h3 class="card-title">⚡ Nörokimyasal Dopamin Orucu & Dürtü Sörfü</h3>
-                    <p class="card-subtitle">Aşırı uyarılmış dopamin reseptörlerini sıfırla. 90 saniyelik dürtü dalgası protokolü ve Brown Noise duyusal sessizlik.</p>
-                  </div>
-                </div>
-
-                <div class="dopamine-target-row">
-                  <span style="font-size:0.85rem; color:var(--text-muted);">Hedef Oruç Süresi:</span>
-                  <button class="mode-pill active fast-pill" data-fast-hours="2">2 Saat (Hızlı Reset)</button>
-                  <button class="mode-pill fast-pill" data-fast-hours="6">6 Saat (Derin Odak)</button>
-                  <button class="mode-pill fast-pill" data-fast-hours="24">24 Saat (Nöral Yenilenme)</button>
-                  <button class="btn-secondary" id="sanctum-fast-start-btn">Orucu Başlat</button>
-                </div>
-
-                <div class="dopamine-monitor-box">
-                  <div class="fast-timer-large" id="sanctum-fast-timer-display">02:00:00</div>
-                  <div class="fast-progress-track">
-                    <div class="fast-progress-fill" id="sanctum-fast-progress-bar" style="width: 0%;"></div>
-                  </div>
-                  <div class="fast-status-label" id="sanctum-fast-status-label">Prefrontal Korteks Dinlenmede</div>
-                </div>
-
-                <div class="dopamine-tools-grid">
-                  <div class="tool-card">
-                    <h4>🏄 Dürtü Sörfü (Urge Surfing - 90 sn)</h4>
-                    <p>Telefona veya dikkat dağıtıcıya uzanma arzusu 90 saniyede zirve yapar ve söner. Dalganın üzerinde sörf yap.</p>
-                    <button class="btn-primary" id="sanctum-urge-btn">Dürtü Sörfünü Başlat (90 sn)</button>
-                    <div id="sanctum-urge-countdown" style="margin-top:0.5rem; font-weight:700; color:var(--warning); display:none;">Kalan: 90 sn</div>
-                  </div>
-
-                  <div class="tool-card">
-                    <h4>🎧 Brown Noise (Duyusal Sessizlik)</h4>
-                    <p>Düşük frekanslı kahverengi gürültü beynin gevezelik eden Default Mode Network'ünü susturur.</p>
-                    <button class="btn-secondary" id="sanctum-brown-btn">Brown Noise Başlat</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 11. MORAL DILEMMAS PANEL -->
-            <div class="chamber-panel" id="chamber-panel-dilemma">
-              <div class="glass-card sanctum-card">
-                <div class="card-header-flex">
-                  <div>
-                    <h3 class="card-title">⚖️ Etik Çıkmazlar & Felsefi DNA Testi</h3>
-                    <p class="card-subtitle">Tarihin en zorlu etik ikilemleriyle yüzleş ve felsefi karakter haritanı ortaya çıkar.</p>
-                  </div>
-                </div>
-
-                <div class="dilemmas-container" id="sanctum-dilemmas-list">
-                  <!-- Dynamically populated dilemma cards -->
-                </div>
-
-                <div class="dna-result-card" id="sanctum-dna-output">
-                  <!-- Dynamically populated Philosophical DNA -->
-                </div>
-              </div>
-            </div>
-
-            <!-- 12. NEURO-WAVES BINAURAL PANEL -->
-            <div class="chamber-panel" id="chamber-panel-neurowaves">
-              <div class="glass-card sanctum-card">
-                <div class="card-header-flex">
-                  <div>
-                    <h3 class="card-title">🧠 Nöro-Dalgalar & Binaural Beyin Frekansları</h3>
-                    <p class="card-subtitle">Kulaklıkla dinlendiğinde iki kulak arasındaki frekans farkı beynini istenen bilinç dalgasına kilitler.</p>
-                  </div>
-                </div>
-
-                <div class="neuro-presets-grid" id="sanctum-wave-presets">
-                  <button class="wave-preset-btn" data-carrier="200" data-beat="40">
-                    <span class="wave-name">⚡ Gamma (40 Hz)</span>
-                    <span class="wave-desc">Hiperfokus & Yoğun Problem Çözme</span>
-                  </button>
-                  <button class="wave-preset-btn" data-carrier="200" data-beat="20">
-                    <span class="wave-name">🎯 Beta (20 Hz)</span>
-                    <span class="wave-desc">Aktif Analiz, Mantık & Çeviklik</span>
-                  </button>
-                  <button class="wave-preset-btn active" data-carrier="200" data-beat="10">
-                    <span class="wave-name">🌊 Alpha (10 Hz)</span>
-                    <span class="wave-desc">Akış Hali (Flow State) & Zihinsel Dinginlik</span>
-                  </button>
-                  <button class="wave-preset-btn" data-carrier="200" data-beat="6">
-                    <span class="wave-name">✨ Theta (6 Hz)</span>
-                    <span class="wave-desc">Derin Yaratıcılık, Sezgi & İçgörü</span>
-                  </button>
-                  <button class="wave-preset-btn" data-carrier="150" data-beat="2">
-                    <span class="wave-name">🌑 Delta (2 Hz)</span>
-                    <span class="wave-desc">Bilinçaltı Dinlenmesi & Nöral Onarım</span>
-                  </button>
-                </div>
-
-                <div class="neuro-controls-box">
-                  <div class="neuro-status" id="sanctum-binaural-status">Frekans: Kapalı (Kulaklık Tavsiye Edilir)</div>
-                  <div style="display:flex; justify-content:center; gap:1rem; margin-top:1rem;">
-                    <button class="btn-primary" id="sanctum-binaural-play-btn">Frekansı Başlat</button>
-                    <button class="btn-secondary" id="sanctum-binaural-stop-btn">Durdur</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 13. RPG CHARACTER & LEVEL PANEL -->
-            <div class="chamber-panel" id="chamber-panel-rpg">
-              <div class="glass-card sanctum-card">
-                <div class="card-header-flex">
-                  <div>
-                    <h3 class="card-title">🎮 Zihinsel Karakter & RPG Seviye Sistemi</h3>
-                    <p class="card-subtitle">Hayat bir RPG oyunudur. Görevler, odaklanma ve disiplin karakterini güçlendirir.</p>
-                  </div>
-                  <span class="badge-purple" id="rpg-profile-title-badge">Uyanış Yolcusu</span>
-                </div>
-
-                <div class="rpg-dashboard-card">
-                  <div class="rpg-header-row">
-                    <div class="rpg-big-level" id="rpg-panel-level">LVL 1</div>
-                    <div style="flex:1;">
-                      <div style="display:flex; justify-content:space-between; margin-bottom:0.35rem; font-size:0.85rem;">
-                        <span id="rpg-panel-title" style="font-weight:700; color:var(--text-main);">Uyanış Yolcusu</span>
-                        <span id="rpg-panel-xp-text" style="color:var(--secondary); font-weight:600;">45 / 75 XP</span>
-                      </div>
-                      <div class="fast-progress-track">
-                        <div class="fast-progress-fill" id="rpg-panel-xp-bar" style="width: 60%; background: linear-gradient(90deg, #a855f7, #06b6d4);"></div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="rpg-attributes-grid" id="rpg-attributes-grid">
-                    <div class="rpg-attr-card">
-                      <div class="attr-icon">⚔️</div>
-                      <div class="attr-val" id="rpg-stat-willpower">12</div>
-                      <div class="attr-name">İrade (Willpower)</div>
-                      <div class="attr-sub">Görevler & Oruç</div>
-                    </div>
-                    <div class="rpg-attr-card">
-                      <div class="attr-icon">🧠</div>
-                      <div class="attr-val" id="rpg-stat-intellect">18</div>
-                      <div class="attr-name">Zeka & Odak</div>
-                      <div class="attr-sub">Pomodoro & Notlar</div>
-                    </div>
-                    <div class="rpg-attr-card">
-                      <div class="attr-icon">🧘</div>
-                      <div class="attr-val" id="rpg-stat-mindfulness">15</div>
-                      <div class="attr-name">Ruh & Denge</div>
-                      <div class="attr-sub">Nefes & Memento</div>
-                    </div>
-                    <div class="rpg-attr-card">
-                      <div class="attr-icon">⚡</div>
-                      <div class="attr-val" id="rpg-stat-vitality">10</div>
-                      <div class="attr-name">Vitalite (Süreklilik)</div>
-                      <div class="attr-sub">Alışkanlık Serisi</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 14. CIRCADIAN NEURO-CLOCK PANEL -->
-            <div class="chamber-panel" id="chamber-panel-circadian">
-              <div class="glass-card sanctum-card">
-                <div class="card-header-flex">
-                  <div>
-                    <h3 class="card-title">🧬 Sirkadiyen Ritim & Biyolojik Saat Laboratuvarı</h3>
-                    <p class="card-subtitle">Biyolojinle savaşma, onunla ak. Kronotipini seç ve günün nörokimyasal eğrisini takip et.</p>
-                  </div>
-                </div>
-
-                <div class="chronotype-selector-row" id="sanctum-chronotype-buttons">
-                  <button class="chrono-pill active" data-chrono="bear">🐻 Ayı (Bear - Dengeli Ritim)</button>
-                  <button class="chrono-pill" data-chrono="lion">🦁 Aslan (Lion - Erken Kalkan)</button>
-                  <button class="chrono-pill" data-chrono="wolf">🐺 Kurt (Wolf - Gece Kuşu)</button>
-                  <button class="chrono-pill" data-chrono="dolphin">🐬 Yunus (Dolphin - Hassas)</button>
-                </div>
-
-                <div class="circadian-live-card" id="sanctum-circadian-live">
-                  <div class="card-header-flex">
-                    <h4 id="circadian-phase-title" style="color:#06b6d4; font-weight:700;">🌅 Yükleniyor...</h4>
-                    <span id="circadian-dopamine-badge" class="badge-purple">Dopamin Seviyesi: %75</span>
-                  </div>
-                  <p id="circadian-phase-desc" style="font-size:0.9rem; color:var(--text-main); margin-top:0.5rem;"></p>
-                </div>
-
-                <div class="circadian-tools-row" style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1rem;">
-                  <div class="tool-card">
-                    <h4>☕ Kafein Kesilme Saati (Adenozin Koruması)</h4>
-                    <p>Uykudan 9 saat önce kafein kesilmezse NREM uykusu %30 azalır.</p>
-                    <div id="caffeine-cutoff-display" style="font-weight:700; color:#f59e0b; font-size:1.1rem;">Son Kahve Saatiniz: 14:30</div>
-                  </div>
-                  <div class="tool-card">
-                    <h4>🎯 Zirve Derin Çalışma Penceresi</h4>
-                    <p>Prefrontal korteksin en yüksek verim sağladığı altın saatler.</p>
-                    <div id="peak-focus-display" style="font-weight:700; color:#10b981; font-size:1.1rem;">10:00 - 14:00</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 15. MENTAL MODELS PANEL -->
-            <div class="chamber-panel" id="chamber-panel-models">
-              <div class="glass-card sanctum-card">
-                <div class="card-header-flex">
-                  <div>
-                    <h3 class="card-title">🧩 Zihinsel Modeller & Karar Matrisi</h3>
-                    <p class="card-subtitle">Dünyanın en zeki düşünürlerinin kullandığı 4 temel zihinsel modelle herhangi bir problemi parçala.</p>
-                  </div>
-                </div>
-
-                <div class="models-input-row" style="margin-bottom:1.5rem;">
-                  <textarea id="sanctum-model-input" class="sanctum-textarea" placeholder="Zihnini kurcalayan stratejik bir kararı, kariyer ikilemini veya problemi buraya yaz..."></textarea>
-                  <button class="btn-primary" id="sanctum-model-btn" style="margin-top:0.75rem;">
-                    <span>4 Modeli Çalıştır & Çözümle</span>
-                  </button>
-                </div>
-
-                <div class="models-results-grid" id="sanctum-model-output" style="display:none;">
-                  <!-- Populated by JS -->
-                </div>
-              </div>
-            </div>
-
-            <!-- 16. DICHOTOMY OF CONTROL PANEL -->
-            <div class="chamber-panel" id="chamber-panel-dichotomy">
-              <div class="glass-card sanctum-card">
-                <div class="card-header-flex">
-                  <div>
-                    <h3 class="card-title">🏛️ Epiktetos'un Kontrol İkiliği Tahtası</h3>
-                    <p class="card-subtitle">"Bazı şeyler elimizdedir, bazıları ise değil." Zihnini yoran şeyleri ayrıştır ve kontrol edemediklerini buharlaştır.</p>
-                  </div>
-                  <button class="btn-void-fire" id="sanctum-dichotomy-clear-btn" style="padding:0.4rem 0.85rem; font-size:0.8rem;">
-                    <span>Dışsal Yükleri Buharlaştır 💨</span>
-                  </button>
-                </div>
-
-                <div class="dichotomy-add-row" style="display:flex; gap:0.5rem; margin-bottom:1.25rem;">
-                  <input type="text" id="sanctum-dichotomy-input" class="form-input" placeholder="Zihnini meşgul eden bir düşünceyi ekle...">
-                  <select id="sanctum-dichotomy-side" class="form-input" style="width:170px;">
-                    <option value="internal">Kontrolümde</option>
-                    <option value="external">Kontrolümde Değil</option>
-                  </select>
-                  <button class="btn-primary" id="sanctum-dichotomy-add-btn">Ekle</button>
-                </div>
-
-                <div class="dichotomy-board-grid">
-                  <div class="dichotomy-column internal">
-                    <h4 style="color:#10b981; font-weight:700; margin-bottom:0.75rem;">✅ Benim Kontrolümde (Tüm Gücünü Buraya Ver)</h4>
-                    <ul class="dichotomy-list" id="dichotomy-internal-list"></ul>
-                  </div>
-                  <div class="dichotomy-column external">
-                    <h4 style="color:#f43f5e; font-weight:700; margin-bottom:0.75rem;">❌ Asla Kontrolümde Değil (Kaygılanmayı Bırak)</h4>
-                    <ul class="dichotomy-list" id="dichotomy-external-list"></ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 17. COSMIC PERSPECTIVE PANEL -->
-            <div class="chamber-panel" id="chamber-panel-cosmic">
-              <div class="glass-card sanctum-card" style="text-align: center;">
-                <div class="card-header-flex" style="justify-content:center; text-align:center;">
-                  <div>
-                    <h3 class="card-title">🌌 Kozmik Perspektif & Soluk Mavi Nokta</h3>
-                    <p class="card-subtitle">Carl Sagan ölçeği: Kaygını evrenin sonsuzluğuna doğru zoom yaparak küçült.</p>
-                  </div>
-                </div>
-
-                <div class="cosmic-slider-container" style="max-width:500px; margin:1.5rem auto;">
-                  <input type="range" id="sanctum-cosmic-slider" min="1" max="7" value="1" step="1" style="width:100%; accent-color:#a855f7;">
-                  <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted); margin-top:0.4rem;">
-                    <span>1. İnsan Zihni</span>
-                    <span>4. Dünya</span>
-                    <span>7. Sonsuz Evren</span>
-                  </div>
-                </div>
-
-                <div class="cosmic-display-card" id="sanctum-cosmic-card" style="max-width:600px; margin:0 auto; padding:2rem; background:rgba(4,7,17,0.85); border:1px solid rgba(168,85,247,0.3); border-radius:var(--radius-lg);">
-                  <div id="cosmic-visual" style="font-size:4rem; margin-bottom:1rem;">🧠</div>
-                  <h3 id="cosmic-title" style="color:var(--text-main); font-weight:800; font-size:1.35rem; margin-bottom:0.35rem;">Kafandaki Problem & Anlık Stres</h3>
-                  <div id="cosmic-scale" style="font-size:0.8rem; color:var(--secondary); font-family:var(--font-mono); margin-bottom:1rem;">Ölçek: 10⁰ metre</div>
-                  <p id="cosmic-quote" style="font-size:0.95rem; color:var(--text-muted); font-style:italic; line-height:1.6;">Zihnin şu an bu sorunu dünyanın en büyük felaketi gibi hissettiriyor. Bir nefes al.</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- 18. TIME CAPSULE PANEL -->
-            <div class="chamber-panel" id="chamber-panel-capsule">
-              <div class="glass-card sanctum-card">
-                <div class="card-header-flex">
-                  <div>
-                    <h3 class="card-title">📜 Gelecekteki Benliğe Zaman Kapsülü</h3>
-                    <p class="card-subtitle">Bugün hissettiklerini, hedeflerini veya uyarılarını yaz. Seçtiğin tarihe kadar mühürlü kalacaktır.</p>
-                  </div>
-                </div>
-
-                <div class="capsule-form-grid" style="display:grid; grid-template-columns:1fr auto; gap:0.75rem; margin-bottom:0.75rem;">
-                  <input type="text" id="sanctum-capsule-title" class="form-input" placeholder="Kapsül Başlığı (Örn: '1 Yıl Sonraki Hayatım')">
-                  <select id="sanctum-capsule-duration" class="form-input" style="width:160px;">
-                    <option value="1">1 Ay Sonra Aç</option>
-                    <option value="3">3 Ay Sonra Aç</option>
-                    <option value="6">6 Ay Sonra Aç</option>
-                    <option value="12" selected>1 Yıl Sonra Aç</option>
-                    <option value="36">3 Yıl Sonra Aç</option>
-                  </select>
-                </div>
-
-                <textarea id="sanctum-capsule-letter" class="sanctum-textarea" placeholder="Gelecekteki kendine ne söylemek istersin? Şu an neyle savaşıyorsun? Neyi unutmamasını istiyorsun?"></textarea>
-                <button class="btn-primary" id="sanctum-capsule-seal-btn" style="margin-top:0.75rem;">
-                  <span>🔒 Kapsülü Mühürle & Sakla</span>
-                </button>
-
-                <div style="margin-top:2rem;">
-                  <h4 style="font-weight:700; color:var(--text-main); margin-bottom:0.75rem;">📦 Mühürlü Zaman Kapsüllerim</h4>
-                  <div id="sanctum-capsules-list" class="capsules-list-grid">
-                    <!-- Populated by JS -->
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 19. SOCRATIC INTERROGATOR PANEL -->
-            <div class="chamber-panel" id="chamber-panel-socratic">
-              <div class="glass-card sanctum-card">
-                <div class="card-header-flex">
-                  <div>
-                    <h3 class="card-title">🗣️ Sokratik Sorgulama Arenası (Dogma Yıkıcı)</h3>
-                    <p class="card-subtitle">Sokrates sana tavsiye vermez. Sorularıyla kendi zihnindeki mantık hatalarını ve yanılsamaları parçalatır.</p>
-                  </div>
-                </div>
-
-                <div class="socratic-input-box">
-                  <label class="form-label">Sarsılmaz sandığın katı bir inancını veya genellemeni yaz:</label>
-                  <input type="text" id="sanctum-socratic-input" class="form-input" placeholder="Örn: 'Başarılı olmak için herkesin beni onaylaması gerekiyor'">
-                  <button class="btn-primary" id="sanctum-socratic-btn" style="margin-top:0.75rem;">Sokratik Sorgulamayı Başlat</button>
-                </div>
-
-                <div class="socratic-output-card" id="sanctum-socratic-output" style="display:none; margin-top:1.25rem;">
-                  <!-- Populated by JS -->
-                </div>
-              </div>
-            </div>
-
-            <!-- 20. STOIC DAILY RITUAL PANEL -->
-            <div class="chamber-panel" id="chamber-panel-stoic">
-              <div class="glass-card sanctum-card">
-                <div class="card-header-flex">
-                  <div>
-                    <h3 class="card-title">🌅 Stoacı Sabah Zırhı & Akşam Muhasebesi</h3>
-                    <p class="card-subtitle">Güne Marcus Aurelius'un zırhıyla başla, geceyi Seneca'nın vicdan mahkemesiyle kapat.</p>
-                  </div>
-                  <div class="stoic-ritual-toggle" style="display:flex; gap:0.5rem;">
-                    <button class="mode-pill active" id="btn-stoic-morning">Sabah Zırhı 🛡️</button>
-                    <button class="mode-pill" id="btn-stoic-evening">Akşam Muhasebesi ⚖️</button>
-                  </div>
-                </div>
-
-                <!-- Morning Tab -->
-                <div id="stoic-morning-view" style="display:block;">
-                  <div class="morning-shield-card" style="padding:1.25rem; background:rgba(255,255,255,0.03); border-left:4px solid #a855f7; border-radius:var(--radius-md); margin-bottom:1rem;">
-                    <div style="font-style:italic; font-size:0.95rem; line-height:1.6; color:var(--text-main); margin-bottom:1rem;">
-                      "Sabah uyandığında kendine şunu söyle: Bugün karşılaşacağım insanlar nankör, küstah, kıskanç ve bencil olabilirler. Ancak onlar iyiyi ve kötüyü ayırt edemedikleri için böyledirler. Onların hiçbiri benim karakterime zarar veremez."
-                      <div style="margin-top:0.35rem; font-weight:700; color:var(--secondary); font-style:normal;">— Marcus Aurelius, Kendime Düşünceler</div>
-                    </div>
-                    <h5 style="color:#c084fc; font-weight:700; margin-bottom:0.5rem;">⚔️ Günlük Zihinsel Zırh Maddeleri:</h5>
-                    <ul style="padding-left:1.25rem; font-size:0.88rem; color:var(--text-muted); line-height:1.6;">
-                      <li>Planlarındaki aksaklıkları şikayet sebebi değil, karakter testi olarak karşıla.</li>
-                      <li>Başkalarının kabalığı onların iç dünyasının yansımasıdır; senin görevin erdemli kalmaktır.</li>
-                      <li>Öfkelenmek hiçbir şeyi düzeltmez; sakin zihin her engeli aşar.</li>
-                    </ul>
-                  </div>
-                </div>
-
-                <!-- Evening Tab -->
-                <div id="stoic-evening-view" style="display:none;">
-                  <div class="form-group">
-                    <label class="form-label">1. Bugün hangi kötü alışkanlığıma veya kusuruma direndim?</label>
-                    <input type="text" id="stoic-audit-q1" class="form-input" placeholder="Örn: Erteleme isteğine direndim, 2 saat odaklandım">
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">2. Neyi daha iyi yapabilirdim? (Özeleştiri)</label>
-                    <input type="text" id="stoic-audit-q2" class="form-input" placeholder="Örn: Telefon bildirimlerine gereksiz baktım">
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">3. Bugün karakterime ve bilgeliğime ne kattım?</label>
-                    <input type="text" id="stoic-audit-q3" class="form-input" placeholder="Örn: Zor bir problemde pes etmedim">
-                  </div>
-                  <button class="btn-primary" id="sanctum-stoic-save-btn">Muhasebeyi Kaydet & Günü Kapat</button>
-                  <div id="stoic-audit-history" style="margin-top:1.5rem;"></div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 21. JUNGIAN ARCHETYPE RADAR PANEL -->
-            <div class="chamber-panel" id="chamber-panel-radar">
-              <div class="glass-card sanctum-card">
-                <div class="card-header-flex">
-                  <div>
-                    <h3 class="card-title">🎯 Carl Jung 12 Arketip Radarı (Bilinçaltı Pusulası)</h3>
-                    <p class="card-subtitle">Hangi arketip hayatını yönetiyor, hangi arketip gölgende saklanıyor? 8 kritik soruyla bilinçaltı radarını çıkar.</p>
-                  </div>
-                </div>
-
-                <div id="jung-questions-container" class="jung-questions-grid">
-                  <!-- Populated by JS -->
-                </div>
-
-                <div style="margin-top:1.25rem;">
-                  <button class="btn-primary" id="btn-calc-jung-radar">
-                    <span>🔮 Bilinçaltı Radarımı Çıkar (+35 XP)</span>
-                  </button>
-                </div>
-
-                <div id="jung-radar-result" style="display:none; margin-top:1.5rem;" class="jung-result-card">
-                  <!-- Populated by JS: SVG Radar Polygon & Breakdown -->
-                </div>
-              </div>
-            </div>
-
-            <!-- 22. QUANTUM DECISION COLLAPSER PANEL -->
-            <div class="chamber-panel" id="chamber-panel-quantum">
-              <div class="glass-card sanctum-card">
-                <div class="card-header-flex">
-                  <div>
-                    <h3 class="card-title">⚛️ Kuantum Karar Odası (Schrödinger Süperpozisyonu)</h3>
-                    <p class="card-subtitle">Zihnini felç eden iki yol ayrımını gir. Jeff Bezos'un 80 Yaş Pişmanlık Testi ve 48 Saatlik Düşük Riskli Dalga Çöktürme Protokolü ile analiz et.</p>
-                  </div>
-                </div>
-
-                <div class="quantum-inputs-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
-                  <div class="form-group">
-                    <label class="form-label" style="color:#06b6d4;">🌌 Yol A (Cesur / Değişim Yolu):</label>
-                    <input type="text" id="quantum-choice-a" class="form-input" placeholder="Örn: Kendi projemi başlatmak için işi bırakmak">
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label" style="color:#a855f7;">🏛️ Yol B (Güvenli / Statüko Yolu):</label>
-                    <input type="text" id="quantum-choice-b" class="form-input" placeholder="Örn: Mevcut şirkette kalıp kıdem beklemek">
-                  </div>
-                </div>
-
-                <button class="btn-primary" id="btn-collapse-quantum">
-                  <span>⚛️ Dalga Fonksiyonunu Çöktür (+30 XP)</span>
-                </button>
-
-                <div id="quantum-result-container" style="display:none; margin-top:1.5rem;" class="quantum-result-card">
-                  <!-- Populated by JS -->
-                </div>
-              </div>
-            </div>
-
-            <!-- 23. KAIZEN 1% COMPOUND GROWTH PANEL -->
-            <div class="chamber-panel" id="chamber-panel-kaizen">
-              <div class="glass-card sanctum-card">
-                <div class="card-header-flex">
-                  <div>
-                    <h3 class="card-title">📈 Kaizen %1 Bileşik Etki & Mikro-Alışkanlık Çarkı</h3>
-                    <p class="card-subtitle">Günde %1 gelişim = 1 yılda 37.8 kat sıçrama ($1.01^{365}$). Erteleme felcini 2 dakikalık atomik eylemlerle kır.</p>
-                  </div>
-                </div>
-
-                <!-- Compound Simulation Dashboard -->
-                <div class="kaizen-metrics-hero" style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; margin-bottom:1.5rem;">
-                  <div style="background:rgba(16, 185, 129, 0.1); border:1px solid rgba(16, 185, 129, 0.3); border-radius:var(--radius-lg); padding:1.25rem; text-align:center;">
-                    <div style="font-size:0.85rem; color:#10b981; font-weight:700;">GÜNDE +%1 GELİŞİM (1.01³⁶⁵)</div>
-                    <div style="font-size:2.8rem; font-weight:900; color:#34d399; font-family:var(--font-mono); margin:0.35rem 0;">37.8x</div>
-                    <p style="font-size:0.8rem; color:var(--text-muted); line-height:1.4;">Bir yıl sonra mevcut kapasitenin neredeyse 38 katı bir ustalığa ulaşırsın.</p>
-                  </div>
-                  <div style="background:rgba(239, 68, 68, 0.1); border:1px solid rgba(239, 68, 68, 0.3); border-radius:var(--radius-lg); padding:1.25rem; text-align:center;">
-                    <div style="font-size:0.85rem; color:#ef4444; font-weight:700;">GÜNDE -%1 GERİLEME (0.99³⁶⁵)</div>
-                    <div style="font-size:2.8rem; font-weight:900; color:#f87171; font-family:var(--font-mono); margin:0.35rem 0;">0.03x</div>
-                    <p style="font-size:0.8rem; color:var(--text-muted); line-height:1.4;">İhmal edilen küçük alışkanlıklar birikerek potansiyeli neredeyse sıfıra indirir.</p>
-                  </div>
-                </div>
-
-                <h4 style="font-weight:700; color:var(--text-main); margin-bottom:0.75rem;">⚡ 2 Dakikalık Non-Negotiable (Tavizsiz) Mikro-Eylemler</h4>
-                <div class="kaizen-micro-grid" id="kaizen-micro-habits-grid">
-                  <!-- Populated by JS -->
-                </div>
-
-                <div style="margin-top:1.25rem; display:flex; gap:0.75rem; align-items:center;">
-                  <button class="btn-primary" id="btn-kaizen-pledge">
-                    <span>🤝 Bugünün 2 Dakikalık Mikro-Eylemini Taahhüt Et (+20 XP)</span>
-                  </button>
-                  <span id="kaizen-pledge-status" style="font-size:0.85rem; color:var(--secondary);"></span>
-                </div>
-              </div>
-            </div>
-
-            <!-- 24. SOLFEGGIO & 528HZ BIO-SYNTH PANEL -->
-            <div class="chamber-panel" id="chamber-panel-solfeggio">
-              <div class="glass-card sanctum-card">
-                <div class="card-header-flex">
-                  <div>
-                    <h3 class="card-title">🎵 Solfeggio & 528Hz Biyo-Akort Nöro-Laboratuvarı</h3>
-                    <p class="card-subtitle">Web Audio API ile üretilen saf sinüs dalgaları. Kalp koheransı, nöral senkronizasyon ve derin meditatif dinginlik.</p>
-                  </div>
-                  <button class="btn-secondary" id="btn-stop-all-solfeggio" style="font-size:0.8rem;">⏹️ Sesi Durdur</button>
-                </div>
-
-                <div class="solfeggio-frequencies-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:1rem; margin-top:1rem;">
+            <!-- CHAMBER 4: COGNITIVE MIRROR & MULTIVERSE -->
+            <div class="chamber-panel" id="chamber-panel-mirror">
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+                <!-- Alter-Ego / Cruel Mirror -->
+                <div class="glass-card" style="padding:1.75rem;">
+                  <h3 style="font-size:1.15rem; font-weight:800; color:#ffffff; margin-bottom:0.35rem;">🪞 Acımasız Ayna (The Alter-Ego)</h3>
+                  <p style="font-size:0.82rem; color:#94a3b8; margin-bottom:1rem;">Kibar yalanlar yok. Beyninin uydurduğu bahaneyi yaz; ikinci benliğin seni en çıplak gerçekle yüzleştirsin.</p>
                   
-                  <div class="solfeggio-card" data-freq="432">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.35rem;">
-                      <span style="font-size:1.4rem; font-weight:900; color:#38bdf8;">432 Hz</span>
-                      <span class="badge-tag">Evrensel Akort</span>
-                    </div>
-                    <div style="font-weight:700; font-size:0.92rem; color:var(--text-main); margin-bottom:0.25rem;">Doğal Zihinsel Dinginlik</div>
-                    <p style="font-size:0.78rem; color:var(--text-muted); line-height:1.4; margin-bottom:0.75rem;">Su moleküllerinin ve biyolojik ritmin doğal rezonansı. Anksiyeteyi yatıştırır.</p>
-                    <button class="btn-secondary btn-solfeggio-play" data-freq="432" style="width:100%;">▶️ 432 Hz Başlat</button>
+                  <div id="sanctum-alterego-output" style="min-height:160px; max-height:220px; overflow-y:auto; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius-lg); padding:1rem; margin-bottom:1rem; font-size:0.88rem; line-height:1.5; color:#cbd5e1;">
+                    <div style="font-style:italic; color:#94a3b8;">🪞 "Bana kendini kandırmak için kullandığın bahaneyi anlat. Bakalım arkasında ne saklıyorsun..."</div>
                   </div>
 
-                  <div class="solfeggio-card active-gold" data-freq="528">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.35rem;">
-                      <span style="font-size:1.4rem; font-weight:900; color:#fbbf24;">528 Hz</span>
-                      <span class="badge-tag" style="background:rgba(251, 191, 36, 0.2); color:#fbbf24;">Mucize Frekansı</span>
-                    </div>
-                    <div style="font-weight:700; font-size:0.92rem; color:var(--text-main); margin-bottom:0.25rem;">Dönüşüm & Hücresel Onarım</div>
-                    <p style="font-size:0.78rem; color:var(--text-muted); line-height:1.4; margin-bottom:0.75rem;">Yaratıcılık, içsel berraklık ve derin hücresel tazelenme tonu.</p>
-                    <button class="btn-primary btn-solfeggio-play" data-freq="528" style="width:100%;">▶️ 528 Hz Başlat</button>
-                  </div>
-
-                  <div class="solfeggio-card" data-freq="639">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.35rem;">
-                      <span style="font-size:1.4rem; font-weight:900; color:#ec4899;">639 Hz</span>
-                      <span class="badge-tag">Kalp Koheransı</span>
-                    </div>
-                    <div style="font-weight:700; font-size:0.92rem; color:var(--text-main); margin-bottom:0.25rem;">Sevgi & İletişim Uyumu</div>
-                    <p style="font-size:0.78rem; color:var(--text-muted); line-height:1.4; margin-bottom:0.75rem;">Kırgınlıkları çözme, empati kurma ve sosyal ilişkilerde içsel denge.</p>
-                    <button class="btn-secondary btn-solfeggio-play" data-freq="639" style="width:100%;">▶️ 639 Hz Başlat</button>
-                  </div>
-
-                  <div class="solfeggio-card" data-freq="741">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.35rem;">
-                      <span style="font-size:1.4rem; font-weight:900; color:#10b981;">741 Hz</span>
-                      <span class="badge-tag">Zihinsel Detoks</span>
-                    </div>
-                    <div style="font-weight:700; font-size:0.92rem; color:var(--text-main); margin-bottom:0.25rem;">Sezgi & Çözüm Üretme</div>
-                    <p style="font-size:0.78rem; color:var(--text-muted); line-height:1.4; margin-bottom:0.75rem;">Bilişsel kirliliği temizleme, sezgisel öngörü ve problem çözme keskinliği.</p>
-                    <button class="btn-secondary btn-solfeggio-play" data-freq="741" style="width:100%;">▶️ 741 Hz Başlat</button>
-                  </div>
-
-                  <div class="solfeggio-card" data-freq="852">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.35rem;">
-                      <span style="font-size:1.4rem; font-weight:900; color:#a855f7;">852 Hz</span>
-                      <span class="badge-tag">Üst Bilinç</span>
-                    </div>
-                    <div style="font-weight:700; font-size:0.92rem; color:var(--text-main); margin-bottom:0.25rem;">Saf Farkındalık & Uyanış</div>
-                    <p style="font-size:0.78rem; color:var(--text-muted); line-height:1.4; margin-bottom:0.75rem;">İllüzyonlardan sıyrılma, derin meditasyon ve evrensel düzen hissi.</p>
-                    <button class="btn-secondary btn-solfeggio-play" data-freq="852" style="width:100%;">▶️ 852 Hz Başlat</button>
-                  </div>
-
-                </div>
-
-                <div id="solfeggio-status-bar" style="margin-top:1.25rem; font-size:0.85rem; color:var(--text-muted); text-align:center;">
-                  Ses Durumu: Dinleniyor — Bir frekans seçin (Kulaklık önerilir)
-                </div>
-              </div>
-            </div>
-
-            <!-- 25. DELPHI ORACLE & OBSIDIAN CARDS PANEL -->
-            <div class="chamber-panel" id="chamber-panel-oracle">
-              <div class="glass-card sanctum-card" style="text-align:center;">
-                <div class="card-header-flex" style="justify-content:center; text-align:center;">
-                  <div>
-                    <h3 class="card-title">🔮 Delphi Kahini & Kadim Paradoks Kartları</h3>
-                    <p class="card-subtitle">Sorunun cevabını bilmek değil, doğru soruyu sormak zihni özgürleştirir. Obsidyen Bilgelik Kartını çek.</p>
+                  <div style="display:flex; gap:0.5rem;">
+                    <input type="text" id="sanctum-alterego-input" class="form-input" placeholder="Ertelediğin şeyi ya da bahaneni yaz (örn: 'Yorgunum, yarın başlarım')">
+                    <button class="btn-primary" id="sanctum-alterego-send-btn" style="white-space:nowrap;">Yüzleş</button>
                   </div>
                 </div>
 
-                <div class="oracle-card-scene" style="perspective:1000px; display:inline-block; margin:1.5rem auto; cursor:pointer;" id="oracle-card-scene">
-                  <div class="oracle-card-3d" id="oracle-card-3d" style="width:320px; min-height:420px; transform-style:preserve-3d; transition:transform 0.8s cubic-bezier(0.4, 0.2, 0.2, 1); position:relative;">
-                    
-                    <!-- Front Cover -->
-                    <div class="oracle-card-face oracle-front" style="position:absolute; width:100%; height:100%; backface-visibility:hidden; background:linear-gradient(135deg, #111827, #1f2937); border:2px solid rgba(168, 85, 247, 0.5); border-radius:var(--radius-xl); padding:2rem; display:flex; flex-direction:column; justify-content:center; align-items:center; box-shadow:0 20px 40px rgba(0,0,0,0.6);">
-                      <div style="font-size:4.5rem; margin-bottom:1rem; filter:drop-shadow(0 0 16px rgba(168,85,247,0.7));">✨</div>
-                      <div style="font-size:1.25rem; font-weight:800; color:#f8fafc; letter-spacing:1px; margin-bottom:0.5rem;">DELPHİ KAHİNİ</div>
-                      <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5;">Zihnini meşgul eden soruyu düşün ve karta dokun.</p>
-                      <div style="margin-top:1.5rem; font-size:0.75rem; color:var(--secondary); font-family:var(--font-mono);">[ TIKLA VE KEHANETİ AÇ ]</div>
-                    </div>
+                <!-- Multiverse Simulator -->
+                <div class="glass-card" style="padding:1.75rem;">
+                  <h3 style="font-size:1.15rem; font-weight:800; color:#ffffff; margin-bottom:0.35rem;">🌌 Çoklu Evren Simülatörü</h3>
+                  <p style="font-size:0.82rem; color:#94a3b8; margin-bottom:1rem;">Bir kararın iki farklı yolunu simüle et: Konfor alanında kalmak vs Cesur adımı atmak.</p>
 
-                    <!-- Back Revealed -->
-                    <div class="oracle-card-face oracle-back" style="position:absolute; width:100%; height:100%; backface-visibility:hidden; transform:rotateY(180deg); background:linear-gradient(135deg, #090d1a, #1e1b4b); border:2px solid #a855f7; border-radius:var(--radius-xl); padding:1.75rem; text-align:left; display:flex; flex-direction:column; justify-content:space-between; box-shadow:0 20px 50px rgba(168,85,247,0.3);">
-                      <div>
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
-                          <span id="oracle-philosopher" style="font-size:0.8rem; font-weight:800; color:#c084fc; text-transform:uppercase;">MARCUS AURELIUS</span>
-                          <span style="font-size:1rem;">🏛️</span>
-                        </div>
-                        <h4 id="oracle-card-title" style="font-size:1.15rem; font-weight:800; color:#f8fafc; margin-bottom:0.75rem;">Engelin Kendisi Yol Olur</h4>
-                        <div id="oracle-card-quote" style="font-size:0.9rem; font-style:italic; color:var(--text-main); line-height:1.6; padding-left:0.75rem; border-left:3px solid #a855f7; margin-bottom:1rem;">
-                          "Eylemin önündeki engel, eylemi ilerletir."
-                        </div>
-                        <div style="font-size:0.8rem; color:#38bdf8; font-weight:700; margin-bottom:0.25rem;">🌀 Antik Paradoks:</div>
-                        <p id="oracle-card-paradox" style="font-size:0.8rem; color:var(--text-muted); line-height:1.4; margin-bottom:0.75rem;"></p>
-                      </div>
-                      <div>
-                        <div style="font-size:0.8rem; color:#34d399; font-weight:700; margin-bottom:0.25rem;">⚡ Günlük Eylem Reçetesi:</div>
-                        <p id="oracle-card-action" style="font-size:0.8rem; color:#f8fafc; line-height:1.4;"></p>
-                      </div>
+                  <div style="display:flex; flex-direction:column; gap:0.75rem; margin-bottom:1rem;">
+                    <div>
+                      <label style="font-size:0.76rem; font-weight:700; color:#94a3b8;">Yol A (Mevcut Durum / Konfor Alanı):</label>
+                      <input type="text" id="sanctum-choice-a" class="form-input" value="Eski alışkanlıklarla devam et, risk alma" style="margin-top:0.25rem;">
                     </div>
-
+                    <div>
+                      <label style="font-size:0.76rem; font-weight:700; color:#94a3b8;">Yol B (Cesur Atılım / Bilinmezlik):</label>
+                      <input type="text" id="sanctum-choice-b" class="form-input" value="Korkularıma rağmen o projeyi başlat ve disipline gir" style="margin-top:0.25rem;">
+                    </div>
                   </div>
-                </div>
 
-                <div>
-                  <button class="btn-primary" id="btn-draw-oracle" style="margin-top:0.5rem;">
-                    <span>🃏 Yeni Bir Bilgelik Kartı Çek (+15 XP)</span>
+                  <button class="btn-secondary" id="sanctum-multiverse-btn" style="width:100%; border-color:rgba(168,85,247,0.4); color:#c084fc; font-weight:700;">
+                    🔮 Zaman Çizelgelerini Simüle Et
                   </button>
+
+                  <div id="sanctum-multiverse-output" style="margin-top:1rem; font-size:0.84rem; line-height:1.5; color:#cbd5e1; display:none;"></div>
                 </div>
               </div>
             </div>

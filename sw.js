@@ -3,7 +3,7 @@
  * Enables offline caching and mobile home-screen installation.
  */
 
-const CACHE_NAME = 'lumina-cache-v8';
+const CACHE_NAME = 'lumina-cache-v10';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -14,6 +14,7 @@ const ASSETS_TO_CACHE = [
   './js/sanctum.js',
   './js/app.js',
   './assets/logo.jpg',
+  './assets/sanctum_portal.jpg',
   './manifest.json'
 ];
 

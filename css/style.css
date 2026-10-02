@@ -4532,3 +4532,538 @@ dialog.modern-modal[open]::backdrop {
   color: var(--text-muted);
   line-height: 1.4;
 }
+
+/* ========================================================
+   LUMINA SANCTUM & MASTER SPACES - LUXURY VISUAL SYSTEM
+   ======================================================== */
+
+/* Sidebar Master Glow & Polish */
+.sanctum-nav-glow {
+  position: relative;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.12), rgba(99, 102, 241, 0.08)) !important;
+  border-left: 3px solid #a855f7 !important;
+}
+
+.sanctum-nav-glow:hover {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.22), rgba(99, 102, 241, 0.15)) !important;
+  box-shadow: 0 0 16px rgba(168, 85, 247, 0.25);
+}
+
+.nav-item {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: var(--radius-md);
+  margin-bottom: 0.35rem;
+}
+
+.nav-item:hover {
+  transform: translateX(4px);
+}
+
+/* Sanctum Hero Portal Card */
+.sanctum-hero-portal-card {
+  position: relative;
+  border-radius: var(--radius-xl);
+  padding: 2.2rem 2.5rem;
+  margin-bottom: 2rem;
+  overflow: hidden;
+  background: radial-gradient(circle at 85% 30%, rgba(168, 85, 247, 0.28) 0%, rgba(15, 23, 42, 0.95) 75%), #060913;
+  border: 1px solid rgba(168, 85, 247, 0.35);
+  box-shadow: 0 12px 40px -10px rgba(168, 85, 247, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.sanctum-hero-bg-art {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 55%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.35;
+  mix-blend-mode: screen;
+  mask-image: linear-gradient(to left, black 30%, transparent 95%);
+  -webkit-mask-image: linear-gradient(to left, black 30%, transparent 95%);
+  pointer-events: none;
+}
+
+.sanctum-hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 620px;
+}
+
+.sanctum-hero-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.85rem;
+  border-radius: 9999px;
+  background: rgba(168, 85, 247, 0.18);
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  color: #c084fc;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 1rem;
+}
+
+.sanctum-hero-title {
+  font-size: 2.2rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin-bottom: 0.65rem;
+  background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 40%, #c084fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.sanctum-hero-desc {
+  font-size: 0.98rem;
+  color: #94a3b8;
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+}
+
+.sanctum-hero-stats {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.sanctum-stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+/* Master Chamber Pill Tabs */
+.sanctum-chamber-tabs {
+  display: flex;
+  gap: 0.65rem;
+  padding: 0.45rem;
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(16px);
+  margin-bottom: 1.75rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.sanctum-chamber-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.chamber-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 1.35rem;
+  border-radius: var(--radius-md);
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.chamber-tab:hover {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.chamber-tab.active {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(99, 102, 241, 0.2));
+  border-color: rgba(168, 85, 247, 0.45);
+  color: #ffffff;
+  box-shadow: 0 4px 18px rgba(168, 85, 247, 0.25);
+}
+
+/* Chamber Panels */
+.sanctum-panels-container {
+  position: relative;
+  width: 100%;
+}
+
+.chamber-panel {
+  display: none;
+  animation: sanctumFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.chamber-panel.active {
+  display: block;
+}
+
+@keyframes sanctumFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ========================================================
+   CHAMBER 1: THE COSMIC VOID (KARA DELİK & PURGE)
+   ======================================================== */
+.void-grid-layout {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 950px) {
+  .void-grid-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.void-canvas-wrapper {
+  position: relative;
+  width: 100%;
+  height: 480px;
+  background: radial-gradient(circle at center, #0a0d1c 0%, #030408 100%);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  box-shadow: 0 16px 50px -10px rgba(168, 85, 247, 0.2), inset 0 0 40px rgba(0, 0, 0, 0.9);
+}
+
+#sanctum-void-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.void-overlay-hint {
+  position: absolute;
+  top: 1.25rem;
+  left: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  background: rgba(3, 5, 12, 0.75);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  backdrop-filter: blur(8px);
+  color: #c084fc;
+  font-size: 0.76rem;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.void-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #a855f7;
+  box-shadow: 0 0 10px #a855f7;
+  animation: voidPulse 1.8s infinite ease-in-out;
+}
+
+@keyframes voidPulse {
+  0%, 100% { opacity: 0.4; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.3); }
+}
+
+.void-control-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.75rem;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-xl);
+  backdrop-filter: blur(16px);
+}
+
+.void-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sanctum-textarea {
+  width: 100%;
+  min-height: 160px;
+  padding: 1.15rem;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-lg);
+  color: #f8fafc;
+  font-family: inherit;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  resize: vertical;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.sanctum-textarea:focus {
+  border-color: #a855f7;
+  box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.sanctum-textarea::placeholder {
+  color: #64748b;
+}
+
+.btn-void-fire {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius-lg);
+  border: none;
+  background: linear-gradient(135deg, #a855f7 0%, #6366f1 50%, #06b6d4 100%);
+  color: #ffffff;
+  font-size: 0.98rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  box-shadow: 0 8px 25px -4px rgba(168, 85, 247, 0.45);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-void-fire:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px -4px rgba(168, 85, 247, 0.6);
+  filter: brightness(1.1);
+}
+
+.btn-void-fire:active {
+  transform: translateY(0);
+}
+
+.void-philosophy-quote {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 3px solid #a855f7;
+  font-size: 0.82rem;
+  color: #94a3b8;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+/* ========================================================
+   CHAMBER 2: DEEP FOCUS & AMBIENT MIXER
+   ======================================================== */
+.focus-chamber-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.75rem;
+}
+
+@media (max-width: 900px) {
+  .focus-chamber-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ambient-synthesizer-card {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-xl);
+  padding: 1.75rem;
+  backdrop-filter: blur(16px);
+}
+
+.ambient-tracks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 1.25rem;
+}
+
+.ambient-track-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-lg);
+  transition: all 0.2s ease;
+}
+
+.ambient-track-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(56, 189, 248, 0.25);
+}
+
+.ambient-track-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-width: 140px;
+}
+
+.ambient-track-icon {
+  font-size: 1.5rem;
+}
+
+.ambient-track-name {
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: #f1f5f9;
+}
+
+.ambient-track-desc {
+  font-size: 0.74rem;
+  color: #64748b;
+}
+
+.ambient-slider-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex: 1;
+}
+
+.ambient-range-slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.1);
+  outline: none;
+  transition: background 0.2s;
+}
+
+.ambient-range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #38bdf8;
+  cursor: pointer;
+  box-shadow: 0 0 10px #38bdf8;
+  transition: transform 0.15s ease;
+}
+
+.ambient-range-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+}
+
+/* ========================================================
+   CHAMBER 3: MEMENTO MORI (4,160 WEEKS)
+   ======================================================== */
+.memento-chamber-card {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  backdrop-filter: blur(16px);
+}
+
+.memento-controls-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 1.5rem;
+}
+
+.memento-age-input-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.memento-age-input {
+  width: 75px;
+  padding: 0.5rem 0.75rem;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-md);
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.memento-stats-badges {
+  display: flex;
+  gap: 1rem;
+}
+
+.memento-badge-lived {
+  background: rgba(100, 116, 139, 0.2);
+  border: 1px solid rgba(100, 116, 139, 0.4);
+  color: #94a3b8;
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--radius-md);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.memento-badge-remaining {
+  background: rgba(6, 182, 212, 0.15);
+  border: 1px solid rgba(6, 182, 212, 0.35);
+  color: #38bdf8;
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--radius-md);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.memento-weeks-grid {
+  display: grid;
+  grid-template-columns: repeat(52, 1fr);
+  gap: 3px;
+  max-height: 440px;
+  overflow-y: auto;
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.memento-dot {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.07);
+  transition: transform 0.15s ease;
+}
+
+.memento-dot.lived {
+  background: #334155;
+}
+
+.memento-dot.remaining {
+  background: rgba(6, 182, 212, 0.4);
+  box-shadow: 0 0 3px rgba(6, 182, 212, 0.2);
+}
+
+.memento-dot:hover {
+  transform: scale(1.8);
+  z-index: 5;
+  background: #f43f5e;
+}
+
