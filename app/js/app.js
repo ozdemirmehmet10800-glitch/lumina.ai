@@ -1227,11 +1227,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ==========================================
-  // 16. PWA DIRECT INSTALL PROMPT
+  // 16. PWA DIRECT INSTALL & DOWNLOAD MODAL
   // ==========================================
   let deferredPrompt = null;
   const pwaBanner = document.getElementById('pwa-install-banner');
   const pwaBtn = document.getElementById('pwa-install-btn');
+  const downloadModal = document.getElementById('download-install-modal');
+  const sidebarDownloadBtn = document.getElementById('sidebar-download-btn');
+  const topbarDownloadBtn = document.getElementById('topbar-download-btn');
+  const closeDownloadModal = document.getElementById('close-download-modal');
+  const modalPwaTrigger = document.getElementById('btn-modal-pwa-trigger');
+  const pwaStatusMsg = document.getElementById('pwa-status-msg');
 
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
@@ -1239,23 +1245,44 @@ document.addEventListener('DOMContentLoaded', () => {
     if (pwaBanner) pwaBanner.style.display = 'flex';
   });
 
-  if (pwaBtn) {
-    pwaBtn.addEventListener('click', async () => {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-          if (pwaBanner) pwaBanner.style.display = 'none';
-          showToast('Uygulama başarıyla kuruluyor! 🎉', 'success');
-        }
-        deferredPrompt = null;
-      }
-    });
+  const openDownloadModalHandler = () => {
+    if (downloadModal) {
+      if (pwaStatusMsg) pwaStatusMsg.style.display = 'none';
+      downloadModal.showModal();
+    }
+  };
+
+  if (sidebarDownloadBtn) sidebarDownloadBtn.addEventListener('click', openDownloadModalHandler);
+  if (topbarDownloadBtn) topbarDownloadBtn.addEventListener('click', openDownloadModalHandler);
+  if (closeDownloadModal && downloadModal) {
+    closeDownloadModal.addEventListener('click', () => downloadModal.close());
   }
+
+  const triggerDirectInstall = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        if (pwaBanner) pwaBanner.style.display = 'none';
+        if (downloadModal) downloadModal.close();
+        showToast('Uygulama başarıyla kuruluyor! 🎉', 'success');
+      }
+      deferredPrompt = null;
+    } else {
+      if (pwaStatusMsg) {
+        pwaStatusMsg.style.display = 'block';
+        pwaStatusMsg.innerHTML = '💡 <strong>Bilgi:</strong> Tarayıcınızın adres çubuğundaki (URL yanındaki) <strong>📥 İndir</strong> butonuna tıklayarak doğrudan masaüstünüze yükleyebilirsiniz. (Zaten yüklüyse uygulama olarak açabilirsiniz)';
+      }
+    }
+  };
+
+  if (pwaBtn) pwaBtn.addEventListener('click', triggerDirectInstall);
+  if (modalPwaTrigger) modalPwaTrigger.addEventListener('click', triggerDirectInstall);
 
   window.addEventListener('appinstalled', () => {
     if (pwaBanner) pwaBanner.style.display = 'none';
-    showToast('Lumina AI telefonunuza kuruldu!', 'success');
+    if (downloadModal) downloadModal.close();
+    showToast('Lumina AI başarıyla cihazınıza kuruldu!', 'success');
   });
 
   // ==========================================

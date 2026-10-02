@@ -110,6 +110,10 @@
             <div style="font-size:0.72rem; color:var(--text-muted);">Hazır ve Dinliyor</div>
           </div>
         </div>
+        <button id="sidebar-download-btn" class="btn-secondary" style="width:100%; margin-top:0.6rem; font-size:0.8rem; display:flex; align-items:center; justify-content:center; gap:0.45rem; padding:0.5rem 0.75rem; border-color:rgba(56,189,248,0.35); background:linear-gradient(135deg, rgba(56,189,248,0.12), rgba(99,102,241,0.12)); color:#38bdf8; border-radius:var(--radius-md); cursor:pointer; font-weight:600;">
+          <span>📥</span>
+          <span>Uygulamayı İndir</span>
+        </button>
       </div>
     </aside>
 
@@ -141,6 +145,11 @@
         </div>
 
         <div class="topbar-right">
+          <!-- Download / Install App Button -->
+          <button class="action-icon-btn" id="topbar-download-btn" title="Uygulamayı Bilgisayara / Telefona İndir" style="border-color:rgba(56,189,248,0.35); color:#38bdf8; background:rgba(56,189,248,0.1);">
+            <span style="font-size:1.05rem;">📥</span>
+          </button>
+
           <!-- Emergency SOS Button -->
           <button class="sos-topbar-btn" id="btn-emergency-sos" title="Bilişsel Acil Durum & Panik Kiti">
             <span class="sos-pulse"></span>
@@ -2406,6 +2415,83 @@
           <div class="atmo-preview-swatch swatch-eink"></div>
           <h4>Monokrom E-Ink Kağıt</h4>
           <p>Sıfır renkli uyaran, gözü dinlendiren kitap hissi.</p>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ==========================================
+       DOWNLOAD & INSTALL APP MODAL
+       ========================================== -->
+  <dialog class="modern-modal" id="download-install-modal" style="max-width: 640px;">
+    <div class="modal-header">
+      <div style="display:flex; align-items:center; gap:0.6rem;">
+        <span style="font-size:1.4rem;">📥</span>
+        <div>
+          <h3 class="modal-title" style="margin:0;">Lumina AI Kurulum & İndirme</h3>
+          <span style="font-size:0.75rem; color:var(--text-muted);">Masaüstü, Telefon veya Kaynak Kod</span>
+        </div>
+      </div>
+      <button class="action-icon-btn" id="close-download-modal" aria-label="Kapat">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" style="padding-top:1rem;">
+      <!-- Direct PWA Action Card -->
+      <div style="background:linear-gradient(135deg, rgba(99, 102, 241, 0.18), rgba(6, 182, 212, 0.18)); border:1px solid rgba(99, 102, 241, 0.35); border-radius:var(--radius-lg); padding:1.25rem; margin-bottom:1.25rem; text-align:center;">
+        <div style="font-size:1.8rem; margin-bottom:0.35rem;">⚡</div>
+        <h4 style="font-size:1.1rem; font-weight:800; color:var(--text-main); margin-bottom:0.35rem;">Tek Tıkla Uygulama Olarak Yükle (PWA)</h4>
+        <p style="font-size:0.83rem; color:var(--text-muted); line-height:1.5; margin-bottom:1rem;">
+          Tarayıcı çubuğu olmadan tam ekran, internetsiz çevrimdışı çalışma ve masaüstü/ana ekran simgesi ile doğrudan bir masaüstü uygulaması gibi kullanın.
+        </p>
+        <button id="btn-modal-pwa-trigger" class="btn-primary" style="padding:0.65rem 1.5rem; font-size:0.9rem; font-weight:700; box-shadow:0 0 20px rgba(99,102,241,0.4); cursor:pointer;">
+          <span>📲 Bilgisayara / Telefona Şimdi Yükle</span>
+        </button>
+        <div id="pwa-status-msg" style="font-size:0.78rem; color:#38bdf8; margin-top:0.6rem; display:none;"></div>
+      </div>
+
+      <!-- Step-by-step guides -->
+      <div style="display:grid; grid-template-columns:1fr; gap:0.85rem;">
+        <!-- Option 1: Desktop Chrome/Edge -->
+        <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:1rem;">
+          <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.4rem;">
+            <span style="font-size:1.1rem;">💻</span>
+            <strong style="color:var(--text-main); font-size:0.92rem;">Bilgisayarınızda (Windows / Mac) Nasıl Yüklenir?</strong>
+          </div>
+          <ol style="font-size:0.82rem; color:var(--text-muted); padding-left:1.2rem; line-height:1.6; margin:0;">
+            <li>Tarayıcınızın (Chrome veya Edge) adres çubuğunun sağ tarafındaki <strong>"İndir / Uygulamayı Yükle" (📥 veya 🖥️)</strong> simgesine tıklayın.</li>
+            <li>Veya tarayıcının sağ üstündeki <strong>üç nokta (...) &gt; "Kaydet ve Paylaş" (veya "Uygulamalar") &gt; "Lumina AI Uygulamasını Yükle"</strong> seçeneğini seçin.</li>
+            <li>Masaüstünüze ve Başlat menünüze otomatik olarak Lumina AI logosu eklenecektir.</li>
+          </ol>
+        </div>
+
+        <!-- Option 2: Mobile Phone -->
+        <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:1rem;">
+          <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.4rem;">
+            <span style="font-size:1.1rem;">📱</span>
+            <strong style="color:var(--text-main); font-size:0.92rem;">Akıllı Telefonda (Android & iPhone) Nasıl Yüklenir?</strong>
+          </div>
+          <ul style="font-size:0.82rem; color:var(--text-muted); padding-left:1.2rem; line-height:1.6; margin:0; list-style-type:disc;">
+            <li><strong>Android (Chrome):</strong> Sağ üstteki üç noktaya dokunun &gt; <strong>"Uygulamayı Yükle"</strong> veya <strong>"Ana Ekrana Ekle"</strong> butonuna basın.</li>
+            <li><strong>iPhone (Safari):</strong> Alt kısımdaki <strong>Paylaş (Kare ve yukarı ok)</strong> simgesine dokunun &gt; <strong>"Ana Ekrana Ekle"</strong> seçin.</li>
+          </ul>
+        </div>
+
+        <!-- Option 3: Source Code / ZIP -->
+        <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:1rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem;">
+          <div>
+            <div style="display:flex; align-items:center; gap:0.5rem;">
+              <span style="font-size:1.1rem;">📦</span>
+              <strong style="color:var(--text-main); font-size:0.92rem;">Tüm Projeyi ZIP Olarak İndir</strong>
+            </div>
+            <div style="font-size:0.78rem; color:var(--text-muted); margin-top:0.2rem;">
+              Tüm kaynak kodları, stilleri ve yerel sunucuyu GitHub üzerinden indirin.
+            </div>
+          </div>
+          <a href="https://github.com/ozdemirmehmet10800-glitch/lumina.ai/archive/refs/heads/main.zip" target="_blank" class="btn-secondary" style="font-size:0.8rem; padding:0.45rem 1rem; display:inline-flex; align-items:center; gap:0.35rem; text-decoration:none;">
+            <span>⬇️</span>
+            <span>ZIP İndir</span>
+          </a>
         </div>
       </div>
     </div>
