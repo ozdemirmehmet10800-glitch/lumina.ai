@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lumina AI - Akıllı Üretkenlik & Kişisel Odak İstasyonu</title>
+  <meta name="description" content="Yapay zeka destekli akıllı görev yönetimi, not özetleyici, Pomodoro odak modu ve sentetik ambiyans sesleriyle donatılmış yeni nesil üretkenlik platformu.">
+  <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#080c16">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Lumina AI">
+  <link rel="apple-touch-icon" href="assets/logo.jpg">
+
+  <!-- Design System CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Background Canvas for Confetti -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="app-container">
+    <!-- ==========================================
+         SIDEBAR NAVIGATION
+         ========================================== -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand-section">
+        <img src="assets/logo.jpg" alt="Lumina AI Logo" class="brand-logo-img">
+        <div class="brand-text">
+          <h1>Lumina <span class="brand-badge">AI 2.0</span></h1>
+        </div>
+      </div>
+
+      <nav class="nav-menu" aria-label="Ana Menü">
+        <a href="#dashboard" class="nav-item active" data-view="dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+          <span>Genel Bakış</span>
+        </a>
+        <a href="#tasks" class="nav-item" data-view="tasks">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          <span>Görevler & Projeler</span>
+          <span class="nav-badge" id="sidebar-task-count">3</span>
+        </a>
+        <a href="#notes" class="nav-item" data-view="notes">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          <span>AI Not Defteri</span>
+        </a>
+        <a href="#focus" class="nav-item" data-view="focus">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span>Derin Odak & Ses</span>
+        </a>
+        <a href="#habits" class="nav-item" data-view="habits">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+          <span>Alışkanlık & Veri</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="ai-status-card">
+          <div class="ai-pulse-dot"></div>
+          <div>
+            <div style="font-weight:600; color:var(--text-main);">Lumina AI Çevrimiçi</div>
+            <div style="font-size:0.72rem; color:var(--text-muted);">Hazır ve Dinliyor</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ==========================================
+         MAIN CONTENT WRAPPER
+         ========================================== -->
+    <main class="main-wrapper">
+      <!-- PWA INSTALL BANNER -->
+      <div id="pwa-install-banner" style="display:none; align-items:center; justify-content:space-between; padding:0.6rem 1.5rem; background:linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(6, 182, 212, 0.2)); border-bottom:1px solid rgba(99, 102, 241, 0.3); z-index:90;">
+        <div style="display:flex; align-items:center; gap:0.6rem;">
+          <span style="font-size:1.1rem;">📲</span>
+          <span style="font-size:0.85rem; font-weight:600;">Lumina AI'ı telefona tam ekran uygulama olarak kurun</span>
+        </div>
+        <button id="pwa-install-btn" class="quick-action-btn" style="padding:0.35rem 0.85rem; font-size:0.8rem;">Şimdi Yükle</button>
+      </div>
+
+      <!-- TOPBAR -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="menu-toggle-btn" id="menu-toggle-btn" aria-label="Menüyü Aç/Kapat">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          
+          <button class="search-command-btn" id="search-command-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span>Hızlı komut veya ara...</span>
+            <span class="kbd-shortcut">Ctrl K</span>
+          </button>
+        </div>
+
+        <div class="topbar-right">
+          <button class="quick-action-btn" id="quick-new-task-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Yeni Görev</span>
+          </button>
+
+          <button class="action-icon-btn" id="theme-toggle-btn" title="Koyu / Açık Tema">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          </button>
+
+          <button class="action-icon-btn" id="topbar-ai-btn" title="Lumina AI Asistan">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+          </button>
+
+          <button class="action-icon-btn" id="settings-btn" title="Ayarlar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- VIEWS CONTAINER -->
+      <div class="view-container">
+        
+        <!-- ==========================================
+             VIEW 1: DASHBOARD
+             ========================================== -->
+        <section class="view-section active" id="view-dashboard">
+          <div class="hero-greeting-card">
+            <div class="greeting-text">
+              <h2 id="greeting-title">Günaydın, Gezgin ✨</h2>
+              <p class="greeting-quote">"Her büyük başarı, bugün atılan odaklanmış küçük bir adımla başlar. Zihnini toparla ve akışa katıl."</p>
+            </div>
+            <div class="live-time-badge">
+              <div class="live-clock" id="live-clock">12:00:00</div>
+              <div class="live-date" id="live-date">2 Ekim 2026, Cuma</div>
+            </div>
+          </div>
+
+          <!-- Stats Grid -->
+          <div class="stat-grid">
+            <div class="glass-card stat-card">
+              <div class="stat-icon success">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div class="stat-info">
+                <span class="stat-value" id="stat-completed-tasks">0</span>
+                <span class="stat-label">Tamamlanan Görev</span>
+              </div>
+            </div>
+
+            <div class="glass-card stat-card">
+              <div class="stat-icon secondary">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div class="stat-info">
+                <span class="stat-value" id="stat-focus-time">0 dk</span>
+                <span class="stat-label">Bugünkü Odak Süresi</span>
+              </div>
+            </div>
+
+            <div class="glass-card stat-card">
+              <div class="stat-icon primary">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+              </div>
+              <div class="stat-info">
+                <span class="stat-value" id="stat-notes-count">0</span>
+                <span class="stat-label">Aktif Bilgi Notu</span>
+              </div>
+            </div>
+
+            <div class="glass-card stat-card">
+              <div class="stat-icon warning">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <div class="stat-info">
+                <span class="stat-value" id="stat-efficiency-score">%85</span>
+                <span class="stat-label">Verimlilik Skoru</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dashboard 2-Columns -->
+          <div class="dashboard-grid">
+            <!-- Left: Priority Tasks & AI Quick Actions -->
+            <div class="glass-card">
+              <div class="card-header-flex">
+                <h3 class="card-title">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--primary);"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                  Öncelikli Görevler
+                </h3>
+                <button class="text-btn" onclick="document.querySelector('[data-view=tasks]').click()">Tümünü Gör →</button>
+              </div>
+
+              <!-- AI Quick Prompt Chips -->
+              <div class="ai-quick-strip" id="dash-ai-prompt-strip">
+                <button class="ai-chip-btn">🎯 Günün 3 Kritik Hedefini Belirle</button>
+                <button class="ai-chip-btn">⚡ Ertelemeyi Yenme Stratejisi</button>
+                <button class="ai-chip-btn">🧠 25 Dk Odak Seansı Tavsiyesi</button>
+              </div>
+
+              <div class="mini-task-list" id="dash-mini-task-list">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <!-- Right: Habits & Focus Quick Start -->
+            <div class="glass-card">
+              <div class="card-header-flex">
+                <h3 class="card-title">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--warning);"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+                  Günlük Alışkanlıklar
+                </h3>
+                <button class="text-btn" onclick="document.querySelector('[data-view=habits]').click()">Yönet →</button>
+              </div>
+
+              <div class="habit-dashboard-list" id="dash-habit-list">
+                <!-- Dynamically populated -->
+              </div>
+
+              <div style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border-subtle);">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <div>
+                    <div style="font-weight:600; font-size:0.92rem;">Pomodoro Odak Seansı</div>
+                    <div style="font-size:0.78rem; color:var(--text-muted);">25 dk derin zihinsel çalışma</div>
+                  </div>
+                  <button class="btn-primary" onclick="document.querySelector('[data-view=focus]').click()">
+                    <span>Başlat</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==========================================
+             VIEW 2: TASKS & PROJECTS
+             ========================================== -->
+        <section class="view-section" id="view-tasks">
+          <div class="page-header">
+            <div>
+              <h2 class="page-title">Görev & Proje Merkezi</h2>
+              <p class="page-subtitle">Hedeflerinizi düzenleyin, AI ile adımlara bölün ve yüksek odakla tamamlayın.</p>
+            </div>
+          </div>
+
+          <!-- Quick Task Input Box -->
+          <div class="task-creator-box">
+            <div class="task-input-row">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--primary);"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <input type="text" id="task-main-input" class="task-main-input" placeholder="Ne üzerinde çalışmak istiyorsunuz? (Enter'a basın)">
+            </div>
+            <div class="task-meta-row">
+              <div class="meta-controls-left">
+                <select id="task-category-select" class="select-pill" aria-label="Kategori Seçin">
+                  <option value="Yazılım">💻 Yazılım</option>
+                  <option value="Strateji">🎯 Strateji</option>
+                  <option value="Tasarım">🎨 Tasarım</option>
+                  <option value="Kişisel">🌱 Kişisel</option>
+                  <option value="İş">💼 İş & Toplantı</option>
+                </select>
+                <select id="task-priority-select" class="select-pill" aria-label="Öncelik Seçin">
+                  <option value="medium">⚡ Normal Öncelik</option>
+                  <option value="high">🔥 Yüksek Öncelik</option>
+                  <option value="low">🌱 Düşük Öncelik</option>
+                </select>
+                <input type="date" id="task-due-date-input" class="date-input-pill" aria-label="Bitiş Tarihi">
+              </div>
+              <div class="task-btn-group">
+                <button class="btn-primary" id="btn-add-task">Görev Ekle</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Task Toolbar & Filters -->
+          <div class="tasks-toolbar">
+            <div class="task-filter-tabs">
+              <button class="filter-tab active" data-filter="all">Tüm Görevler</button>
+              <button class="filter-tab" data-filter="today">Bugün</button>
+              <button class="filter-tab" data-filter="priority">Öncelikli</button>
+              <button class="filter-tab" data-filter="completed">Tamamlananlar</button>
+            </div>
+          </div>
+
+          <!-- Task Full Items -->
+          <div class="task-full-list" id="task-full-list">
+            <!-- Dynamically populated -->
+          </div>
+        </section>
+
+        <!-- ==========================================
+             VIEW 3: AI RICH NOTES
+             ========================================== -->
+        <section class="view-section" id="view-notes">
+          <div class="page-header">
+            <div>
+              <h2 class="page-title">Yapay Zeka Destekli Not Defteri</h2>
+              <p class="page-subtitle">Düşüncelerinizi kaydedin, AI ile tek tıkla özetleyin ve eyleme dökün.</p>
+            </div>
+          </div>
+
+          <div class="notes-layout">
+            <!-- Notes Left Sidebar -->
+            <div class="glass-card notes-sidebar-card">
+              <div style="display:flex; gap:0.5rem;">
+                <input type="text" id="notes-search-input" class="notes-search-input" placeholder="Notlarda ara..." style="flex:1;">
+                <button class="btn-primary" id="btn-new-note" title="Yeni Not Oluştur">+</button>
+              </div>
+              <div class="notes-list-scroll" id="notes-list-scroll">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <!-- Notes Active Editor -->
+            <div class="glass-card note-editor-card">
+              <div class="note-editor-header">
+                <input type="text" id="note-title-input" class="note-title-input" placeholder="Not Başlığı...">
+                <div class="ai-note-tools">
+                  <button class="ai-tool-btn" id="btn-note-summarize" title="Notu 3 maddede özetle">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="3" y2="18"/></svg>
+                    <span>Özetle</span>
+                  </button>
+                  <button class="ai-tool-btn" id="btn-note-actionize" title="Eylem adımlarına dönüştür">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                    <span>Eyleme Dök</span>
+                  </button>
+                  <button class="ai-tool-btn" id="btn-note-expand" title="Fikri stratejik olarak genişlet">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/></svg>
+                    <span>Genişlet</span>
+                  </button>
+                  <button class="item-action-btn delete-btn" id="btn-delete-note" title="Notu Sil">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <textarea id="note-body-textarea" class="note-body-textarea" placeholder="Düşüncelerinizi buraya yazın veya Markdown formatında içerik ekleyin..."></textarea>
+
+              <div class="note-editor-footer">
+                <span id="note-word-count">0 kelime | 0 karakter</span>
+                <span id="note-last-updated">Kaydedildi ✓</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==========================================
+             VIEW 4: DEEP FOCUS & POMODORO
+             ========================================== -->
+        <section class="view-section" id="view-focus">
+          <div class="page-header">
+            <div>
+              <h2 class="page-title">Derin Odak İstasyonu</h2>
+              <p class="page-subtitle">Zaman bloklama, görsel pomodoro zamanlayıcısı ve sentetik ambiyans ses laboratuvarı.</p>
+            </div>
+            <button class="btn-secondary" id="btn-zen-mode">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+              <span>Zen Modu (Tam Ekran)</span>
+            </button>
+          </div>
+
+          <div class="focus-container">
+            <!-- Left: Pomodoro Timer -->
+            <div class="glass-card timer-card">
+              <div class="timer-mode-selector">
+                <button class="mode-btn active" data-mode="pomodoro">Odaklan (25d)</button>
+                <button class="mode-btn" data-mode="shortBreak">Kısa Mola (5d)</button>
+                <button class="mode-btn" data-mode="longBreak">Uzun Mola (15d)</button>
+              </div>
+
+              <!-- Circular Progress SVG -->
+              <div class="circular-timer-wrapper">
+                <svg class="timer-svg" viewBox="0 0 260 260">
+                  <defs>
+                    <linearGradient id="timerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#6366f1"/>
+                      <stop offset="100%" stop-color="#06b6d4"/>
+                    </linearGradient>
+                  </defs>
+                  <circle class="timer-circle-bg" cx="130" cy="130" r="115"/>
+                  <circle class="timer-circle-progress" id="timer-circle-progress" cx="130" cy="130" r="115"/>
+                </svg>
+
+                <div class="timer-display">
+                  <div class="timer-time" id="timer-display-time">25:00</div>
+                  <div class="timer-status-text" id="timer-status-text">Derin Odak Seansı</div>
+                </div>
+              </div>
+
+              <!-- Controls -->
+              <div class="timer-controls">
+                <button class="timer-secondary-btn" id="btn-reset-timer" title="Sıfırla">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                </button>
+                <button class="timer-main-btn" id="btn-toggle-timer" title="Başlat / Duraklat">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Right: Ambient Soundscape Lab -->
+            <div class="glass-card ambient-sounds-card">
+              <div class="card-header-flex">
+                <h3 class="card-title">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--secondary);"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                  Ambiyans Ses Mikseri
+                </h3>
+                <span style="font-size:0.75rem; color:var(--text-faint);">Web Audio API</span>
+              </div>
+
+              <div class="sound-grid">
+                <!-- Rain -->
+                <div class="sound-card-item">
+                  <div class="sound-meta">
+                    <div class="sound-icon-box">🌧️</div>
+                    <div>
+                      <div class="sound-name">Huzurlu Yağmur</div>
+                      <div class="sound-sub">Yumuşak damlalar</div>
+                    </div>
+                  </div>
+                  <div class="sound-controls-box">
+                    <input type="range" class="sound-volume-slider" id="vol-rain" min="0" max="1" step="0.05" value="0.5" aria-label="Yağmur Sesi Düzeyi">
+                    <button class="btn-secondary" id="sound-toggle-rain">Başlat</button>
+                  </div>
+                </div>
+
+                <!-- Fire -->
+                <div class="sound-card-item">
+                  <div class="sound-meta">
+                    <div class="sound-icon-box">🔥</div>
+                    <div>
+                      <div class="sound-name">Şömine Ateşi</div>
+                      <div class="sound-sub">Doğal çıtırtılar</div>
+                    </div>
+                  </div>
+                  <div class="sound-controls-box">
+                    <input type="range" class="sound-volume-slider" id="vol-fire" min="0" max="1" step="0.05" value="0.5" aria-label="Şömine Sesi Düzeyi">
+                    <button class="btn-secondary" id="sound-toggle-fire">Başlat</button>
+                  </div>
+                </div>
+
+                <!-- Forest Wind -->
+                <div class="sound-card-item">
+                  <div class="sound-meta">
+                    <div class="sound-icon-box">🌲</div>
+                    <div>
+                      <div class="sound-name">Orman Esintisi</div>
+                      <div class="sound-sub">Sakin rüzgar tonları</div>
+                    </div>
+                  </div>
+                  <div class="sound-controls-box">
+                    <input type="range" class="sound-volume-slider" id="vol-wind" min="0" max="1" step="0.05" value="0.5" aria-label="Orman Rüzgarı Düzeyi">
+                    <button class="btn-secondary" id="sound-toggle-wind">Başlat</button>
+                  </div>
+                </div>
+
+                <!-- Binaural Focus -->
+                <div class="sound-card-item">
+                  <div class="sound-meta">
+                    <div class="sound-icon-box">🧠</div>
+                    <div>
+                      <div class="sound-name">14Hz Alfa Dalgası</div>
+                      <div class="sound-sub">Binaural odak ritmi</div>
+                    </div>
+                  </div>
+                  <div class="sound-controls-box">
+                    <input type="range" class="sound-volume-slider" id="vol-binaural" min="0" max="1" step="0.05" value="0.5" aria-label="Alfa Dalgası Düzeyi">
+                    <button class="btn-secondary" id="sound-toggle-binaural">Başlat</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==========================================
+             VIEW 5: HABITS & ANALYTICS
+             ========================================== -->
+        <section class="view-section" id="view-habits">
+          <div class="page-header">
+            <div>
+              <h2 class="page-title">Alışkanlık Takibi & Analitik</h2>
+              <p class="page-subtitle">Süreklilik güçtür. Günlük alışkanlıklarınızı işaretleyin ve odak grafiğinizi izleyin.</p>
+            </div>
+          </div>
+
+          <div class="habits-analytics-grid">
+            <!-- Left: Habit Matrix -->
+            <div class="glass-card">
+              <div class="card-header-flex">
+                <h3 class="card-title">Haftalık Alışkanlık Matrisi</h3>
+              </div>
+
+              <div class="habit-creator-row">
+                <input type="text" id="habit-name-input" class="habit-input" placeholder="Yeni alışkanlık hedefi (örn: Kitap oku, Spor yap...)">
+                <button class="btn-primary" id="btn-add-habit">Ekle</button>
+              </div>
+
+              <div style="overflow-x: auto;">
+                <table class="habit-table">
+                  <thead>
+                    <tr>
+                      <th>Alışkanlık</th>
+                      <th>Pzt</th>
+                      <th>Sal</th>
+                      <th>Çar</th>
+                      <th>Per</th>
+                      <th>Cum</th>
+                      <th>Cmt</th>
+                      <th>Paz</th>
+                      <th>Seri</th>
+                    </tr>
+                  </thead>
+                  <tbody id="habit-table-body">
+                    <!-- Dynamically populated -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Right: Weekly Focus Minutes Bar Chart -->
+            <div class="glass-card">
+              <div class="card-header-flex">
+                <h3 class="card-title">Haftalık Odak Süresi Dağılımı</h3>
+                <span style="font-size:0.75rem; color:var(--secondary); font-weight:600;">Dakika Cinsinden</span>
+              </div>
+
+              <div class="chart-container" id="chart-bars-group">
+                <!-- Dynamically generated bars -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ==========================================
+       ZEN FULLSCREEN OVERLAY
+       ========================================== -->
+  <div class="zen-overlay" id="zen-overlay">
+    <button class="zen-exit-btn" id="zen-exit-btn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      <span>Zen Modundan Çık</span>
+    </button>
+    <div class="timer-time" id="zen-display-time" style="font-size: 6rem;">25:00</div>
+    <div class="zen-task-title" id="zen-task-title">🎯 Derin Zihinsel Odak</div>
+  </div>
+
+  <!-- ==========================================
+       LUMINA AI COPILOT CHAT DRAWER
+       ========================================== -->
+  <div class="ai-copilot-drawer" id="ai-copilot-drawer">
+    <div class="copilot-header">
+      <div class="copilot-title-group">
+        <img src="assets/logo.jpg" alt="Lumina Copilot" class="copilot-avatar">
+        <div>
+          <div style="font-weight:700; font-size:1rem;">Lumina AI Copilot</div>
+          <div style="font-size:0.75rem; color:var(--secondary);">Akıllı Üretkenlik Danışmanı</div>
+        </div>
+      </div>
+      <button class="action-icon-btn" id="close-copilot-btn" aria-label="Kapat">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="copilot-messages" id="copilot-messages">
+      <div class="chat-bubble ai">
+        Merhaba! Ben <strong>Lumina AI</strong>. Gününüzü planlamanıza, karmaşık görevleri alt adımlara ayırmanıza veya notlarınızı analiz etmenize yardımcı olabilirim. Ne üzerinde çalışıyoruz?
+      </div>
+    </div>
+
+    <div class="copilot-input-area">
+      <div class="copilot-input-row">
+        <input type="text" id="copilot-input" class="copilot-input" placeholder="Lumina'ya soru sorun veya görev planlatın...">
+        <button class="copilot-send-btn" id="copilot-send-btn" aria-label="Gönder">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOATING AI COPILOT BUTTON -->
+  <button class="floating-ai-trigger" id="floating-ai-trigger">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+    <span>Lumina AI</span>
+  </button>
+
+  <!-- ==========================================
+       COMMAND PALETTE (CTRL+K)
+       ========================================== -->
+  <div class="command-palette-backdrop" id="cmd-palette-backdrop">
+    <div class="command-palette-card">
+      <div class="command-input-row">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--primary);"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="cmd-search-input" class="command-search-input" placeholder="Bir komut yazın veya işlem seçin...">
+      </div>
+      <div class="command-results-list" id="cmd-results-list">
+        <!-- Dynamically populated -->
+      </div>
+      <div class="command-footer">
+        <span>Seçmek için Enter'a basın</span>
+        <span>Kapatmak için ESC</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       SETTINGS MODAL (Dialog with modern top layer)
+       ========================================== -->
+  <dialog class="modern-modal" id="settings-modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Lumina Ayarları</h3>
+      <button class="action-icon-btn" id="close-settings-btn" aria-label="Kapat">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label" for="setting-user-name">Kullanıcı Adı</label>
+        <input type="text" id="setting-user-name" class="form-input">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="setting-theme">Görünüm Teması</label>
+        <select id="setting-theme" class="form-input">
+          <option value="dark">Karanlık Mod (Cyberpunk Midnight)</option>
+          <option value="light">Aydınlık Mod (Modern Clean)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="setting-work-duration">Pomodoro Çalışma Süresi (Dakika)</label>
+        <input type="number" id="setting-work-duration" class="form-input" min="5" max="60" value="25">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="setting-gemini-key">Google Gemini API Anahtarı (İsteğe Bağlı)</label>
+        <input type="password" id="setting-gemini-key" class="form-input" placeholder="AIzaSy...">
+        <span class="form-hint">Boş bırakılırsa yerleşik zeki bilişsel motor çevrimdışı çalışmaya devam eder.</span>
+      </div>
+
+      <div class="form-group" style="padding-top: 0.5rem; border-top: 1px solid var(--border-subtle);">
+        <label class="form-label">Veri Yedekleme & Geri Yükleme</label>
+        <div style="display:flex; gap:0.5rem; margin-top:0.3rem;">
+          <button class="btn-secondary" id="btn-export-data">Yedeği İndir (JSON)</button>
+          <button class="btn-secondary" id="btn-import-data">Geri Yükle</button>
+          <input type="file" id="import-file-input" accept=".json" style="display:none;">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-primary" id="btn-save-settings">Ayarları Kaydet</button>
+    </div>
+  </dialog>
+
+  <!-- TOAST CONTAINER -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- APPLICATION SCRIPTS -->
+  <script src="js/audio.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/ai-service.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
