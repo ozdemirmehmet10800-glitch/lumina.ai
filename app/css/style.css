@@ -2164,3 +2164,631 @@ dialog.modern-modal[open]::backdrop {
     width: 100vw;
   }
 }
+
+/* ==========================================================================
+   LUMINA SANCTUM (ZİHİN MABEDİ) STYLES
+   ========================================================================== */
+
+/* Nav Glow */
+.sanctum-nav-glow {
+  position: relative;
+  overflow: hidden;
+}
+.sanctum-nav-glow::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.12), rgba(99, 102, 241, 0.12));
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+/* Sanctum Badge */
+.sanctum-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.85rem;
+  background: rgba(168, 85, 247, 0.15);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #c084fc;
+}
+
+.pulse-dot-purple {
+  width: 8px;
+  height: 8px;
+  background: #a855f7;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #a855f7;
+  animation: pulsePurple 2s infinite ease-in-out;
+}
+
+@keyframes pulsePurple {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.6; }
+}
+
+/* Chamber Horizontal Tabs */
+.sanctum-chamber-tabs {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(168, 85, 247, 0.3) transparent;
+}
+.sanctum-chamber-tabs::-webkit-scrollbar {
+  height: 4px;
+}
+.sanctum-chamber-tabs::-webkit-scrollbar-thumb {
+  background: rgba(168, 85, 247, 0.3);
+  border-radius: 4px;
+}
+
+.chamber-tab {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  color: var(--text-muted);
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--trans-fast);
+  white-space: nowrap;
+}
+.chamber-tab:hover {
+  background: var(--bg-surface-elevated);
+  color: var(--text-main);
+  border-color: rgba(168, 85, 247, 0.3);
+}
+.chamber-tab.active {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(99, 102, 241, 0.25));
+  color: #f8fafc;
+  border-color: rgba(168, 85, 247, 0.6);
+  box-shadow: 0 0 15px rgba(168, 85, 247, 0.25);
+}
+
+/* Chamber Panels */
+.chamber-panel {
+  display: none;
+  animation: fadeInSanctum 0.3s ease-out;
+}
+.chamber-panel.active {
+  display: block;
+}
+
+@keyframes fadeInSanctum {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.sanctum-card {
+  border-color: rgba(168, 85, 247, 0.2);
+  background: linear-gradient(180deg, rgba(18, 26, 47, 0.75) 0%, rgba(13, 19, 36, 0.85) 100%);
+}
+
+/* 1. Void Canvas */
+.void-canvas-wrapper {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  background: #040711;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+}
+#sanctum-void-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: crosshair;
+}
+.void-overlay-hint {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 0.3rem 0.75rem;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  color: #c084fc;
+  backdrop-filter: blur(8px);
+}
+
+.void-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+.sanctum-textarea {
+  width: 100%;
+  min-height: 85px;
+  padding: 0.85rem 1rem;
+  background: rgba(10, 15, 29, 0.8);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  resize: vertical;
+  transition: all var(--trans-fast);
+}
+.sanctum-textarea:focus {
+  outline: none;
+  border-color: #a855f7;
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.3);
+}
+
+.btn-void-fire {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.4rem;
+  background: linear-gradient(135deg, #7c3aed, #db2777);
+  border: none;
+  border-radius: var(--radius-md);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all var(--trans-fast);
+  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.35);
+}
+.btn-void-fire:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(219, 39, 119, 0.45);
+}
+
+/* 2. Alter-Ego */
+.alterego-chat-area {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.alterego-history {
+  min-height: 180px;
+  max-height: 380px;
+  overflow-y: auto;
+  padding: 1rem;
+  background: rgba(10, 14, 26, 0.7);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+.alterego-bubble {
+  padding: 0.85rem 1.15rem;
+  border-radius: var(--radius-md);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+.alterego-bubble.intro {
+  background: rgba(168, 85, 247, 0.1);
+  border-left: 3px solid #a855f7;
+  color: #d8b4fe;
+}
+.alterego-bubble.user {
+  align-self: flex-end;
+  background: rgba(99, 102, 241, 0.2);
+  border-right: 3px solid #6366f1;
+  color: var(--text-main);
+  max-width: 85%;
+}
+.alterego-bubble.ego {
+  align-self: flex-start;
+  background: rgba(225, 29, 72, 0.12);
+  border-left: 3px solid #f43f5e;
+  color: #fecdd3;
+  max-width: 90%;
+  white-space: pre-line;
+}
+.alterego-input-row {
+  display: flex;
+  gap: 0.65rem;
+}
+
+/* 3. Multiverse */
+.multiverse-input-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.multiverse-results-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+.multiverse-card {
+  padding: 1.25rem;
+  border-radius: var(--radius-lg);
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid var(--border-subtle);
+}
+.multiverse-card.branch-a {
+  border-color: rgba(245, 158, 11, 0.3);
+}
+.multiverse-card.branch-b {
+  border-color: rgba(6, 182, 212, 0.4);
+}
+.multiverse-year-step {
+  margin-top: 0.85rem;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-sm);
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+/* 4. Council */
+.council-query-box {
+  display: flex;
+  gap: 0.65rem;
+  margin-bottom: 1.5rem;
+}
+.council-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+.philosopher-card {
+  padding: 1.15rem;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  transition: all var(--trans-fast);
+}
+.philosopher-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(168, 85, 247, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+.philosopher-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+.phil-name {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-main);
+}
+.phil-school {
+  font-size: 0.75rem;
+  color: var(--secondary);
+}
+.phil-badge {
+  font-size: 0.68rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-full);
+  background: rgba(168, 85, 247, 0.15);
+  color: #c084fc;
+}
+.phil-quote {
+  font-style: italic;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  border-left: 2px solid var(--secondary);
+  padding-left: 0.6rem;
+  margin-bottom: 0.75rem;
+}
+.phil-verdict {
+  font-size: 0.86rem;
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 0.6rem;
+  border-radius: var(--radius-sm);
+  line-height: 1.45;
+}
+
+/* 5. Memento Mori */
+.memento-controls {
+  margin-bottom: 1.25rem;
+}
+.memento-stats-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+.memento-stat-box {
+  padding: 0.85rem;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+.memento-stat-num {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #06b6d4;
+  font-family: var(--font-heading);
+}
+.memento-stat-lbl {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+.memento-weeks-container {
+  padding: 1rem;
+  background: rgba(6, 9, 18, 0.75);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+}
+.memento-weeks-legend {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 0.85rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.legend-box {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+.legend-box.lived { background: #475569; }
+.legend-box.remaining { background: #06b6d4; box-shadow: 0 0 4px #06b6d4; }
+.memento-weeks-grid {
+  display: grid;
+  grid-template-columns: repeat(52, 1fr);
+  gap: 2.5px;
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 4px;
+}
+.week-dot {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 1.5px;
+}
+.week-dot.lived { background: #334155; }
+.week-dot.remaining { background: rgba(6, 182, 212, 0.75); }
+
+/* 6. Vagus Breathing */
+.breath-mode-selector {
+  display: flex;
+  justify-content: center;
+  gap: 0.65rem;
+  margin-bottom: 2rem;
+}
+.mode-pill {
+  padding: 0.45rem 1rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--trans-fast);
+}
+.mode-pill.active {
+  background: rgba(6, 182, 212, 0.2);
+  border-color: #06b6d4;
+  color: #fff;
+}
+.breath-visualizer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+}
+.breath-circle-outer {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: 2px dashed rgba(6, 182, 212, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.breath-circle-inner {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #06b6d4 0%, #6366f1 70%, transparent 100%);
+  box-shadow: 0 0 35px rgba(6, 182, 212, 0.5);
+  transform: scale(1.0);
+  transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.breath-phase-caption {
+  margin-top: 1.5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: 0.5px;
+}
+
+/* 7. Shadow & CBT & Dream Output Cards */
+.shadow-output-card, .cbt-output-card, .dream-result-card, .dna-result-card {
+  margin-top: 1.25rem;
+  padding: 1.25rem;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(168, 85, 247, 0.35);
+  border-radius: var(--radius-lg);
+  line-height: 1.55;
+}
+
+/* 10. Dopamine Orucu */
+.dopamine-target-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+.dopamine-monitor-box {
+  text-align: center;
+  padding: 1.75rem;
+  background: rgba(6, 9, 18, 0.7);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  margin-bottom: 1.5rem;
+}
+.fast-timer-large {
+  font-size: 3.5rem;
+  font-weight: 800;
+  font-family: var(--font-heading);
+  letter-spacing: 2px;
+  color: #10b981;
+}
+.fast-progress-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 1rem 0 0.5rem;
+}
+.fast-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #06b6d4);
+  transition: width 0.4s ease;
+}
+.fast-status-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+.dopamine-tools-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.tool-card {
+  padding: 1.15rem;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+.tool-card h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 0.4rem;
+}
+.tool-card p {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-bottom: 0.85rem;
+}
+
+/* 11. Dilemma Arena */
+.dilemma-card {
+  padding: 1.25rem;
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  margin-bottom: 1rem;
+}
+.dilemma-scenario {
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--text-main);
+  margin: 0.6rem 0 1rem;
+}
+.dilemma-options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+.btn-dilemma-opt {
+  padding: 0.85rem 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  color: var(--text-main);
+  font-size: 0.85rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all var(--trans-fast);
+}
+.btn-dilemma-opt:hover {
+  background: rgba(99, 102, 241, 0.15);
+  border-color: #6366f1;
+}
+.btn-dilemma-opt.chosen {
+  background: rgba(168, 85, 247, 0.25);
+  border-color: #a855f7;
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.2);
+}
+
+/* 12. Neuro-Waves */
+.neuro-presets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+.wave-preset-btn {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  text-align: left;
+  cursor: pointer;
+  transition: all var(--trans-fast);
+}
+.wave-preset-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: #06b6d4;
+}
+.wave-preset-btn.active {
+  background: rgba(6, 182, 212, 0.15);
+  border-color: #06b6d4;
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.25);
+}
+.wave-name {
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--text-main);
+  margin-bottom: 0.25rem;
+}
+.wave-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+.neuro-controls-box {
+  text-align: center;
+  padding: 1.25rem;
+  background: rgba(6, 9, 18, 0.6);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+}
+.neuro-status {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #06b6d4;
+}
+
+@media (max-width: 768px) {
+  .multiverse-input-grid, .multiverse-results-grid, .dopamine-tools-grid, .dilemma-options-grid {
+    grid-template-columns: 1fr;
+  }
+  .void-canvas-wrapper {
+    height: 320px;
+  }
+}
+

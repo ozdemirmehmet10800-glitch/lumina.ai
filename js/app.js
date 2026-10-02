@@ -167,6 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (viewName === 'notes') renderNotes();
     if (viewName === 'focus') updateTimerDisplay();
     if (viewName === 'habits') renderHabitsAndChart();
+    if (viewName === 'sanctum') initSanctumView();
   }
 
   dom.navItems.forEach(item => {
@@ -1239,6 +1240,515 @@ document.addEventListener('DOMContentLoaded', () => {
     if (pwaBanner) pwaBanner.style.display = 'none';
     showToast('Lumina AI telefonunuza kuruldu!', 'success');
   });
+
+  // ==========================================
+  // 12. SANCTUM (ZİHİN MABEDİ) CONTROLLER
+  // ==========================================
+  let sanctumInitialized = false;
+  let activeBinauralPreset = { carrier: 200, beat: 10 };
+  let isBrownNoiseActive = false;
+  let isBinauralActive = false;
+
+  function initSanctumView() {
+    if (window.LuminaSanctum) {
+      setTimeout(() => {
+        window.LuminaSanctum.initVoid('sanctum-void-canvas');
+      }, 50);
+    }
+
+    renderMementoMori();
+    renderCouncil();
+    renderDilemmas();
+    renderDreamHistory();
+    updateDopamineFastDisplay();
+
+    if (sanctumInitialized) return;
+    sanctumInitialized = true;
+    setupSanctumEventListeners();
+  }
+
+  function setupSanctumEventListeners() {
+    // Tab switching
+    const chamberTabs = document.querySelectorAll('.sanctum-chamber-tabs .chamber-tab');
+    const chamberPanels = document.querySelectorAll('.sanctum-panels-container .chamber-panel');
+
+    chamberTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const targetChamber = tab.getAttribute('data-chamber');
+        chamberTabs.forEach(t => t.classList.toggle('active', t === tab));
+        chamberPanels.forEach(p => p.classList.toggle('active', p.id === `chamber-panel-${targetChamber}`));
+
+        if (targetChamber === 'void' && window.LuminaSanctum) {
+          setTimeout(() => window.LuminaSanctum.initVoid('sanctum-void-canvas'), 50);
+        }
+      });
+    });
+
+    // 1. Void
+    const voidBtn = document.getElementById('sanctum-void-shred-btn');
+    const voidInput = document.getElementById('sanctum-void-input');
+    const voidCounter = document.getElementById('sanctum-void-counter');
+
+    function updateVoidCounter() {
+      if (voidCounter) {
+        const count = JSON.parse(localStorage.getItem('lumina_void_count') || '0');
+        voidCounter.textContent = `Yok Edilen Yük: ${count}`;
+      }
+    }
+    updateVoidCounter();
+
+    if (voidBtn && voidInput) {
+      voidBtn.addEventListener('click', () => {
+        const text = voidInput.value.trim();
+        if (!text) {
+          showToast('Lütfen boşluğa fırlatılacak bir düşünce yazın.', 'warning');
+          return;
+        }
+        window.LuminaSanctum.feedVoidWithText(text);
+        voidInput.value = '';
+        updateVoidCounter();
+        showToast('Zihinsel yük yerçekimsel tekillikte parçalandı 🌌', 'success');
+      });
+    }
+
+    // 2. Alter-Ego
+    const egoBtn = document.getElementById('sanctum-alterego-send-btn');
+    const egoInput = document.getElementById('sanctum-alterego-input');
+    const egoHistory = document.getElementById('sanctum-alterego-output');
+
+    if (egoBtn && egoInput && egoHistory) {
+      const handleEgoSubmit = () => {
+        const text = egoInput.value.trim();
+        if (!text) return;
+
+        const userBubble = document.createElement('div');
+        userBubble.className = 'alterego-bubble user';
+        userBubble.textContent = text;
+        egoHistory.appendChild(userBubble);
+        egoInput.value = '';
+        egoHistory.scrollTop = egoHistory.scrollHeight;
+
+        setTimeout(() => {
+          const resp = window.LuminaSanctum.generateAlterEgoResponse(text);
+          const egoBubble = document.createElement('div');
+          egoBubble.className = 'alterego-bubble ego';
+          egoBubble.innerHTML = resp.replace(/\n/g, '<br>');
+          egoHistory.appendChild(egoBubble);
+          egoHistory.scrollTop = egoHistory.scrollHeight;
+        }, 400);
+      };
+
+      egoBtn.addEventListener('click', handleEgoSubmit);
+      egoInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') handleEgoSubmit();
+      });
+    }
+
+    // 3. Multiverse
+    const multiBtn = document.getElementById('sanctum-multiverse-btn');
+    const choiceAInput = document.getElementById('sanctum-choice-a');
+    const choiceBInput = document.getElementById('sanctum-choice-b');
+    const multiOutput = document.getElementById('sanctum-multiverse-output');
+
+    if (multiBtn && choiceAInput && choiceBInput && multiOutput) {
+      multiBtn.addEventListener('click', () => {
+        const a = choiceAInput.value.trim();
+        const b = choiceBInput.value.trim();
+        const res = window.LuminaSanctum.simulateMultiverse(a, b);
+
+        multiOutput.style.display = 'grid';
+        multiOutput.innerHTML = `
+          <div class="multiverse-card branch-a">
+            <h4 style="color:#f59e0b; margin-bottom:0.75rem; font-weight:700;">${res.universeA.title}</h4>
+            <div class="multiverse-year-step">${res.universeA.year1}</div>
+            <div class="multiverse-year-step">${res.universeA.year5}</div>
+            <div class="multiverse-year-step">${res.universeA.year10}</div>
+          </div>
+          <div class="multiverse-card branch-b">
+            <h4 style="color:#06b6d4; margin-bottom:0.75rem; font-weight:700;">${res.universeB.title}</h4>
+            <div class="multiverse-year-step">${res.universeB.year1}</div>
+            <div class="multiverse-year-step">${res.universeB.year5}</div>
+            <div class="multiverse-year-step">${res.universeB.year10}</div>
+          </div>
+        `;
+        showToast('Paralel zaman çizgileri hesaplandı 🌌', 'info');
+      });
+    }
+
+    // 4. Council
+    const councilAskBtn = document.getElementById('sanctum-council-ask-btn');
+    const councilInput = document.getElementById('sanctum-council-input');
+
+    if (councilAskBtn && councilInput) {
+      councilAskBtn.addEventListener('click', () => {
+        const q = councilInput.value.trim();
+        renderCouncil(q);
+        showToast('Kadim Konsey kararını bildirdi 🏛️', 'info');
+      });
+    }
+
+    // 5. Memento Mori
+    const mementoCalcBtn = document.getElementById('sanctum-memento-calc-btn');
+    if (mementoCalcBtn) {
+      mementoCalcBtn.addEventListener('click', renderMementoMori);
+    }
+
+    // 6. Vagus Breathing
+    const breathToggleBtn = document.getElementById('sanctum-breath-toggle-btn');
+    const breathOrb = document.getElementById('sanctum-breath-orb');
+    const breathText = document.getElementById('sanctum-breath-text');
+    let currentBreathMode = 'box';
+
+    document.querySelectorAll('.breath-mode-selector .mode-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('.breath-mode-selector .mode-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        currentBreathMode = pill.getAttribute('data-bmode') || 'box';
+        if (window.LuminaSanctum.isBreathingActive) {
+          window.LuminaSanctum.stopBreathing();
+          window.LuminaSanctum.startBreathing(breathOrb, breathText, currentBreathMode);
+        }
+      });
+    });
+
+    if (breathToggleBtn && breathOrb && breathText) {
+      breathToggleBtn.addEventListener('click', () => {
+        if (window.LuminaSanctum.isBreathingActive) {
+          window.LuminaSanctum.stopBreathing();
+          breathToggleBtn.innerHTML = '<span>Nefes Seansını Başlat (432Hz)</span>';
+          breathText.textContent = 'Nefes Seansı Tamamlandı 🙏';
+          breathOrb.style.transform = 'scale(1.0)';
+        } else {
+          window.LuminaSanctum.startBreathing(breathOrb, breathText, currentBreathMode);
+          breathToggleBtn.innerHTML = '<span>Seansı Durdur</span>';
+        }
+      });
+    }
+
+    // 7. Shadow
+    const shadowBtn = document.getElementById('sanctum-shadow-btn');
+    const shadowInput = document.getElementById('sanctum-shadow-input');
+    const shadowOutput = document.getElementById('sanctum-shadow-output');
+
+    if (shadowBtn && shadowInput && shadowOutput) {
+      shadowBtn.addEventListener('click', () => {
+        const text = shadowInput.value.trim();
+        if (!text) {
+          showToast('Lütfen duygunuzu veya krizinizi ifade edin.', 'warning');
+          return;
+        }
+        const res = window.LuminaSanctum.analyzeArchetype(text);
+        shadowOutput.style.display = 'block';
+        shadowOutput.innerHTML = `
+          <div style="display:flex; align-items:center; gap:0.6rem; margin-bottom:0.75rem;">
+            <span style="font-size:1.8rem;">${res.icon}</span>
+            <div>
+              <h4 style="font-size:1.1rem; font-weight:800; color:#c084fc;">${res.name}</h4>
+              <span style="font-size:0.8rem; color:#f43f5e; font-weight:600;">Gölge Enerjisi: ${res.energy}</span>
+            </div>
+          </div>
+          <div style="margin-bottom:0.75rem; font-size:0.9rem; color:var(--text-main);">
+            <strong>Bilinçaltı Teşhisi:</strong> ${res.diagnosis}
+          </div>
+          <div style="background:rgba(168, 85, 247, 0.15); border-left:3px solid #a855f7; padding:0.65rem 0.85rem; border-radius:4px; font-size:0.88rem; color:#e9d5ff;">
+            <strong>🛡️ Bilişsel Panzehir:</strong> ${res.antidote}
+          </div>
+        `;
+        showToast('Gölge arketipi çözümlendi 🔮', 'success');
+      });
+    }
+
+    // 8. CBT
+    const cbtBtn = document.getElementById('sanctum-cbt-btn');
+    const cbtInput = document.getElementById('sanctum-cbt-input');
+    const cbtOutput = document.getElementById('sanctum-cbt-output');
+
+    if (cbtBtn && cbtInput && cbtOutput) {
+      cbtBtn.addEventListener('click', () => {
+        const text = cbtInput.value.trim();
+        if (!text) {
+          showToast('Lütfen olumsuz düşünceyi yazın.', 'warning');
+          return;
+        }
+        const res = window.LuminaSanctum.reframeCognitiveDistortion(text);
+        cbtOutput.style.display = 'block';
+        cbtOutput.innerHTML = `
+          <div style="font-weight:700; color:#f43f5e; margin-bottom:0.5rem;">${res.distortionIdentified}</div>
+          <div style="background:rgba(255, 255, 255, 0.03); padding:0.75rem; border-radius:6px; margin-bottom:0.75rem; font-size:0.88rem; white-space:pre-line;">${res.rationalReframing}</div>
+          <div style="font-weight:700; color:#10b981; font-size:0.92rem;">${res.affirmation}</div>
+        `;
+        showToast('Bilişsel panzehir üretildi 🛡️', 'success');
+      });
+    }
+
+    // 9. Dream Lab
+    const dreamBtn = document.getElementById('sanctum-dream-btn');
+    const dreamInput = document.getElementById('sanctum-dream-input');
+    const dreamOutput = document.getElementById('sanctum-dream-output');
+
+    if (dreamBtn && dreamInput && dreamOutput) {
+      dreamBtn.addEventListener('click', () => {
+        const text = dreamInput.value.trim();
+        if (!text) {
+          showToast('Lütfen rüyanızı anlatın.', 'warning');
+          return;
+        }
+        const res = window.LuminaSanctum.analyzeDream(text);
+        dreamOutput.style.display = 'block';
+        dreamOutput.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+            <h4 style="font-size:1rem; font-weight:800; color:#38bdf8;">🌙 Bilinçaltı Sembol Çözümü</h4>
+            <span style="font-size:0.8rem; font-weight:600; color:#10b981;">Berraklık: %${res.lucidity}</span>
+          </div>
+          <div style="margin-bottom:0.75rem;">
+            ${res.symbols.map(s => `
+              <div style="margin-bottom:0.4rem; font-size:0.88rem;">
+                <strong style="color:#f472b6;">🔹 ${s.symbol}:</strong> ${s.archetype} — <span style="color:var(--text-muted);">${s.interpretation}</span>
+              </div>
+            `).join('')}
+          </div>
+          <div style="padding:0.65rem; background:rgba(6, 182, 212, 0.15); border-radius:6px; font-size:0.88rem; color:#e0f2fe;">
+            <strong>✨ Uyanık Hayata Mesaj:</strong> ${res.coreMessage}
+          </div>
+        `;
+        dreamInput.value = '';
+        renderDreamHistory();
+        showToast('Rüya analiz edildi ve günlüğe kaydedildi 🌙', 'success');
+      });
+    }
+
+    // 10. Dopamine Fasting
+    const fastStartBtn = document.getElementById('sanctum-fast-start-btn');
+    const urgeBtn = document.getElementById('sanctum-urge-btn');
+    const urgeCountdown = document.getElementById('sanctum-urge-countdown');
+    const brownBtn = document.getElementById('sanctum-brown-btn');
+
+    let selectedFastHours = 2;
+    document.querySelectorAll('.fast-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('.fast-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        selectedFastHours = parseInt(pill.getAttribute('data-fast-hours') || '2');
+      });
+    });
+
+    if (fastStartBtn) {
+      fastStartBtn.addEventListener('click', () => {
+        window.LuminaSanctum.startDopamineFast(selectedFastHours);
+        updateDopamineFastDisplay();
+        showToast(`${selectedFastHours} saatlik dopamin orucu başlatıldı ⚡`, 'success');
+      });
+    }
+
+    if (urgeBtn && urgeCountdown) {
+      urgeBtn.addEventListener('click', () => {
+        urgeCountdown.style.display = 'block';
+        urgeBtn.disabled = true;
+        window.LuminaSanctum.startUrgeSurfing(
+          (secs) => {
+            urgeCountdown.textContent = `Dürtü Dalgası Sönüyor: ${secs} sn (Derin nefes al)`;
+          },
+          () => {
+            urgeCountdown.textContent = '🎉 Dalga Atlatıldı! Prefrontal korteks kontrolü geri aldı.';
+            urgeBtn.disabled = false;
+            setTimeout(() => { urgeCountdown.style.display = 'none'; }, 4000);
+          }
+        );
+      });
+    }
+
+    if (brownBtn) {
+      brownBtn.addEventListener('click', () => {
+        isBrownNoiseActive = !isBrownNoiseActive;
+        window.LuminaSanctum.toggleBrownNoise(isBrownNoiseActive);
+        brownBtn.textContent = isBrownNoiseActive ? 'Brown Noise Durdur' : 'Brown Noise Başlat';
+        if (isBrownNoiseActive) brownBtn.classList.add('btn-primary');
+        else brownBtn.classList.remove('btn-primary');
+      });
+    }
+
+    // 12. Neuro-Waves
+    const binauralPlayBtn = document.getElementById('sanctum-binaural-play-btn');
+    const binauralStopBtn = document.getElementById('sanctum-binaural-stop-btn');
+    const binauralStatus = document.getElementById('sanctum-binaural-status');
+
+    document.querySelectorAll('#sanctum-wave-presets .wave-preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#sanctum-wave-presets .wave-preset-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const carrier = parseFloat(btn.getAttribute('data-carrier') || '200');
+        const beat = parseFloat(btn.getAttribute('data-beat') || '10');
+        activeBinauralPreset = { carrier, beat };
+
+        if (isBinauralActive) {
+          window.LuminaSanctum.playBinauralBeat(carrier, beat, 0.15);
+          if (binauralStatus) binauralStatus.textContent = `Frekans Aktif: ${beat} Hz Binaural Dalga`;
+        }
+      });
+    });
+
+    if (binauralPlayBtn) {
+      binauralPlayBtn.addEventListener('click', () => {
+        isBinauralActive = true;
+        window.LuminaSanctum.playBinauralBeat(activeBinauralPreset.carrier, activeBinauralPreset.beat, 0.15);
+        if (binauralStatus) binauralStatus.textContent = `Frekans Aktif: ${activeBinauralPreset.beat} Hz Binaural Dalga (Kulaklık)`;
+        showToast(`${activeBinauralPreset.beat}Hz Nöro-Dalga başlatıldı 🧠`, 'success');
+      });
+    }
+
+    if (binauralStopBtn) {
+      binauralStopBtn.addEventListener('click', () => {
+        isBinauralActive = false;
+        window.LuminaSanctum.stopBinauralBeat();
+        if (binauralStatus) binauralStatus.textContent = 'Frekans: Kapalı';
+        showToast('Nöro-Dalga durduruldu', 'info');
+      });
+    }
+  }
+
+  // Helper renderers
+  function renderCouncil(query) {
+    const councilCards = document.getElementById('sanctum-council-cards');
+    if (!councilCards || !window.LuminaSanctum) return;
+    const philosophers = window.LuminaSanctum.consultCouncil(query || '');
+    councilCards.innerHTML = philosophers.map(p => `
+      <div class="philosopher-card">
+        <div class="philosopher-header">
+          <div>
+            <div class="phil-name">${p.name}</div>
+            <div class="phil-school">${p.school}</div>
+          </div>
+          <span class="phil-badge">${p.badge}</span>
+        </div>
+        <div class="phil-quote">${p.quote}</div>
+        <div class="phil-verdict"><strong>Hüküm:</strong> ${p.verdict}</div>
+      </div>
+    `).join('');
+  }
+
+  function renderMementoMori() {
+    const mementoStats = document.getElementById('sanctum-memento-stats');
+    const mementoGrid = document.getElementById('sanctum-memento-grid');
+    const mementoAgeInput = document.getElementById('sanctum-memento-age');
+    if (!mementoStats || !mementoGrid || !window.LuminaSanctum) return;
+
+    const age = parseInt(mementoAgeInput ? mementoAgeInput.value : '23') || 23;
+    const data = window.LuminaSanctum.calculateMementoMori(age);
+
+    mementoStats.innerHTML = `
+      <div class="memento-stat-box">
+        <div class="memento-stat-num">${data.livedWeeks}</div>
+        <div class="memento-stat-lbl">Yaşanan Hafta</div>
+      </div>
+      <div class="memento-stat-box">
+        <div class="memento-stat-num">${data.remainingWeeks}</div>
+        <div class="memento-stat-lbl">Kalan Hafta</div>
+      </div>
+      <div class="memento-stat-box">
+        <div class="memento-stat-num">%${data.livedPct}</div>
+        <div class="memento-stat-lbl">Geçen Ömür Payı</div>
+      </div>
+    `;
+
+    const totalDots = 4160;
+    const livedCount = Math.min(totalDots, data.livedWeeks);
+    let dotsHtml = '';
+    for (let i = 0; i < totalDots; i++) {
+      const isLived = i < livedCount;
+      dotsHtml += `<div class="week-dot ${isLived ? 'lived' : 'remaining'}"></div>`;
+    }
+    mementoGrid.innerHTML = dotsHtml;
+  }
+
+  function renderDreamHistory() {
+    const dreamHistory = document.getElementById('sanctum-dream-history');
+    if (!dreamHistory || !window.LuminaSanctum) return;
+    const list = window.LuminaSanctum.getSavedDreams();
+    if (list.length === 0) {
+      dreamHistory.innerHTML = '<div style="color:var(--text-muted); font-size:0.85rem;">Henüz kayıtlı rüya bulunmuyor.</div>';
+      return;
+    }
+    dreamHistory.innerHTML = list.map(d => `
+      <div style="padding:0.75rem; background:rgba(255,255,255,0.03); border-radius:6px; margin-bottom:0.5rem; border-left:3px solid #06b6d4;">
+        <div style="display:flex; justify-content:space-between; font-size:0.78rem; color:var(--secondary); margin-bottom:0.25rem;">
+          <span>${d.date}</span>
+          <span>Berraklık: %${d.lucidity}</span>
+        </div>
+        <div style="font-size:0.88rem; color:var(--text-main); margin-bottom:0.4rem;">${d.text.substring(0, 120)}${d.text.length > 120 ? '...' : ''}</div>
+        <div style="font-size:0.82rem; color:#a78bfa;"><strong>Mesaj:</strong> ${d.coreMessage}</div>
+      </div>
+    `).join('');
+  }
+
+  function updateDopamineFastDisplay() {
+    const fastTimerDisplay = document.getElementById('sanctum-fast-timer-display');
+    const fastProgressBar = document.getElementById('sanctum-fast-progress-bar');
+    const fastStatusLabel = document.getElementById('sanctum-fast-status-label');
+    if (!fastTimerDisplay || !fastProgressBar || !window.LuminaSanctum) return;
+
+    const state = window.LuminaSanctum.getFastState();
+    if (!state || !state.active) {
+      fastTimerDisplay.textContent = '02:00:00';
+      fastProgressBar.style.width = '0%';
+      if (fastStatusLabel) fastStatusLabel.textContent = 'Oruç Beklemede — Başlamak için butona basın';
+      return;
+    }
+    const h = String(state.hoursLeft).padStart(2, '0');
+    const m = String(state.minutesLeft).padStart(2, '0');
+    const s = String(state.secondsLeft).padStart(2, '0');
+    fastTimerDisplay.textContent = `${h}:${m}:${s}`;
+    fastProgressBar.style.width = `${state.progressPct}%`;
+    if (fastStatusLabel) fastStatusLabel.textContent = `Prefrontal Korteks Yenileniyor — %${state.progressPct} tamamlandı`;
+  }
+  setInterval(updateDopamineFastDisplay, 1000);
+
+  function renderDilemmas() {
+    const dilemmasList = document.getElementById('sanctum-dilemmas-list');
+    const dnaOutput = document.getElementById('sanctum-dna-output');
+    if (!dilemmasList || !dnaOutput || !window.LuminaSanctum) return;
+
+    const dilemmas = window.LuminaSanctum.getDilemmas();
+    const choices = JSON.parse(localStorage.getItem('lumina_dilemma_choices') || '{}');
+
+    dilemmasList.innerHTML = dilemmas.map(d => {
+      const userChoice = choices[d.id];
+      return `
+        <div class="dilemma-card">
+          <h4 style="font-weight:700; color:var(--text-main); font-size:1rem;">${d.title}</h4>
+          <div class="dilemma-scenario">${d.scenario}</div>
+          <div class="dilemma-options-grid">
+            <button class="btn-dilemma-opt ${userChoice === 'A' ? 'chosen' : ''}" data-did="${d.id}" data-opt="A">
+              <strong>A:</strong> ${d.optionA.text}
+              <div style="font-size:0.75rem; color:var(--secondary); margin-top:0.35rem;">(${d.optionA.label})</div>
+            </button>
+            <button class="btn-dilemma-opt ${userChoice === 'B' ? 'chosen' : ''}" data-did="${d.id}" data-opt="B">
+              <strong>B:</strong> ${d.optionB.text}
+              <div style="font-size:0.75rem; color:var(--secondary); margin-top:0.35rem;">(${d.optionB.label})</div>
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    dilemmasList.querySelectorAll('.btn-dilemma-opt').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const did = btn.getAttribute('data-did');
+        const opt = btn.getAttribute('data-opt');
+        window.LuminaSanctum.recordDilemmaChoice(did, opt);
+        renderDilemmas();
+      });
+    });
+
+    const dna = window.LuminaSanctum.calculatePhilosophicalDNA();
+    dnaOutput.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+        <h4 style="font-size:1.1rem; font-weight:800; color:#a855f7;">🧬 Felsefi Karakter DNA'nız</h4>
+        <span style="font-size:0.8rem; color:var(--text-muted);">${dna.answered} / 4 İkilem Yanıtlandı</span>
+      </div>
+      <div style="font-size:1.05rem; font-weight:700; color:var(--text-main); margin-bottom:0.5rem;">${dna.dominantSchool}</div>
+      <p style="font-size:0.88rem; color:var(--text-muted); line-height:1.5;">${dna.description}</p>
+    `;
+  }
 
   // --- Initial Render ---
   renderDashboard();

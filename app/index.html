@@ -55,6 +55,11 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
           <span>Alışkanlık & Veri</span>
         </a>
+        <a href="#sanctum" class="nav-item sanctum-nav-glow" data-view="sanctum">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="M12 3v18"/><path d="M3 12h18"/><circle cx="12" cy="12" r="4"/></svg>
+          <span>Zihin Mabedi 🔮</span>
+          <span class="nav-badge" style="background:linear-gradient(135deg, #a855f7, #6366f1); color:#fff; font-size:0.68rem; padding:0.15rem 0.4rem;">12 Oda</span>
+        </a>
       </nav>
 
       <div class="sidebar-footer">
@@ -529,6 +534,388 @@
           </div>
         </section>
 
+        <!-- ==========================================
+             VIEW 6: SANCTUM (ZİHİN MABEDİ - 12 ODA)
+             ========================================== -->
+        <section class="view-section" id="view-sanctum">
+          <div class="page-header">
+            <div>
+              <h2 class="page-title">🔮 Zihin Mabedi (Sanctum)</h2>
+              <p class="page-subtitle">Bilinçaltı çözümleme, varoluşsal felsefe, bilişsel panzehirler ve nöro-akış laboratuvarı.</p>
+            </div>
+            <div class="sanctum-badge">
+              <span class="pulse-dot-purple"></span>
+              <span>12 Derin Oda Aktif</span>
+            </div>
+          </div>
+
+          <!-- Chamber Selector Pills (Horizontally scrollable) -->
+          <div class="sanctum-chamber-tabs" id="sanctum-chamber-tabs">
+            <button class="chamber-tab active" data-chamber="void">🌌 Kara Delik</button>
+            <button class="chamber-tab" data-chamber="alterego">🪞 Acımasız Ayna</button>
+            <button class="chamber-tab" data-chamber="multiverse">🌌 Çoklu Evren</button>
+            <button class="chamber-tab" data-chamber="council">🏛️ Kadim Konsey</button>
+            <button class="chamber-tab" data-chamber="memento">⏳ Memento Mori</button>
+            <button class="chamber-tab" data-chamber="vagus">🧘 432Hz Zen Nefesi</button>
+            <button class="chamber-tab" data-chamber="shadow">🔮 Gölge Arketipi</button>
+            <button class="chamber-tab" data-chamber="cbt">🛡️ Bilişsel Panzehir</button>
+            <button class="chamber-tab" data-chamber="dream">🌙 Rüya Laboratuvarı</button>
+            <button class="chamber-tab" data-chamber="dopamine">⚡ Dopamin Orucu</button>
+            <button class="chamber-tab" data-chamber="dilemma">⚖️ Etik İkilemler</button>
+            <button class="chamber-tab" data-chamber="neurowaves">🧠 Nöro-Dalgalar</button>
+          </div>
+
+          <!-- Chamber Panels Container -->
+          <div class="sanctum-panels-container">
+            
+            <!-- 1. THE VOID PANEL -->
+            <div class="chamber-panel active" id="chamber-panel-void">
+              <div class="glass-card sanctum-card">
+                <div class="card-header-flex">
+                  <div>
+                    <h3 class="card-title">🌌 Kara Delik (The Void)</h3>
+                    <p class="card-subtitle">Korkularını, kaygılarını ve zihinsel yüklerini yerçekimsel tekilliğe fırlat. Parçalanıp yok oluşlarını izle.</p>
+                  </div>
+                  <span class="badge-purple" id="sanctum-void-counter">Yok Edilen Yük: 0</span>
+                </div>
+
+                <div class="void-canvas-wrapper">
+                  <canvas id="sanctum-void-canvas"></canvas>
+                  <div class="void-overlay-hint">Tekillik Aktif — Madde & Düşünce Çekimi</div>
+                </div>
+
+                <div class="void-input-group">
+                  <textarea id="sanctum-void-input" class="sanctum-textarea" placeholder="Zihnini kemiren korkuyu, suçluluk duygusunu, öfkeyi ya da zihinsel yükünü buraya yaz..."></textarea>
+                  <button class="btn-void-fire" id="sanctum-void-shred-btn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
+                    <span>Boşluğa Fırlat & Yok Et</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. THE ALTER-EGO PANEL -->
+            <div class="chamber-panel" id="chamber-panel-alterego">
+              <div class="glass-card sanctum-card">
+                <div class="card-header-flex">
+                  <div>
+                    <h3 class="card-title">🪞 Acımasız Ayna (The Alter-Ego)</h3>
+                    <p class="card-subtitle">Kibar yalanlar yok. Beyninin uydurduğu bahaneleri yaz; ikinci benliğin seni en çıplak gerçekle yüzleştirsin.</p>
+                  </div>
+                </div>
+
+                <div class="alterego-chat-area">
+                  <div class="alterego-history" id="sanctum-alterego-output">
+                    <div class="alterego-bubble intro">
+                      🪞 <em>"Bana kendini kandırmak için kullandığın bahaneyi anlat. Bakalım arkasında ne saklıyorsun..."</em>
+                    </div>
+                  </div>
+
+                  <div class="alterego-input-row">
+                    <input type="text" id="sanctum-alterego-input" class="form-input" placeholder="Ertelediğin şeyi ya da bahaneni yaz (örn: 'Çok yorgunum, yarın başlarım')">
+                    <button class="btn-primary" id="sanctum-alterego-send-btn">Yüzleş</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. THE MULTIVERSE PANEL -->
+            <div class="chamber-panel" id="chamber-panel-multiverse">
+              <div class="glass-card sanctum-card">
+                <div class="card-header-flex">
+                  <div>
+                    <h3 class="card-title">🌌 Çoklu Evren Simülatörü (Parallel Timelines)</h3>
+                    <p class="card-subtitle">Bir kararın iki farklı yolunu simüle et: Konfor alanında kalmak vs Cesur adımı atmak.</p>
+                  </div>
+                </div>
+
+                <div class="multiverse-input-grid">
+                  <div class="form-group">
+                    <label class="form-label">Yol A (Mevcut Durum / Konfor Alanı)</label>
+                    <input type="text" id="sanctum-choice-a" class="form-input" value="Eski alışkanlıklarla devam et, risk alma">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Yol B (Cesur Atılım / Bilinmezlik)</label>
+                    <input type="text" id="sanctum-choice-b" class="form-input" value="Korkularıma rağmen o projeyi başlat ve disipline gir">
+                  </div>
+                </div>
+
+                <button class="btn-primary" id="sanctum-multiverse-btn" style="margin-bottom: 1.5rem;">
+                  <span>⚡ 10 Yıllık Zaman Çizgilerini Simüle Et</span>
+                </button>
+
+                <div class="multiverse-results-grid" id="sanctum-multiverse-output" style="display:none;">
+                  <!-- Dynamically rendered -->
+                </div>
+              </div>
+            </div>
+
+            <!-- 4. THE PHILOSOPHICAL COUNCIL PANEL -->
+            <div class="chamber-panel" id="chamber-panel-council">
+              <div class="glass-card sanctum-card">
+                <div class="card-header-flex">
+                  <div>
+                    <h3 class="card-title">🏛️ Kadim Konsey (The Philosophical Council)</h3>
+                    <p class="card-subtitle">Tarihin en bilge 6 zihni (Marcus Aurelius, Nietzsche, Seneca, Sokrates, Schopenhauer, Lao Tzu) krizini inceliyor.</p>
+                  </div>
+                </div>
+
+                <div class="council-query-box">
+                  <input type="text" id="sanctum-council-input" class="form-input" placeholder="Konseye danışmak istediğin konuyu veya krizini yaz... (örn: 'Sürekli onaylanma ihtiyacı duyuyorum')">
+                  <button class="btn-primary" id="sanctum-council-ask-btn">Konseyi Topla</button>
+                </div>
+
+                <div class="council-cards-grid" id="sanctum-council-cards">
+                  <!-- Dynamically populated with philosopher verdicts -->
+                </div>
+              </div>
+            </div>
+
+            <!-- 5. MEMENTO MORI PANEL -->
+            <div class="chamber-panel" id="chamber-panel-memento">
+              <div class="glass-card sanctum-card">
+                <div class="card-header-flex">
+                  <div>
+                    <h3 class="card-title">⏳ Memento Mori (Yaşam Izgarası)</h3>
+                    <p class="card-subtitle">Ortalama 80 yıllık bir ömürde 4.160 hafta vardır. Zamanını nasıl harcadığını gör.</p>
+                  </div>
+                </div>
+
+                <div class="memento-controls">
+                  <div style="display:flex; align-items:center; gap:0.75rem;">
+                    <label class="form-label" style="margin:0;">Şu Anki Yaşınız:</label>
+                    <input type="number" id="sanctum-memento-age" class="form-input" style="width:90px;" min="1" max="100" value="23">
+                    <button class="btn-secondary" id="sanctum-memento-calc-btn">Hesapla</button>
+                  </div>
+                </div>
+
+                <div class="memento-stats-strip" id="sanctum-memento-stats">
+                  <!-- Populated by JS -->
+                </div>
+
+                <div class="memento-weeks-container">
+                  <div class="memento-weeks-legend">
+                    <span class="legend-item"><span class="legend-box lived"></span> Yaşanan Haftalar</span>
+                    <span class="legend-item"><span class="legend-box remaining"></span> Kalan Haftalar</span>
+                  </div>
+                  <div class="memento-weeks-grid" id="sanctum-memento-grid">
+                    <!-- Populated by JS -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 6. VAGUS 432HZ BREATHING PANEL -->
+            <div class="chamber-panel" id="chamber-panel-vagus">
+              <div class="glass-card sanctum-card" style="text-align: center;">
+                <div class="card-header-flex" style="justify-content: center; text-align: center;">
+                  <div>
+                    <h3 class="card-title">🧘 Vagus Siniri & 432Hz Zen Nefesi</h3>
+                    <p class="card-subtitle">Parasempatik sinir sistemini aktive eden polivagal nefes ritmi ve saf 432Hz rezonans tonu.</p>
+                  </div>
+                </div>
+
+                <div class="breath-mode-selector">
+                  <button class="mode-pill active" id="breath-mode-box" data-bmode="box">4-4-4-4 Kutu Nefesi (Box Breathing)</button>
+                  <button class="mode-pill" id="breath-mode-coherence" data-bmode="coherence">5-5 Kalp Tutarlılığı (Heart Coherence)</button>
+                </div>
+
+                <div class="breath-visualizer-container">
+                  <div class="breath-circle-outer">
+                    <div class="breath-circle-inner" id="sanctum-breath-orb"></div>
+                  </div>
+                  <div class="breath-phase-caption" id="sanctum-breath-text">Nefes Döngüsüne Hazırlan</div>
+                </div>
+
+                <div style="margin-top: 1.5rem;">
+                  <button class="btn-primary" id="sanctum-breath-toggle-btn">
+                    <span>Nefes Seansını Başlat (432Hz)</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 7. JUNGIAN SHADOW PANEL -->
+            <div class="chamber-panel" id="chamber-panel-shadow">
+              <div class="glass-card sanctum-card">
+                <div class="card-header-flex">
+                  <div>
+                    <h3 class="card-title">🔮 Gölge Arketipi & Bilinçaltı Aynası</h3>
+                    <p class="card-subtitle">Jungian psikolojiye göre en çok tepki verdiğin şey, gölgende gizlenen kabul edilmemiş gücündür.</p>
+                  </div>
+                </div>
+
+                <div class="shadow-input-box">
+                  <label class="form-label">Şu an içinde en yoğun hissettiğin duygu veya seni en çok öfkelendiren/korkutan durum nedir?</label>
+                  <textarea id="sanctum-shadow-input" class="sanctum-textarea" placeholder="İçtenlikle yaz... (örn: 'İnsanların beni hafife almasına ve kontrolü kaybetmeye aşırı öfkeleniyorum')"></textarea>
+                  <button class="btn-primary" id="sanctum-shadow-btn">Gölgeyi Teşhis Et</button>
+                </div>
+
+                <div class="shadow-output-card" id="sanctum-shadow-output" style="display:none;">
+                  <!-- Populated by JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- 8. CBT COGNITIVE ANTIDOTE PANEL -->
+            <div class="chamber-panel" id="chamber-panel-cbt">
+              <div class="glass-card sanctum-card">
+                <div class="card-header-flex">
+                  <div>
+                    <h3 class="card-title">🛡️ Bilişsel Panzehir & Felaket Savar (CBT)</h3>
+                    <p class="card-subtitle">Bilişsel Davranışçı Terapi motoru: Zihninin ürettiği felaket senaryolarını rasyonel teste tabi tut.</p>
+                  </div>
+                </div>
+
+                <div class="cbt-input-box">
+                  <label class="form-label">Zihninde yankılanan olumsuz veya felaketleştirici düşünceyi yaz:</label>
+                  <input type="text" id="sanctum-cbt-input" class="form-input" placeholder="Örn: 'Bu sınavı/mülakatı geçemezsem bütün hayatım mahvolacak'">
+                  <button class="btn-primary" id="sanctum-cbt-btn" style="margin-top:0.75rem;">Panzehir Üret</button>
+                </div>
+
+                <div class="cbt-output-card" id="sanctum-cbt-output" style="display:none;">
+                  <!-- Populated by JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- 9. DREAM LABORATORY PANEL -->
+            <div class="chamber-panel" id="chamber-panel-dream">
+              <div class="glass-card sanctum-card">
+                <div class="card-header-flex">
+                  <div>
+                    <h3 class="card-title">🌙 Rüya Laboratuvarı & Bilinçaltı Kod Çözücü</h3>
+                    <p class="card-subtitle">Rüyalarını kaydet. Jungian ve Freudian sembol motoru bilinçaltının uyanık hayatına mesajını çözsün.</p>
+                  </div>
+                </div>
+
+                <div class="dream-input-box">
+                  <textarea id="sanctum-dream-input" class="sanctum-textarea" placeholder="Gördüğün rüyayı detaylarıyla anlat (örn: 'Yüksek bir kulenin tepesinden okyanusa doğru uçuyordum ama kanatlarım zayıflıyordu...')"></textarea>
+                  <button class="btn-primary" id="sanctum-dream-btn">Sembolleri & Mesajı Çöz</button>
+                </div>
+
+                <div class="dream-result-card" id="sanctum-dream-output" style="display:none;">
+                  <!-- Populated by JS -->
+                </div>
+
+                <div class="dream-history-section" style="margin-top:2rem;">
+                  <h4 style="font-size:0.95rem; font-weight:700; color:var(--text-main); margin-bottom:0.75rem;">📖 Kayıtlı Rüyalarım & Bilinçaltı Arşivi</h4>
+                  <div class="dream-history-list" id="sanctum-dream-history">
+                    <!-- Populated by JS -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 10. NEUROCHEMICAL DOPAMINE FAST PANEL -->
+            <div class="chamber-panel" id="chamber-panel-dopamine">
+              <div class="glass-card sanctum-card">
+                <div class="card-header-flex">
+                  <div>
+                    <h3 class="card-title">⚡ Nörokimyasal Dopamin Orucu & Dürtü Sörfü</h3>
+                    <p class="card-subtitle">Aşırı uyarılmış dopamin reseptörlerini sıfırla. 90 saniyelik dürtü dalgası protokolü ve Brown Noise duyusal sessizlik.</p>
+                  </div>
+                </div>
+
+                <div class="dopamine-target-row">
+                  <span style="font-size:0.85rem; color:var(--text-muted);">Hedef Oruç Süresi:</span>
+                  <button class="mode-pill active fast-pill" data-fast-hours="2">2 Saat (Hızlı Reset)</button>
+                  <button class="mode-pill fast-pill" data-fast-hours="6">6 Saat (Derin Odak)</button>
+                  <button class="mode-pill fast-pill" data-fast-hours="24">24 Saat (Nöral Yenilenme)</button>
+                  <button class="btn-secondary" id="sanctum-fast-start-btn">Orucu Başlat</button>
+                </div>
+
+                <div class="dopamine-monitor-box">
+                  <div class="fast-timer-large" id="sanctum-fast-timer-display">02:00:00</div>
+                  <div class="fast-progress-track">
+                    <div class="fast-progress-fill" id="sanctum-fast-progress-bar" style="width: 0%;"></div>
+                  </div>
+                  <div class="fast-status-label" id="sanctum-fast-status-label">Prefrontal Korteks Dinlenmede</div>
+                </div>
+
+                <div class="dopamine-tools-grid">
+                  <div class="tool-card">
+                    <h4>🏄 Dürtü Sörfü (Urge Surfing - 90 sn)</h4>
+                    <p>Telefona veya dikkat dağıtıcıya uzanma arzusu 90 saniyede zirve yapar ve söner. Dalganın üzerinde sörf yap.</p>
+                    <button class="btn-primary" id="sanctum-urge-btn">Dürtü Sörfünü Başlat (90 sn)</button>
+                    <div id="sanctum-urge-countdown" style="margin-top:0.5rem; font-weight:700; color:var(--warning); display:none;">Kalan: 90 sn</div>
+                  </div>
+
+                  <div class="tool-card">
+                    <h4>🎧 Brown Noise (Duyusal Sessizlik)</h4>
+                    <p>Düşük frekanslı kahverengi gürültü beynin gevezelik eden Default Mode Network'ünü susturur.</p>
+                    <button class="btn-secondary" id="sanctum-brown-btn">Brown Noise Başlat</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 11. MORAL DILEMMAS PANEL -->
+            <div class="chamber-panel" id="chamber-panel-dilemma">
+              <div class="glass-card sanctum-card">
+                <div class="card-header-flex">
+                  <div>
+                    <h3 class="card-title">⚖️ Etik Çıkmazlar & Felsefi DNA Testi</h3>
+                    <p class="card-subtitle">Tarihin en zorlu etik ikilemleriyle yüzleş ve felsefi karakter haritanı ortaya çıkar.</p>
+                  </div>
+                </div>
+
+                <div class="dilemmas-container" id="sanctum-dilemmas-list">
+                  <!-- Dynamically populated dilemma cards -->
+                </div>
+
+                <div class="dna-result-card" id="sanctum-dna-output">
+                  <!-- Dynamically populated Philosophical DNA -->
+                </div>
+              </div>
+            </div>
+
+            <!-- 12. NEURO-WAVES BINAURAL PANEL -->
+            <div class="chamber-panel" id="chamber-panel-neurowaves">
+              <div class="glass-card sanctum-card">
+                <div class="card-header-flex">
+                  <div>
+                    <h3 class="card-title">🧠 Nöro-Dalgalar & Binaural Beyin Frekansları</h3>
+                    <p class="card-subtitle">Kulaklıkla dinlendiğinde iki kulak arasındaki frekans farkı beynini istenen bilinç dalgasına kilitler.</p>
+                  </div>
+                </div>
+
+                <div class="neuro-presets-grid" id="sanctum-wave-presets">
+                  <button class="wave-preset-btn" data-carrier="200" data-beat="40">
+                    <span class="wave-name">⚡ Gamma (40 Hz)</span>
+                    <span class="wave-desc">Hiperfokus & Yoğun Problem Çözme</span>
+                  </button>
+                  <button class="wave-preset-btn" data-carrier="200" data-beat="20">
+                    <span class="wave-name">🎯 Beta (20 Hz)</span>
+                    <span class="wave-desc">Aktif Analiz, Mantık & Çeviklik</span>
+                  </button>
+                  <button class="wave-preset-btn active" data-carrier="200" data-beat="10">
+                    <span class="wave-name">🌊 Alpha (10 Hz)</span>
+                    <span class="wave-desc">Akış Hali (Flow State) & Zihinsel Dinginlik</span>
+                  </button>
+                  <button class="wave-preset-btn" data-carrier="200" data-beat="6">
+                    <span class="wave-name">✨ Theta (6 Hz)</span>
+                    <span class="wave-desc">Derin Yaratıcılık, Sezgi & İçgörü</span>
+                  </button>
+                  <button class="wave-preset-btn" data-carrier="150" data-beat="2">
+                    <span class="wave-name">🌑 Delta (2 Hz)</span>
+                    <span class="wave-desc">Bilinçaltı Dinlenmesi & Nöral Onarım</span>
+                  </button>
+                </div>
+
+                <div class="neuro-controls-box">
+                  <div class="neuro-status" id="sanctum-binaural-status">Frekans: Kapalı (Kulaklık Tavsiye Edilir)</div>
+                  <div style="display:flex; justify-content:center; gap:1rem; margin-top:1rem;">
+                    <button class="btn-primary" id="sanctum-binaural-play-btn">Frekansı Başlat</button>
+                    <button class="btn-secondary" id="sanctum-binaural-stop-btn">Durdur</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
       </div>
     </main>
   </div>
@@ -659,6 +1046,7 @@
   <script src="js/audio.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/ai-service.js"></script>
+  <script src="js/sanctum.js"></script>
   <script src="js/app.js"></script>
   <script>
     if ('serviceWorker' in navigator) {

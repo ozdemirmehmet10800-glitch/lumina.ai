@@ -18,8 +18,15 @@ const MIME_TYPES = {
 const server = http.createServer((req, res) => {
   let reqUrl = req.url.split('?')[0];
   if (reqUrl === '/') reqUrl = '/index.html';
+  if (reqUrl.endsWith('/')) reqUrl += 'index.html';
 
-  const filePath = path.join(__dirname, reqUrl);
+  let filePath = path.join(__dirname, reqUrl);
+  try {
+    if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
+      filePath = path.join(filePath, 'index.html');
+    }
+  } catch (e) {}
+
   const ext = path.extname(filePath).toLowerCase();
   const contentType = MIME_TYPES[ext] || 'application/octet-stream';
 
