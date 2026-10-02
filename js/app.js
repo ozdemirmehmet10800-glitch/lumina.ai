@@ -1208,6 +1208,38 @@ document.addEventListener('DOMContentLoaded', () => {
     return html;
   }
 
+  // ==========================================
+  // 16. PWA DIRECT INSTALL PROMPT
+  // ==========================================
+  let deferredPrompt = null;
+  const pwaBanner = document.getElementById('pwa-install-banner');
+  const pwaBtn = document.getElementById('pwa-install-btn');
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (pwaBanner) pwaBanner.style.display = 'flex';
+  });
+
+  if (pwaBtn) {
+    pwaBtn.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          if (pwaBanner) pwaBanner.style.display = 'none';
+          showToast('Uygulama başarıyla kuruluyor! 🎉', 'success');
+        }
+        deferredPrompt = null;
+      }
+    });
+  }
+
+  window.addEventListener('appinstalled', () => {
+    if (pwaBanner) pwaBanner.style.display = 'none';
+    showToast('Lumina AI telefonunuza kuruldu!', 'success');
+  });
+
   // --- Initial Render ---
   renderDashboard();
 });
