@@ -1,9 +1,6 @@
 # 🌟 Lumina AI — Akıllı Kişisel Üretkenlik & Odak İstasyonu
 
-> 👨‍💻 **Proje Mimarı & Geliştirici:** **Berkay Özdemir**  
-> 🎬 **Sinematik Tanıtım Videosu:** [promo.html](https://ozdemirmehmet10800-glitch.github.io/lumina.ai/app/promo.html)
-
-**Lumina AI**, zihinsel dağınıklığı ortadan kaldırmak, günlük iş akışlarını düzenlemek ve derin odaklanmayı sağlamak amacıyla **Berkay Özdemir** tarafından tasarlanmış yeni nesil, estetik ve yapay zeka destekli bir kişisel üretkenlik panelidir.
+**Lumina AI**, zihinsel dağınıklığı ortadan kaldırmak, günlük iş akışlarını düzenlemek ve derin odaklanmayı sağlamak amacıyla tasarlanmış yeni nesil, estetik ve yapay zeka destekli bir kişisel üretkenlik panelidir.
 
 ![Lumina AI](assets/logo.jpg)
 
