@@ -172,6 +172,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (viewName === 'twin') initTwinView();
     if (viewName === 'trajectory') initTrajectoryView();
     if (viewName === 'life-os') initLifeOsView();
+    if (viewName === 'chronos') initChronosView();
+    if (viewName === 'biohack') initBiohackView();
+    if (viewName === 'synthesizer') initSynthesizerView();
+    if (viewName === 'codex') initCodexView();
   }
 
   dom.navItems.forEach(item => {
@@ -3390,7 +3394,804 @@ document.addEventListener('DOMContentLoaded', () => {
   initTrajectoryEvents();
   initLifeOsEvents();
 
+  // =========================================================================
+  // DIMENSION 6 & 8: ⏳ CHRONOS & MEMENTO MORI (VIEW 11)
+  // =========================================================================
+  const defaultCapsules = [
+    {
+      id: 'cap-init-1',
+      title: '🌱 Lumina AI Başlangıç Yemini',
+      condition: 'days-30',
+      conditionText: '30 Gün Sonra Açılacak',
+      body: 'Bu yolculuğa başlarken kendime söz verdim: Kolay yolu değil, karakterimi inşa edecek doğru yolu seçeceğim. 30 gün sonra buraya baktığımda disiplinimin güçlendiğini görmek istiyorum.',
+      createdAt: new Date().toLocaleDateString('tr-TR'),
+      unlockDate: new Date(Date.now() + 30 * 24 * 3600 * 1000).toLocaleDateString('tr-TR'),
+      opened: false
+    }
+  ];
+
+  function initChronosView() {
+    renderCapsulesVault();
+    renderMementoMoriGrid();
+    renderTimelineScrubberSnapshot(0);
+  }
+
+  function initChronosEvents() {
+    // Sub-tab Navigation
+    const pills = document.querySelectorAll('.chronos-nav-pill');
+    pills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        pills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        const target = pill.getAttribute('data-tab');
+        document.querySelectorAll('.chronos-tab-panel').forEach(panel => panel.style.display = 'none');
+        const activePanel = document.getElementById(`chronos-panel-${target}`);
+        if (activePanel) activePanel.style.display = 'block';
+      });
+    });
+
+    // Seal Capsule Button
+    const sealBtn = document.getElementById('btn-seal-capsule');
+    const titleInput = document.getElementById('capsule-title');
+    const condSelect = document.getElementById('capsule-unlock-condition');
+    const bodyInput = document.getElementById('capsule-body');
+
+    if (sealBtn) {
+      sealBtn.addEventListener('click', () => {
+        const title = titleInput ? titleInput.value.trim() : '';
+        const body = bodyInput ? bodyInput.value.trim() : '';
+        const cond = condSelect ? condSelect.value : 'days-30';
+
+        if (!title || !body) {
+          alert('Lütfen kapsül başlığı ve geleceğe mektubunuzu yazın.');
+          return;
+        }
+
+        const condDaysMap = { 'days-30': 30, 'days-90': 90, 'days-180': 180, 'days-365': 365, 'lvl-5': 60, 'lvl-10': 120 };
+        const days = condDaysMap[cond] || 30;
+        const unlockDate = new Date(Date.now() + days * 24 * 3600 * 1000).toLocaleDateString('tr-TR');
+
+        const newCapsule = {
+          id: `cap-${Date.now()}`,
+          title: title,
+          condition: cond,
+          conditionText: condSelect ? condSelect.options[condSelect.selectedIndex].text : 'Belirlenen Tarihte',
+          body: body,
+          createdAt: new Date().toLocaleDateString('tr-TR'),
+          unlockDate: unlockDate,
+          opened: false
+        };
+
+        const stored = localStorage.getItem('lumina_chronos_capsules');
+        let list = stored ? JSON.parse(stored) : defaultCapsules;
+        list.unshift(newCapsule);
+        localStorage.setItem('lumina_chronos_capsules', JSON.stringify(list));
+
+        if (titleInput) titleInput.value = '';
+        if (bodyInput) bodyInput.value = '';
+
+        if (window.LuminaSanctum) window.LuminaSanctum.addXP(30);
+        updateTopbarRPG();
+        renderCapsulesVault();
+        window.LuminaAudio.playBeep(440, 'triangle', 0.2);
+        alert('🔒 Kapsülünüz zaman boşluğuna mühürlendi! Günü geldiğinde açılacaktır (+30 XP).');
+      });
+    }
+
+    // Memento Mori Birth Year Input
+    const birthInput = document.getElementById('memento-birth-year');
+    if (birthInput) {
+      const savedYear = localStorage.getItem('lumina_birth_year');
+      if (savedYear) birthInput.value = savedYear;
+      birthInput.addEventListener('change', () => {
+        localStorage.setItem('lumina_birth_year', birthInput.value);
+        renderMementoMoriGrid();
+      });
+    }
+
+    // Timeline Scrubber Slider
+    const scrubber = document.getElementById('timeline-scrubber-range');
+    if (scrubber) {
+      scrubber.addEventListener('input', (e) => {
+        renderTimelineScrubberSnapshot(parseInt(e.target.value, 10));
+      });
+    }
+  }
+
+  function renderCapsulesVault() {
+    const listEl = document.getElementById('capsules-vault-list');
+    const badge = document.getElementById('capsules-count-badge');
+    if (!listEl) return;
+
+    const stored = localStorage.getItem('lumina_chronos_capsules');
+    const capsules = stored ? JSON.parse(stored) : defaultCapsules;
+
+    if (badge) badge.textContent = `${capsules.length} Kapsül`;
+
+    listEl.innerHTML = capsules.map(c => `
+      <div class="capsule-item-card ${c.opened ? 'unlocked' : ''}">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <strong style="color:var(--text-main); font-size:0.95rem;">${c.opened ? '🔓' : '🔒'} ${c.title}</strong>
+          <span style="font-size:0.75rem; color:#a855f7; font-weight:700;">${c.conditionText}</span>
+        </div>
+        <div class="capsule-meta-row">
+          <span>Mühürlendi: ${c.createdAt}</span>
+          <span>Açılış: ${c.unlockDate}</span>
+        </div>
+        <div style="font-size:0.84rem; color:var(--text-muted); line-height:1.5; margin-top:0.35rem;">
+          ${c.opened ? c.body : '<em>Bu kapsülün içeriği henüz kilit altındadır. Gelecekteki açılış gününde bilincinizle yüzleşecektir.</em>'}
+        </div>
+        ${!c.opened ? `
+          <div style="margin-top:0.5rem;">
+            <button class="btn-secondary btn-open-capsule" data-id="${c.id}" style="font-size:0.75rem; padding:0.25rem 0.65rem;">Kilidi Şimdi Zorla / Oku 👁️</button>
+          </div>
+        ` : ''}
+      </div>
+    `).join('');
+
+    listEl.querySelectorAll('.btn-open-capsule').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-id');
+        const stored = localStorage.getItem('lumina_chronos_capsules');
+        let list = stored ? JSON.parse(stored) : defaultCapsules;
+        const target = list.find(x => x.id === id);
+        if (target) {
+          target.opened = true;
+          localStorage.setItem('lumina_chronos_capsules', JSON.stringify(list));
+          renderCapsulesVault();
+          window.LuminaAudio.playBeep(660, 'sine', 0.15);
+        }
+      });
+    });
+  }
+
+  function renderMementoMoriGrid() {
+    const grid = document.getElementById('memento-grid');
+    const livedWeeksTag = document.getElementById('memento-lived-weeks');
+    const livedPercentTag = document.getElementById('memento-lived-percent');
+    const remainingTag = document.getElementById('memento-remaining-weeks');
+    const birthInput = document.getElementById('memento-birth-year');
+    if (!grid) return;
+
+    const birthYear = birthInput ? parseInt(birthInput.value, 10) || 2000 : 2000;
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth();
+    const elapsedWeeks = Math.max(0, (currentYear - birthYear) * 52 + Math.floor(currentMonth * 4.33));
+    const totalWeeks = 80 * 52; // 4,160 weeks
+    const remainingWeeks = Math.max(0, totalWeeks - elapsedWeeks);
+    const livedPercent = ((elapsedWeeks / totalWeeks) * 100).toFixed(1);
+
+    if (livedWeeksTag) livedWeeksTag.textContent = elapsedWeeks.toLocaleString('tr-TR');
+    if (livedPercentTag) livedPercentTag.textContent = `%${livedPercent}`;
+    if (remainingTag) remainingTag.textContent = remainingWeeks.toLocaleString('tr-TR');
+
+    // Create 4,160 dots efficiently via documentFragment
+    grid.innerHTML = '';
+    const frag = document.createDocumentFragment();
+    for (let i = 0; i < totalWeeks; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'memento-dot';
+      if (i < elapsedWeeks) {
+        dot.classList.add('lived');
+        dot.title = `Hafta ${i + 1}: Yaşandı ve Geleceğe Katıldı`;
+      } else if (i === elapsedWeeks) {
+        dot.classList.add('current');
+        dot.title = `BU HAFTA (Hafta ${i + 1}): Elindeki Tek Gerçek An!`;
+      } else {
+        dot.title = `Hafta ${i + 1}: Potansiyel Gelecek`;
+      }
+      frag.appendChild(dot);
+    }
+    grid.appendChild(frag);
+  }
+
+  function renderTimelineScrubberSnapshot(daysAgo) {
+    const tag = document.getElementById('scrubber-active-date-tag');
+    const snapshotEl = document.getElementById('timeline-day-snapshot');
+    if (!snapshotEl) return;
+
+    const targetDate = new Date(Date.now() - daysAgo * 24 * 3600 * 1000);
+    const dateStr = targetDate.toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+    if (tag) tag.textContent = daysAgo === 0 ? 'Bugün (Şimdi)' : `${daysAgo} Gün Önce`;
+
+    const focusMinutes = daysAgo === 0 ? 50 : Math.max(25, 120 - daysAgo * 3);
+    const tasksDone = daysAgo === 0 ? 3 : (daysAgo % 4) + 1;
+    const moodState = daysAgo % 3 === 0 ? 'Yüksek Odak & Bilişsel Berraklık' : (daysAgo % 3 === 1 ? 'Stoacı Dinginlik & Rutin' : 'Derin Stratejik Planlama');
+
+    snapshotEl.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:0.75rem;">
+        <div>
+          <h4 style="font-size:1.1rem; font-weight:800; color:var(--text-main);">${dateStr}</h4>
+          <span style="font-size:0.78rem; color:var(--secondary);">${daysAgo === 0 ? 'Şu Anki Durum' : 'Geçmiş Zihinsel İzdüşüm'}</span>
+        </div>
+        <span class="badge-tag" style="background:#8b5cf622; color:#c084fc; border:1px solid #8b5cf644;">${moodState}</span>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:1rem;">
+        <div style="padding:0.85rem; background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:var(--radius-md);">
+          <div style="font-size:0.75rem; color:var(--text-muted);">Tamamlanan Görevler</div>
+          <strong style="font-size:1.25rem; color:#38bdf8;">${tasksDone} Görev</strong>
+        </div>
+        <div style="padding:0.85rem; background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:var(--radius-md);">
+          <div style="font-size:0.75rem; color:var(--text-muted);">Derin Çalışma Süresi</div>
+          <strong style="font-size:1.25rem; color:#34d399;">${focusMinutes} Dakika</strong>
+        </div>
+        <div style="padding:0.85rem; background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:var(--radius-md);">
+          <div style="font-size:0.75rem; color:var(--text-muted);">Felsefi Çapa</div>
+          <strong style="font-size:0.95rem; color:#f59e0b;">Kontrol Alanı Bilinci</strong>
+        </div>
+      </div>
+    `;
+  }
+
+  // =========================================================================
+  // DIMENSION 7: 🧬 BİYO-HACK & MENTAL RAM (VIEW 12)
+  // =========================================================================
+  let caffeineTimerSeconds = 90 * 60;
+  let caffeineInterval = null;
+  let nsdrTimerSeconds = 20 * 60;
+  let nsdrInterval = null;
+
+  function initBiohackView() {
+    renderMentalRamGauge();
+  }
+
+  function initBiohackEvents() {
+    // Biohack Tabs
+    const pills = document.querySelectorAll('.biohack-nav-pill');
+    pills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        pills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        const target = pill.getAttribute('data-tab');
+        document.querySelectorAll('.biohack-tab-panel').forEach(p => p.style.display = 'none');
+        const active = document.getElementById(`biohack-panel-${target}`);
+        if (active) active.style.display = 'block';
+      });
+    });
+
+    // Caffeine Timer
+    const caffBtn = document.getElementById('btn-toggle-caffeine-timer');
+    const caffReset = document.getElementById('btn-reset-caffeine-timer');
+    const caffDisplay = document.getElementById('caffeine-timer-display');
+
+    if (caffBtn && caffDisplay) {
+      caffBtn.addEventListener('click', () => {
+        if (caffeineInterval) {
+          clearInterval(caffeineInterval);
+          caffeineInterval = null;
+          caffBtn.querySelector('span').textContent = '⏱️ Sayacı Başlat';
+        } else {
+          caffBtn.querySelector('span').textContent = '⏸️ Duraklat';
+          caffeineInterval = setInterval(() => {
+            caffeineTimerSeconds--;
+            const m = String(Math.floor(caffeineTimerSeconds / 60)).padStart(2, '0');
+            const s = String(caffeineTimerSeconds % 60).padStart(2, '0');
+            caffDisplay.textContent = `${m}:${s}`;
+            if (caffeineTimerSeconds <= 0) {
+              clearInterval(caffeineInterval);
+              caffeineInterval = null;
+              caffDisplay.textContent = '00:00';
+              alert('☕ Adenozin temizliği tamamlandı! Şimdi ilk kahvenizi içebilirsiniz.');
+            }
+          }, 1000);
+        }
+      });
+    }
+
+    if (caffReset && caffDisplay) {
+      caffReset.addEventListener('click', () => {
+        if (caffeineInterval) clearInterval(caffeineInterval);
+        caffeineInterval = null;
+        caffeineTimerSeconds = 90 * 60;
+        caffDisplay.textContent = '90:00';
+        if (caffBtn) caffBtn.querySelector('span').textContent = '⏱️ Sayacı Başlat';
+      });
+    }
+
+    // NSDR Timer
+    const nsdrBtn = document.getElementById('btn-toggle-nsdr');
+    const nsdrDisplay = document.getElementById('nsdr-timer-display');
+    if (nsdrBtn && nsdrDisplay) {
+      nsdrBtn.addEventListener('click', () => {
+        if (nsdrInterval) {
+          clearInterval(nsdrInterval);
+          nsdrInterval = null;
+          document.getElementById('nsdr-btn-label').textContent = '▶️ NSDR Seansını Başlat';
+        } else {
+          document.getElementById('nsdr-btn-label').textContent = '⏸️ Seansı Duraklat';
+          window.LuminaAudio.playBeep(210, 'sine', 0.2);
+          nsdrInterval = setInterval(() => {
+            nsdrTimerSeconds--;
+            const m = String(Math.floor(nsdrTimerSeconds / 60)).padStart(2, '0');
+            const s = String(nsdrTimerSeconds % 60).padStart(2, '0');
+            nsdrDisplay.textContent = `${m}:${s}`;
+            if (nsdrTimerSeconds <= 0) {
+              clearInterval(nsdrInterval);
+              nsdrInterval = null;
+              nsdrDisplay.textContent = '20:00';
+              alert('✨ 20 dakikalık NSDR tamamlandı. Dopamin rezervleriniz ve bilişsel odağınız sıfırlandı!');
+            }
+          }, 1000);
+        }
+      });
+    }
+
+    // Brain Dump Flush Processor
+    const dumpBtn = document.getElementById('btn-process-brain-dump');
+    const dumpInput = document.getElementById('brain-dump-input');
+    const dumpGrid = document.getElementById('dump-results-grid');
+
+    if (dumpBtn && dumpInput && dumpGrid) {
+      dumpBtn.addEventListener('click', () => {
+        const text = dumpInput.value.trim();
+        if (!text) {
+          alert('Lütfen zihninizdekileri metin kutusuna yazın.');
+          return;
+        }
+
+        const lines = text.split(/[\n,\.]+/).map(l => l.trim()).filter(l => l.length > 2);
+        const actions = [];
+        const notes = [];
+        const junk = [];
+
+        lines.forEach(line => {
+          const lower = line.toLowerCase();
+          if (lower.includes('yap') || lower.includes('et') || lower.includes('ara') || lower.includes('gönder') || lower.includes('mail') || lower.includes('bitir') || lower.includes('al')) {
+            actions.push(line);
+          } else if (lower.includes('kork') || lower.includes('endişe') || lower.includes('canım') || lower.includes('acaba') || lower.includes('bıktım')) {
+            junk.push(line);
+          } else {
+            notes.push(line);
+          }
+        });
+
+        dumpGrid.style.display = 'grid';
+        dumpGrid.innerHTML = `
+          <div class="dump-col-card" style="border-left:3px solid #38bdf8;">
+            <h4 style="font-size:0.95rem; font-weight:800; color:#38bdf8; margin-bottom:0.5rem;">🎯 Acil Eylemler (${actions.length})</h4>
+            <div style="font-size:0.8rem; color:var(--text-muted);">${actions.length ? actions.map(a => `<div>• ${a}</div>`).join('') : 'Eylem bulunamadı.'}</div>
+          </div>
+          <div class="dump-col-card" style="border-left:3px solid #10b981;">
+            <h4 style="font-size:0.95rem; font-weight:800; color:#10b981; margin-bottom:0.5rem;">📋 Referans & Notlar (${notes.length})</h4>
+            <div style="font-size:0.8rem; color:var(--text-muted);">${notes.length ? notes.map(n => `<div>• ${n}</div>`).join('') : 'Not bulunamadı.'}</div>
+          </div>
+          <div class="dump-col-card" style="border-left:3px solid #ef4444;">
+            <h4 style="font-size:0.95rem; font-weight:800; color:#ef4444; margin-bottom:0.5rem;">🗑️ Boşluğa Yakılan Kuruntular (${junk.length})</h4>
+            <div style="font-size:0.8rem; color:var(--text-muted);">${junk.length ? junk.map(j => `<div>• <del>${j}</del></div>`).join('') : 'Gürültü yok.'}</div>
+          </div>
+        `;
+
+        // Instantly reduce mental RAM
+        const ramVal = document.getElementById('ram-percent-value');
+        const ramTag = document.getElementById('ram-status-tag');
+        if (ramVal) ramVal.textContent = '22%';
+        if (ramTag) {
+          ramTag.textContent = '🟢 Zihinsel RAM Boşaltıldı & Berraklaştı (%22)';
+          ramTag.style.color = '#34d399';
+        }
+
+        if (window.LuminaSanctum) window.LuminaSanctum.addXP(25);
+        updateTopbarRPG();
+        window.LuminaAudio.playBeep(580, 'sine', 0.15);
+      });
+    }
+
+    // Quick Flush Nav Button in RAM tab
+    const quickFlushBtn = document.getElementById('btn-quick-flush-nav');
+    if (quickFlushBtn) {
+      quickFlushBtn.addEventListener('click', () => {
+        document.querySelectorAll('.biohack-nav-pill').forEach(p => p.classList.remove('active'));
+        const flushPill = document.querySelector('.biohack-nav-pill[data-tab="flush"]');
+        if (flushPill) flushPill.classList.add('active');
+        document.querySelectorAll('.biohack-tab-panel').forEach(p => p.style.display = 'none');
+        const active = document.getElementById('biohack-panel-flush');
+        if (active) active.style.display = 'block';
+      });
+    }
+  }
+
+  function renderMentalRamGauge() {
+    const list = document.getElementById('open-loops-list');
+    const ramVal = document.getElementById('ram-percent-value');
+    if (!list) return;
+
+    const tasks = (window.LuminaStorage.getTasks() || []).filter(t => !t.completed);
+    const calculatedRam = Math.min(94, Math.max(25, 30 + tasks.length * 8));
+    if (ramVal) ramVal.textContent = `${calculatedRam}%`;
+
+    list.innerHTML = tasks.slice(0, 6).map((t, i) => `
+      <div class="open-loop-item">
+        <span>${t.title}</span>
+        <span class="badge-tag" style="background:#ef444422; color:#f87171; border:1px solid #ef444444;">%${12 - i} RAM Tüketimi</span>
+      </div>
+    `).join('') || '<div style="font-size:0.85rem; color:var(--text-muted);">Hiç açık döngü yok. RAM tamamen temiz!</div>';
+  }
+
+  // =========================================================================
+  // DIMENSION 9 & 10: 🔬 FİKİR KAYNAŞTIRICI & SOKRATİK MAHKEME (VIEW 13)
+  // =========================================================================
+  function initSynthesizerView() {}
+
+  function initSynthesizerEvents() {
+    // Tabs
+    const pills = document.querySelectorAll('.synth-nav-pill');
+    pills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        pills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        const target = pill.getAttribute('data-tab');
+        document.querySelectorAll('.synth-tab-panel').forEach(p => p.style.display = 'none');
+        const active = document.getElementById(`synth-panel-${target}`);
+        if (active) active.style.display = 'block';
+      });
+    });
+
+    // Preset buttons for Crucible
+    const presets = document.querySelectorAll('.crucible-preset-btn');
+    const c1Input = document.getElementById('crucible-concept-1');
+    const c2Input = document.getElementById('crucible-concept-2');
+
+    presets.forEach(p => {
+      p.addEventListener('click', () => {
+        if (c1Input) c1Input.value = p.getAttribute('data-c1') || '';
+        if (c2Input) c2Input.value = p.getAttribute('data-c2') || '';
+      });
+    });
+
+    // Fire Crucible
+    const fireBtn = document.getElementById('btn-fire-crucible');
+    const crucibleOut = document.getElementById('crucible-output-card');
+
+    if (fireBtn && crucibleOut) {
+      fireBtn.addEventListener('click', () => {
+        const c1 = c1Input ? c1Input.value.trim() : 'Stoacılık';
+        const c2 = c2Input ? c2Input.value.trim() : 'Girişimcilik';
+
+        crucibleOut.style.display = 'block';
+        crucibleOut.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:0.75rem;">
+            <h4 style="font-size:1.15rem; font-weight:800; color:var(--text-main);">✨ Sentez Ürünü: "${c1} Odaklı ${c2} Manifestosu"</h4>
+            <span class="badge-tag" style="background:#ec489922; color:#f472b6; border:1px solid #ec489955;">Simya Tamamlandı</span>
+          </div>
+
+          <div style="font-size:0.9rem; color:var(--text-main); line-height:1.6; margin-bottom:1rem;">
+            <strong>Beklenmedik Analoji:</strong> ${c1} disiplinindeki içsel kontrol ve dilsiz kabul, ${c2} alanındaki belirsizlik stresini sıfırlayan nihai zırhtır. Dış başarıyı kontrol edemezsin, ancak harcadığın eforun kalitesini kontrol edersin.
+          </div>
+
+          <div style="padding:0.85rem 1rem; background:rgba(0,0,0,0.3); border-radius:var(--radius-md); font-size:0.83rem; color:#38bdf8; margin-bottom:1rem;">
+            💡 <strong>Pratik Eylem Hamlesi:</strong> Önümüzdeki 7 gün boyunca ${c2} hedefini ${c1} süzgecinden geçirerek günlük 1 sarsılmaz kural belirle.
+          </div>
+
+          <button class="btn-primary" id="btn-save-synthesis-note" style="font-size:0.82rem; padding:0.4rem 1rem;">
+            <span>📋 Bu Sentezi Not Defterine Kaydet</span>
+          </button>
+        `;
+
+        const saveNoteBtn = document.getElementById('btn-save-synthesis-note');
+        if (saveNoteBtn) {
+          saveNoteBtn.addEventListener('click', () => {
+            const notes = window.LuminaStorage.getNotes() || [];
+            notes.unshift({
+              id: Date.now(),
+              title: `${c1} + ${c2} Sentezi`,
+              body: `${c1} ve ${c2} disiplinlerinin simyası: İçsel kontrol ve kaliteli efor odaklı yaşam stratejisi.`,
+              updatedAt: new Date().toISOString()
+            });
+            window.LuminaStorage.saveNotes(notes);
+            alert('Sentez AI Not Defterine kaydedildi!');
+          });
+        }
+
+        window.LuminaAudio.playBeep(520, 'triangle', 0.15);
+      });
+    }
+
+    // Socratic Court Judge
+    const judgeBtn = document.getElementById('btn-judge-court');
+    const dilemmaInput = document.getElementById('court-dilemma-input');
+    const defenseInput = document.getElementById('court-defense-input');
+    const prosecInput = document.getElementById('court-prosecutor-input');
+    const verdictBox = document.getElementById('court-verdict-box');
+
+    if (judgeBtn && verdictBox) {
+      judgeBtn.addEventListener('click', () => {
+        const dilemma = dilemmaInput ? dilemmaInput.value.trim() : 'Mevcut İkilem';
+        const defense = defenseInput ? defenseInput.value.trim() : 'İçimdeki arzu';
+        const prosec = prosecInput ? prosecInput.value.trim() : 'Korkularım';
+
+        verdictBox.style.display = 'block';
+        verdictBox.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:0.75rem;">
+            <h4 style="font-size:1.15rem; font-weight:800; color:var(--text-main);">⚖️ Sokratik Duruşma Kararı: "${dilemma}"</h4>
+            <span class="badge-tag" style="background:#38bdf822; color:#38bdf8; border:1px solid #38bdf855;">Rasyonel Sentez</span>
+          </div>
+
+          <div style="font-size:0.85rem; color:#f87171; margin-bottom:0.75rem;">
+            ⚠️ <strong>Tespit Edilen Bilişsel Çarpıtma:</strong> <em>"Ya Hep Ya Hiç (Siyah-Beyaz Düşünme)"</em>. Zihnin durumu 'ya tamamen başarılı olacağım ya da aç kalacağım' gibi iki uç noktaya sıkıştırıyor. Gerçek hayatta gri alanlar ve güvenli geçiş modelleri vardır.
+          </div>
+
+          <div style="font-size:0.88rem; color:var(--text-main); line-height:1.6; margin-bottom:1rem;">
+            <strong>Sokratik Sentez Kararı:</strong> Radikal bir köprü yakma eylemi yerine, ilk 3 ay yan proje modeliyle prototip doğrulaması yap. Şeytanın avukatının haklı olduğu tek nokta nakit akışıdır; bu risk tamponlanarak tutkunun peşinden gidilmelidir.
+          </div>
+
+          <div style="padding:0.75rem 1rem; background:rgba(16, 185, 129, 0.1); border:1px solid rgba(16,185,129,0.3); border-radius:var(--radius-md); font-size:0.82rem; color:#34d399;">
+            ✅ <strong>Karar Mührü:</strong> Karar felci kaldırıldı. Kararını 24 saat içinde ilk pilot adımı atarak hayata geçir.
+          </div>
+        `;
+
+        window.LuminaAudio.playBeep(440, 'sine', 0.2);
+      });
+    }
+  }
+
+  // =========================================================================
+  // DIMENSION 11 & 12: 📜 DEĞERLER ANAYASASI & BİYOPSİ (VIEW 14)
+  // =========================================================================
+  const defaultPrinciples = [
+    'Duygularımla değil, uzun vadeli değerlerim ve ilkelerimle karar veririm.',
+    'En zor ve zihinsel direnç yaratan görevi günün ilk saatinde tamamlarım.',
+    'Başkalarının geçici övgüsüne değil, kendi karakterimin tutarlılığına bakarım.',
+    'Kontrolüm dışındaki gelişmeleri dilsiz bir sükunetle ve bilgelikle kabul ederim.',
+    'Ertelemek bir zaman tasarrufu değil, gelecekteki huzurumdan tefeci faiziyle borç almaktır.',
+    'Hata yapmak doğal bir keşiftir; aynı hatayı tekrarlamak ise ihmaldir.'
+  ];
+
+  function initCodexView() {
+    renderPrinciplesList();
+    renderWeeklyAutopsyReport();
+  }
+
+  function initCodexEvents() {
+    // Tabs
+    const pills = document.querySelectorAll('.codex-nav-pill');
+    pills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        pills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        const target = pill.getAttribute('data-tab');
+        document.querySelectorAll('.codex-tab-panel').forEach(p => p.style.display = 'none');
+        const active = document.getElementById(`codex-panel-${target}`);
+        if (active) active.style.display = 'block';
+      });
+    });
+
+    // Add Principle
+    const addBtn = document.getElementById('btn-add-principle');
+    const input = document.getElementById('new-principle-input');
+    if (addBtn && input) {
+      addBtn.addEventListener('click', () => {
+        const text = input.value.trim();
+        if (!text) return;
+        const stored = localStorage.getItem('lumina_codex_principles');
+        let list = stored ? JSON.parse(stored) : defaultPrinciples;
+        list.push(text);
+        localStorage.setItem('lumina_codex_principles', JSON.stringify(list));
+        input.value = '';
+        renderPrinciplesList();
+        window.LuminaAudio.playBeep(520, 'sine', 0.1);
+      });
+    }
+
+    // Consult Constitution
+    const consultBtn = document.getElementById('btn-consult-constitution');
+    const consultInput = document.getElementById('consult-dilemma-input');
+    const consultOut = document.getElementById('consult-result-output');
+
+    if (consultBtn && consultInput && consultOut) {
+      consultBtn.addEventListener('click', () => {
+        const q = consultInput.value.trim();
+        if (!q) {
+          alert('Lütfen anayasaya danışmak istediğiniz ikilemi yazın.');
+          return;
+        }
+
+        consultOut.style.display = 'block';
+        consultOut.innerHTML = `
+          <div style="padding:1rem; background:rgba(245, 158, 11, 0.1); border:1px solid rgba(245, 158, 11, 0.35); border-radius:var(--radius-md);">
+            <div style="font-size:0.78rem; font-weight:800; color:#fbbf24; text-transform:uppercase; margin-bottom:0.25rem;">ANAYASA HÜKMÜ</div>
+            <strong style="color:var(--text-main); font-size:0.9rem;">"${q}" karşısında:</strong>
+            <p style="font-size:0.83rem; color:var(--text-muted); margin-top:0.4rem; line-height:1.5;">
+              Temel ilkeniz şunu emreder: <em>"Duygularımla değil, uzun vadeli değerlerimle karar veririm. Ertelemek geleceğimden tefeci faiziyle borç almaktır."</em> Şu anki geçici isteksizlik bir sinyal değil, sadece beynin konfor tuzağıdır. 5 dakikalık kuralı uygulayın ve hemen eyleme geçin.
+            </p>
+          </div>
+        `;
+        window.LuminaAudio.playBeep(440, 'triangle', 0.12);
+      });
+    }
+
+    // Copy Autopsy Report
+    const copyReportBtn = document.getElementById('btn-copy-autopsy-report');
+    if (copyReportBtn) {
+      copyReportBtn.addEventListener('click', () => {
+        const text = `Lumina AI - Haftalık Zihinsel Performans Biyopsisi:\n• Tamamlanan Görevler: 14\n• Derin Odak Süresi: 6.5 Saat\n• Kaçınma Deseni: Zor işlerde maillere kaçma\n• Dayanıklılık Notu: A- (Stoacı Kabullenme Yüksek)`;
+        navigator.clipboard.writeText(text).then(() => {
+          alert('Haftalık Biyopsi Raporu panoya kopyalandı!');
+        });
+      });
+    }
+  }
+
+  function renderPrinciplesList() {
+    const listEl = document.getElementById('principles-list');
+    const badge = document.getElementById('principles-count-tag');
+    if (!listEl) return;
+
+    const stored = localStorage.getItem('lumina_codex_principles');
+    const principles = stored ? JSON.parse(stored) : defaultPrinciples;
+
+    if (badge) badge.textContent = `${principles.length} İlke`;
+
+    listEl.innerHTML = principles.map((p, i) => `
+      <div class="principle-item">
+        <span class="principle-num">${i + 1}.</span>
+        <span class="principle-text">${p}</span>
+      </div>
+    `).join('');
+  }
+
+  function renderWeeklyAutopsyReport() {
+    const sheet = document.getElementById('autopsy-report-sheet');
+    if (!sheet) return;
+
+    sheet.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:0.75rem;">
+        <div>
+          <h4 style="font-size:1.15rem; font-weight:800; color:var(--text-main);">Bu Haftanın Zihinsel Röntgeni</h4>
+          <span style="font-size:0.78rem; color:var(--text-muted);">Veri Kaynakları: Pomodoro, Görevler, AI Notları ve Zihin İkizi</span>
+        </div>
+        <span class="badge-tag" style="background:#10b98122; color:#34d399; border:1px solid #10b98144;">Dayanıklılık Skoru: %88 (A-)</span>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; margin-bottom:1.5rem;">
+        <div style="padding:1rem; background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:var(--radius-md);">
+          <div style="font-size:0.75rem; color:var(--text-muted);">Zirve Odaklanma Saati</div>
+          <strong style="font-size:1.15rem; color:#38bdf8;">09:30 - 11:30 (Sabah)</strong>
+        </div>
+        <div style="padding:1rem; background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:var(--radius-md);">
+          <div style="font-size:0.75rem; color:var(--text-muted);">Kaçınma & Erteleme Deseni</div>
+          <strong style="font-size:0.95rem; color:#f87171;">Büyük Yazım Görevleri</strong>
+        </div>
+        <div style="padding:1rem; background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:var(--radius-md);">
+          <div style="font-size:0.75rem; color:var(--text-muted);">Felsefi Dengelenme</div>
+          <strong style="font-size:1.15rem; color:#c084fc;">%82 Stoacı Sükunet</strong>
+        </div>
+      </div>
+
+      <div style="padding:1rem; background:rgba(99, 102, 241, 0.08); border:1px solid rgba(99, 102, 241, 0.25); border-radius:var(--radius-lg);">
+        <strong style="color:var(--text-main); font-size:0.92rem;">💊 Önümüzdeki Hafta İçin Bilişsel Reçete:</strong>
+        <p style="font-size:0.84rem; color:var(--text-muted); line-height:1.5; margin-top:0.35rem;">
+          Öğleden sonra 14:00 - 15:00 arasında görülen enerji düşüşü için 20 dakikalık NSDR seansını takvime sabitleyin. Erteleme görülen büyük yazım projelerini haftanın başında 3 mikro parçaya bölerek başlayın.
+        </p>
+      </div>
+    `;
+  }
+
+  // =========================================================================
+  // ATMOSPHERE THEMES ENGINE & FOCUS DEFENSE SHIELD
+  // =========================================================================
+  function initAtmosphereThemeEngine() {
+    const atmoBtn = document.getElementById('btn-atmosphere-picker');
+    const modal = document.getElementById('atmosphere-picker-modal');
+    const closeBtn = document.getElementById('close-atmosphere-modal');
+    const cards = document.querySelectorAll('.atmosphere-card-option');
+    const settingSelect = document.getElementById('setting-theme');
+
+    function applyAtmosphereTheme(themeName) {
+      document.documentElement.setAttribute('data-theme', themeName);
+      localStorage.setItem('lumina_atmosphere', themeName);
+      if (settingSelect) settingSelect.value = themeName;
+    }
+
+    // Load saved atmosphere on boot
+    const saved = localStorage.getItem('lumina_atmosphere') || 'dark';
+    applyAtmosphereTheme(saved);
+
+    if (atmoBtn && modal) {
+      atmoBtn.addEventListener('click', () => modal.showModal());
+    }
+    if (closeBtn && modal) {
+      closeBtn.addEventListener('click', () => modal.close());
+    }
+
+    cards.forEach(c => {
+      c.addEventListener('click', () => {
+        const theme = c.getAttribute('data-theme');
+        if (theme) {
+          applyAtmosphereTheme(theme);
+          window.LuminaAudio.playBeep(520, 'sine', 0.1);
+          if (modal) modal.close();
+        }
+      });
+    });
+
+    if (settingSelect) {
+      settingSelect.addEventListener('change', (e) => {
+        applyAtmosphereTheme(e.target.value);
+      });
+    }
+  }
+
+  function initFocusShield() {
+    const shieldBtn = document.getElementById('btn-focus-shield');
+    const modal = document.getElementById('focus-shield-modal');
+    const closeBtn = document.getElementById('close-shield-modal');
+    const deactBtn = document.getElementById('btn-deactivate-shield');
+    const reEngageBtn = document.getElementById('btn-re-engage-focus');
+    const triggerCards = document.querySelectorAll('.shield-trigger-card');
+    const interventionBox = document.getElementById('shield-intervention-box');
+
+    if (!shieldBtn || !modal) return;
+
+    shieldBtn.addEventListener('click', () => {
+      // Find active or top task
+      const tasks = window.LuminaStorage.getTasks() || [];
+      const topTask = tasks.find(t => !t.completed) || { title: 'Derin Zihinsel Odak Seansı' };
+      const taskTitleEl = document.getElementById('shield-active-task-title');
+      if (taskTitleEl) taskTitleEl.textContent = `🎯 ${topTask.title}`;
+      if (interventionBox) interventionBox.style.display = 'none';
+
+      modal.showModal();
+      window.LuminaAudio.playBeep(440, 'triangle', 0.15);
+    });
+
+    if (closeBtn) closeBtn.addEventListener('click', () => modal.close());
+    if (deactBtn) deactBtn.addEventListener('click', () => modal.close());
+    if (reEngageBtn) {
+      reEngageBtn.addEventListener('click', () => {
+        modal.close();
+        switchView('focus');
+      });
+    }
+
+    triggerCards.forEach(card => {
+      card.addEventListener('click', () => {
+        const trigger = card.getAttribute('data-trigger');
+        if (!interventionBox) return;
+
+        interventionBox.style.display = 'block';
+        if (trigger === 'too-hard') {
+          interventionBox.innerHTML = `
+            <strong style="color:#38bdf8;">🧗 Karşı Hamle: 3 Mikro-Parça Kuralı</strong>
+            <p style="margin-top:0.35rem; color:var(--text-main);">Görevin tamamını bitirmeyi unut. Şu an sadece ilk 3 dakikada yapılacak tek bir satırı veya başlığı yaz. Momentum direnci yener.</p>
+          `;
+        } else if (trigger === 'bored') {
+          interventionBox.innerHTML = `
+            <strong style="color:#f59e0b;">🥱 Karşı Hamle: 5 Dakikalık Hız Sprinti</strong>
+            <p style="margin-top:0.35rem; color:var(--text-main);">Kronometreni 5 dakikaya kur ve bitirebildiğin kadar hızlı şekilde taslak çıkar. Sıkıntı sadece beynin ucuz dopamin arayışıdır.</p>
+          `;
+        } else if (trigger === 'tired') {
+          interventionBox.innerHTML = `
+            <strong style="color:#10b981;">🔋 Karşı Hamle: 90 Saniyelik Fiziksel Reset</strong>
+            <p style="margin-top:0.35rem; color:var(--text-main);">Monitörden bakışlarını çek, bir bardak soğuk su iç ve 3 derin Fizyolojik İçe Çekiş nefesi al.</p>
+          `;
+        } else {
+          interventionBox.innerHTML = `
+            <strong style="color:#c084fc;">⚡ Karşı Hamle: Berbat Yapma İzni</strong>
+            <p style="margin-top:0.35rem; color:var(--text-main);">Mükemmel olmak zorunda değilsin; ilk taslağın berbat olmasına izin ver. Düzeltmek, boş bir sayfaya bakmaktan her zaman daha kolaydır.</p>
+          `;
+        }
+        window.LuminaAudio.playBeep(580, 'sine', 0.1);
+      });
+    });
+  }
+
+  // --- Initial Render & Dimension Event Wiring ---
+  initEmergencySOS();
+  initGalaxyEvents();
+  initTwinEvents();
+  initTrajectoryEvents();
+  initLifeOsEvents();
+  initChronosEvents();
+  initBiohackEvents();
+  initSynthesizerEvents();
+  initCodexEvents();
+  initAtmosphereThemeEngine();
+  initFocusShield();
+
   updateTopbarRPG();
   renderDashboard();
 });
+
 
