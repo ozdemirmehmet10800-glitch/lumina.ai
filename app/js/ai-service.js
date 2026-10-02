@@ -25,25 +25,33 @@ class LuminaAIService {
   }
 
   /**
-   * Main Dispatcher: Sends request to Gemini API if key is present,
-   * otherwise falls back smoothly to the rich local cognitive engine.
+   * Main Dispatcher:
+   * Tier 1: Fast Instant Math & Logic Evaluator (0ms)
+   * Tier 2: User's custom Google Gemini API Key (if configured)
+   * Tier 3: Zero-Config Live Cloud LLM (Puter.js GPT-4o-mini / Gemini - 100% Free & Live)
+   * Tier 4: High-Fidelity Local Offline Cognitive Brain (if no internet)
    */
   async generate(prompt, systemInstruction = '') {
+    const raw = prompt ? prompt.trim() : '';
+
+    // TIER 0: Fast Instant Math Interceptor (2.2?, 2*2, 100/4 etc.)
+    const mathRes = this.tryMath(raw);
+    if (mathRes) return mathRes;
+
     const apiKey = this.getApiKey();
 
+    // TIER 1: User's Configured Google Gemini API Key
     if (apiKey) {
       try {
         const fullPrompt = systemInstruction 
-          ? `[SİSTEM TALİMATI: Sen Lumina AI'sın. Türkçe, samimi, zeki, stoacı ve derin odaklanma odaklı bir kişisel koçsun. ${systemInstruction}]\n\n${prompt}`
-          : prompt;
+          ? `[SİSTEM TALİMATI: Sen Lumina AI'sın. Türkçe, samimi, zeki, stoacı ve derin odaklanma odaklı bir kişisel koçsun. ${systemInstruction}]\n\n${raw}`
+          : raw;
 
         const response = await fetch(`${this.geminiEndpoint}?key=${apiKey}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            contents: [{
-              parts: [{ text: fullPrompt }]
-            }],
+            contents: [{ parts: [{ text: fullPrompt }] }],
             generationConfig: {
               temperature: 0.7,
               maxOutputTokens: 1000,
@@ -51,21 +59,42 @@ class LuminaAIService {
           })
         });
 
-        if (!response.ok) {
-          console.warn('Gemini API isteği başarısız oldu, akıllı yerel motora geçiliyor:', response.status);
-          return this.fallbackGenerate(prompt, systemInstruction);
+        if (response.ok) {
+          const data = await response.json();
+          const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (text) return text.trim();
         }
-
-        const data = await response.json();
-        const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (text) return text.trim();
       } catch (err) {
-        console.warn('Gemini bağlantı hatası, akıllı yerel motora dönülüyor:', err);
+        console.warn('Gemini API hatası, canlı bulut yapay zekasına geçiliyor:', err);
       }
     }
 
-    // Default to rich local engine
-    return this.fallbackGenerate(prompt, systemInstruction);
+    // TIER 2: Live Zero-Config Free Cloud LLM (Puter.js GPT-4o-mini)
+    if (typeof window !== 'undefined' && window.puter && window.puter.ai && typeof window.puter.ai.chat === 'function') {
+      try {
+        const sysContext = systemInstruction || "Sen Lumina AI adında zeki, samimi ve Türkçe konuşan üst düzey bir kişisel yapay zeka asistanısın. Kullanıcının sorusunu doğrudan, doğru ve eksiksiz yanıtla.";
+        const fullPrompt = `${sysContext}\n\nKullanıcı: ${raw}`;
+        
+        const res = await window.puter.ai.chat(fullPrompt, { model: 'gpt-4o-mini' });
+        let text = '';
+        if (typeof res === 'string') {
+          text = res;
+        } else if (res?.message?.content) {
+          text = Array.isArray(res.message.content) ? res.message.content[0]?.text : res.message.content;
+        } else if (res?.text) {
+          text = res.text;
+        }
+
+        if (text && text.trim().length > 0) {
+          return text.trim();
+        }
+      } catch (e) {
+        console.warn('Puter AI bulut çağrısı başarısız oldu, yerel yedek motora geçiliyor:', e);
+      }
+    }
+
+    // TIER 3: Local Offline Brain
+    return this.fallbackGenerate(raw, systemInstruction);
   }
 
   /**
