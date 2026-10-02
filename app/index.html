@@ -60,6 +60,26 @@
           <span>Zihin Mabedi 🔮</span>
           <span class="nav-badge" style="background:linear-gradient(135deg, #a855f7, #6366f1); color:#fff; font-size:0.68rem; padding:0.15rem 0.4rem;">25 Sistem</span>
         </a>
+        <a href="#galaxy" class="nav-item galaxy-nav-glow" data-view="galaxy">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><circle cx="19" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><circle cx="5" cy="5" r="2"/><line x1="12" y1="9" x2="12" y2="3"/><line x1="12" y1="15" x2="12" y2="21"/><line x1="9.5" y1="10.5" x2="6.5" y2="6.5"/><line x1="14.5" y1="13.5" x2="17.5" y2="17.5"/></svg>
+          <span>Zihin Galaksisi 🌌</span>
+          <span class="nav-badge" style="background:#06b6d4; color:#fff; font-size:0.65rem;">3D Ağ</span>
+        </a>
+        <a href="#twin" class="nav-item" data-view="twin">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>Zihin İkizim 👁️</span>
+          <span class="nav-badge" style="background:#a855f7; color:#fff; font-size:0.65rem;">Klon</span>
+        </a>
+        <a href="#trajectory" class="nav-item" data-view="trajectory">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><path d="M6 9v3a6 6 0 0 0 6 6h3"/></svg>
+          <span>Gelecek Ağacı 🔮</span>
+          <span class="nav-badge" style="background:#10b981; color:#fff; font-size:0.65rem;">Yollar</span>
+        </a>
+        <a href="#life-os" class="nav-item" data-view="life-os">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polygon points="12 2 15 8 21 9 17 14 18 20 12 17 6 20 7 14 3 9 9 8 12 2"/></svg>
+          <span>Yaşam Dengesi ☸️</span>
+          <span class="nav-badge" style="background:#f59e0b; color:#fff; font-size:0.65rem;">360°</span>
+        </a>
       </nav>
 
       <div class="sidebar-footer">
@@ -101,6 +121,12 @@
         </div>
 
         <div class="topbar-right">
+          <!-- Emergency SOS Button -->
+          <button class="sos-topbar-btn" id="btn-emergency-sos" title="Bilişsel Acil Durum & Panik Kiti">
+            <span class="sos-pulse"></span>
+            <span>🚨 SOS</span>
+          </button>
+
           <!-- RPG Level Mini Pill -->
           <div class="rpg-topbar-pill" id="topbar-rpg-pill" title="Karakter Seviyeniz ve XP Durumu (Tıkla)">
             <span class="rpg-level-tag" id="rpg-topbar-level">LVL 1</span>
@@ -1442,6 +1468,213 @@
           </div>
         </section>
 
+        <!-- ==========================================
+             VIEW 7: ZİHİN GALAKSİSİ (NEURAL KNOWLEDGE GRAPH)
+             ========================================== -->
+        <section class="view-section" id="view-galaxy">
+          <div class="page-header">
+            <div>
+              <h2 class="page-title">🌌 Canlı Zihin Sinir Ağı & İkinci Beyin Galaksisi</h2>
+              <p class="page-subtitle">Zihnindeki tüm görevler, notlar, alışkanlıklar ve felsefi kararlar parlayan interaktif bir uzay ağı olarak birbirine bağlıdır.</p>
+            </div>
+            <div class="galaxy-controls-row">
+              <div class="galaxy-filter-group">
+                <button class="galaxy-filter-pill active" data-filter="all">Tümü (Galaksi)</button>
+                <button class="galaxy-filter-pill" data-filter="task">Görevler 🔵</button>
+                <button class="galaxy-filter-pill" data-filter="note">Notlar 🟢</button>
+                <button class="galaxy-filter-pill" data-filter="habit">Alışkanlıklar 🟡</button>
+                <button class="galaxy-filter-pill" data-filter="sanctum">Felsefe 🟣</button>
+              </div>
+              <button class="btn-secondary" id="btn-reset-galaxy-view"><span>🎯 Merkeze Odakla</span></button>
+            </div>
+          </div>
+
+          <div class="galaxy-main-container">
+            <div class="galaxy-canvas-wrapper">
+              <canvas id="galaxy-canvas"></canvas>
+              
+              <!-- Floating HUD Info Overlay -->
+              <div class="galaxy-hud-card" id="galaxy-hud-card" style="display:none;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.35rem;">
+                  <span class="badge-tag" id="hud-node-type">Görev</span>
+                  <span style="font-size:0.75rem; color:var(--text-muted);" id="hud-node-date"></span>
+                </div>
+                <h4 id="hud-node-title" style="font-size:1.05rem; font-weight:700; color:var(--text-main); margin-bottom:0.5rem;"></h4>
+                <p id="hud-node-snippet" style="font-size:0.82rem; color:var(--text-muted); line-height:1.4; margin-bottom:0.75rem;"></p>
+                <div style="font-size:0.78rem; color:var(--secondary);" id="hud-node-connections"></div>
+              </div>
+
+              <!-- Galaxy Stats Bar -->
+              <div class="galaxy-stats-bottom">
+                <span id="galaxy-stat-nodes">Düğümler Yükleniyor...</span>
+                <span>•</span>
+                <span id="galaxy-stat-synapses">Sinirsel Bağlantılar</span>
+                <span>•</span>
+                <span style="color:#38bdf8;" id="galaxy-stat-focus">Ağırlık Merkezi: Odak & Biliş</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==========================================
+             VIEW 8: DİJİTAL ZİHİN İKİZİM (ALTER-SELF)
+             ========================================== -->
+        <section class="view-section" id="view-twin">
+          <div class="page-header">
+            <div>
+              <h2 class="page-title">👁️ Dijital Zihin İkizi (Digital Alter-Self)</h2>
+              <p class="page-subtitle">Yazdığın notlardan, felsefi kararlarından ve arketipinden beslenen, sana tarafsız ayna tutan zihin ikizin.</p>
+            </div>
+          </div>
+
+          <div class="twin-container-grid">
+            <!-- Left: Holographic Avatar & Mind Synthesis -->
+            <div class="glass-card twin-profile-card">
+              <div class="twin-hologram-wrapper">
+                <div class="twin-avatar-orb">
+                  <div class="twin-avatar-ring"></div>
+                  <div class="twin-avatar-core">👁️</div>
+                </div>
+                <h3 id="twin-name" style="font-size:1.3rem; font-weight:800; color:var(--text-main); margin-bottom:0.25rem;">Zihin İkizim</h3>
+                <div id="twin-level-tag" style="font-size:0.82rem; color:#a855f7; font-weight:700;">Uyanış Yolcusu (LVL 1)</div>
+              </div>
+
+              <div class="twin-traits-list">
+                <div class="twin-trait-row">
+                  <span style="color:var(--text-muted);">Dominant Arketip:</span>
+                  <strong id="twin-archetype" style="color:#38bdf8;">Kahraman</strong>
+                </div>
+                <div class="twin-trait-row">
+                  <span style="color:var(--text-muted);">Felsefi DNA:</span>
+                  <strong id="twin-philosophy" style="color:#c084fc;">Stoacılık</strong>
+                </div>
+                <div class="twin-trait-row">
+                  <span style="color:var(--text-muted);">Sirkadiyen Tip:</span>
+                  <strong id="twin-chrono" style="color:#fbbf24;">Ayı (Standart)</strong>
+                </div>
+                <div class="twin-trait-row">
+                  <span style="color:var(--text-muted);">Karakter Tonu:</span>
+                  <strong style="color:#34d399;">Dürüst & Çözüm Odaklı</strong>
+                </div>
+              </div>
+
+              <div class="twin-prompt-box">
+                <div style="font-size:0.8rem; font-weight:700; color:var(--secondary); margin-bottom:0.5rem;">💡 Hızlı Zihin Soruları:</div>
+                <div class="twin-chips-grid">
+                  <button class="twin-chip" data-q="Şu an kendime söylediğim en büyük yalan veya erteleme ne?">⚡ Kendime hangi yalanı söylüyorum?</button>
+                  <button class="twin-chip" data-q="Bu durumda benim temel değerlerim ne yapmamı emreder?">🧭 Karakterim ne yapmamı gerektirir?</button>
+                  <button class="twin-chip" data-q="Gelecekteki 80 yaşındaki halim bugünkü kararıma nasıl bakacak?">⏳ 80 yaşındaki ben ne derdi?</button>
+                  <button class="twin-chip" data-q="Korktuğum şey gerçek bir tehlike mi yoksa egomun kırılganlığı mı?">🛡️ Korkum gerçek mi yoksa ego mu?</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Interactive Conversation Stream -->
+            <div class="glass-card twin-dialogue-card">
+              <div class="twin-chat-history" id="twin-chat-history">
+                <div class="twin-message ai">
+                  <div class="msg-avatar">👁️</div>
+                  <div class="msg-bubble">
+                    Merhaba. Ben senin düşüncelerinden, felsefi kararlarından ve hedeflerinden örülen <strong>Zihin İkizinim</strong>. Başkalarının ne düşündüğü beni ilgilendirmez; ben sadece senin kendi kendine dürüst olmanı sağlarım. Zihninde şu an ne ağırlık yapıyor?
+                  </div>
+                </div>
+              </div>
+
+              <div class="twin-input-bar">
+                <input type="text" id="twin-user-input" class="form-input" placeholder="Zihin ikizine bir soru sor veya bir çıkmazını anlat...">
+                <button class="btn-primary" id="btn-twin-send">
+                  <span>Danış 👁️</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==========================================
+             VIEW 9: GELECEK AĞACI & PARALEL YAŞAM SİMÜLATÖRÜ
+             ========================================== -->
+        <section class="view-section" id="view-trajectory">
+          <div class="page-header">
+            <div>
+              <h2 class="page-title">🔮 Görsel Gelecek Ağacı & Paralel Yaşam Simülatörü</h2>
+              <p class="page-subtitle">Büyük yaşam yol ayrımlarını 1, 3 ve 5 yıllık alternatif dallara ayır. Finansal eğri, stres yükü ve kazanılacak yetkinlikleri kıyasla.</p>
+            </div>
+            <div style="display:flex; gap:0.5rem;">
+              <input type="text" id="new-trajectory-name" class="form-input" placeholder="Yeni Yol İsmi (Örn: 'Girişimcilik')" style="width:200px;">
+              <button class="btn-primary" id="btn-add-trajectory-path">
+                <span>+ Yol Ekle</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Tree Visual Area -->
+          <div class="trajectory-board" id="trajectory-board">
+            <div class="trajectory-root-card">
+              <div class="root-badge">🌱 BAŞLANGIÇ NOKTASI</div>
+              <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-main); margin-bottom:0.25rem;">Şimdiki Sen (2026)</h3>
+              <p style="font-size:0.85rem; color:var(--text-muted);">Mevcut bilgi birikimi, alışkanlıklar ve potansiyel.</p>
+            </div>
+
+            <!-- Branching Columns (1 Year, 3 Years, 5 Years) -->
+            <div class="trajectory-branches-grid" id="trajectory-branches-grid">
+              <!-- Dynamically populated by JS -->
+            </div>
+
+            <!-- Verdict Card -->
+            <div class="glass-card trajectory-verdict-card" id="trajectory-verdict-card" style="margin-top:2rem;">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+        </section>
+
+        <!-- ==========================================
+             VIEW 10: 360° BÜTÜNSEL YAŞAM DENGESİ (HOLISTIC LIFE OS)
+             ========================================== -->
+        <section class="view-section" id="view-life-os">
+          <div class="page-header">
+            <div>
+              <h2 class="page-title">☸️ 360° Bütünsel Yaşam Dengesi (Holistic Life OS)</h2>
+              <p class="page-subtitle">Kariyer, sağlık, zihin, ilişkiler ve dinlenmenin uyumu. Tükenmişlik (burnout) riskini erkenden gör ve dengeyi koru.</p>
+            </div>
+            <button class="btn-primary" id="btn-rebalance-blueprint">
+              <span>⚡ Dengeyi Yeniden Kur (AI Blueprint)</span>
+            </button>
+          </div>
+
+          <div class="life-os-grid">
+            <!-- Left: 8-Axis SVG Wheel Radar -->
+            <div class="glass-card life-wheel-card">
+              <div class="card-header-flex">
+                <h3 class="card-title">Yaşam Çarkı Radarı</h3>
+                <span class="badge-tag" id="life-balance-score-tag">Denge: %85</span>
+              </div>
+              <div class="life-wheel-svg-box">
+                <svg id="life-wheel-svg" viewBox="0 0 320 320"></svg>
+              </div>
+              <div class="burnout-warning-banner" id="burnout-warning-banner">
+                <span id="burnout-status-icon">🟢</span>
+                <div>
+                  <strong id="burnout-status-title">Tükenmişlik Riski: Düşük (%18)</strong>
+                  <div id="burnout-status-desc" style="font-size:0.78rem; color:var(--text-muted);">Kariyer ve dinlenme dengeli seyrediyor.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: 8 Sliders & Tuning -->
+            <div class="glass-card life-sliders-card">
+              <h3 class="card-title" style="margin-bottom:1rem;">8 Yaşam Sütununu Puanla (1-10)</h3>
+              <div class="life-sliders-list" id="life-sliders-list">
+                <!-- Dynamically populated sliders -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Rebalance Action Blueprint Card -->
+          <div id="rebalance-blueprint-output" class="glass-card" style="display:none; margin-top:1.5rem;">
+            <!-- Populated by JS -->
+          </div>
+        </section>
+
       </div>
     </main>
   </div>
@@ -1456,6 +1689,132 @@
     </button>
     <div class="timer-time" id="zen-display-time" style="font-size: 6rem;">25:00</div>
     <div class="zen-task-title" id="zen-task-title">🎯 Derin Zihinsel Odak</div>
+  </div>
+
+  <!-- ==========================================
+       EMERGENCY SOS OVERLAY (COGNITIVE BLACKOUT)
+       ========================================== -->
+  <div class="emergency-overlay" id="emergency-overlay" style="display:none;">
+    <div class="emergency-container">
+      <div class="emergency-top-bar">
+        <div class="emergency-badge">🚨 BİLİŞSEL ACİL DURUM SAKİNLEŞTİRİCİ</div>
+        <button class="emergency-exit-btn" id="btn-close-emergency">
+          <span>✕ Zihnim Sakinleşti, Geri Dön</span>
+        </button>
+      </div>
+
+      <div class="emergency-tab-nav">
+        <button class="emergency-tab-btn active" data-tab="sigh">🫁 Fizyolojik İçe Çekiş (60sn)</button>
+        <button class="emergency-tab-btn" data-tab="grounding">⚓ 5-4-3-2-1 Topraklanma</button>
+        <button class="emergency-tab-btn" data-tab="anchor">🛡️ Karar Durdurma Kuralı</button>
+      </div>
+
+      <!-- Tab 1: Physiological Sigh (Huberman) -->
+      <div class="emergency-tab-panel active" id="emergency-tab-sigh">
+        <div class="sos-breath-center">
+          <div class="sos-breath-orb" id="sos-breath-orb">
+            <div class="sos-orb-inner" id="sos-orb-inner">
+              <span id="sos-breath-phase">Derin Al</span>
+              <span id="sos-breath-timer">3s</span>
+            </div>
+          </div>
+          <div class="sos-breath-guidance" id="sos-breath-guidance">
+            Burnundan derin bir nefes al...
+          </div>
+          <p class="sos-breath-hint">
+            <strong>Nörolojik Gerçek:</strong> 2 hızlı derin burun nefesi ve uzun ağız nefesi (Physiological Sigh), kandaki karbondioksiti hızla dengeleyerek kalp atış hızını dakikalar içinde düşürür.
+          </p>
+          <div style="display:flex; justify-content:center; gap:0.75rem; margin-top:1.5rem;">
+            <button class="btn-primary" id="btn-toggle-sos-breath" style="background:#ef4444; border-color:#dc2626;">
+              <span id="sos-breath-btn-text">Nefes Döngüsünü Başlat</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: 5-4-3-2-1 Grounding -->
+      <div class="emergency-tab-panel" id="emergency-tab-grounding" style="display:none;">
+        <div class="grounding-guide-card">
+          <h3 style="font-size:1.2rem; font-weight:800; color:#f8fafc; margin-bottom:0.5rem;">Duyularını Şimdiye Geri Getir</h3>
+          <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1.25rem;">Zihnin felaket senaryoları üretiyorsa, bedenini fiziksel odaya sabitle. Her adımı sesli veya içinden söyle ve tıkla:</p>
+          
+          <div class="grounding-steps-list">
+            <div class="grounding-step-item" data-step="5">
+              <div class="step-num">5</div>
+              <div class="step-content">
+                <strong>Gördüğün 5 nesneyi fark et</strong>
+                <span>(Örn: lamba, fincan, klavye, pencere, duvarın dokusu)</span>
+              </div>
+              <button class="grounding-chk-btn">Fark Ettim ✓</button>
+            </div>
+            <div class="grounding-step-item" data-step="4">
+              <div class="step-num">4</div>
+              <div class="step-content">
+                <strong>Dokunabildiğin 4 fiziksel hissi hisset</strong>
+                <span>(Örn: ayaklarının yerdeki ağırlığı, giysinin tenine teması, masanın soğukluğu)</span>
+              </div>
+              <button class="grounding-chk-btn">Fark Ettim ✓</button>
+            </div>
+            <div class="grounding-step-item" data-step="3">
+              <div class="step-num">3</div>
+              <div class="step-content">
+                <strong>Duyabildiğin 3 sesi dinle</strong>
+                <span>(Örn: bilgisayar fanı, dışarıdaki trafik, kendi nefes alışın)</span>
+              </div>
+              <button class="grounding-chk-btn">Fark Ettim ✓</button>
+            </div>
+            <div class="grounding-step-item" data-step="2">
+              <div class="step-num">2</div>
+              <div class="step-content">
+                <strong>Koklayabildiğin 2 kokuyu fark et</strong>
+                <span>(Örn: kahve aroması, odanın havası, giysinin kokusu)</span>
+              </div>
+              <button class="grounding-chk-btn">Fark Ettim ✓</button>
+            </div>
+            <div class="grounding-step-item" data-step="1">
+              <div class="step-num">1</div>
+              <div class="step-content">
+                <strong>Şu an bildiğin 1 mutlak gerçeği kendine fısılda</strong>
+                <span>("Şu an tehlikede değilim, sadece bedenim yüksek alarm verdi ve bu duygu birazdan geçecek.")</span>
+              </div>
+              <button class="grounding-chk-btn">Fark Ettim ✓</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: Emergency Anchor (Decision Halt) -->
+      <div class="emergency-tab-panel" id="emergency-tab-anchor" style="display:none;">
+        <div class="emergency-rules-box">
+          <div class="rule-alert-banner">
+            ⚠️ <strong>ACİL DURUM KURALI:</strong> Şu an kortizol ve adrenalin seviyen yüksek. Bu ruh halindeyken HİÇBİR hayati karar verme, mesaj atma veya istifa/vazgeçme kararı alma!
+          </div>
+
+          <div class="emergency-rules-grid">
+            <div class="rule-card">
+              <div class="rule-icon">🚰</div>
+              <h4>1. Fiziksel Reset</h4>
+              <p>Mutfaktan büyük bir bardak soğuk su al ve yavaş yavaş iç. Yüzünü soğuk suyla yıka (Dalgıç Refleksi vagus sinirini uyarır).</p>
+            </div>
+            <div class="rule-card">
+              <div class="rule-icon">🛑</div>
+              <h4>2. 24 Saatlik Karar Yasağı</h4>
+              <p>Seni strese sokan kararı 24 saatliğine dondur. "Bu kararı yarın sabah sakin kafayla değerlendireceğim."</p>
+            </div>
+            <div class="rule-card">
+              <div class="rule-icon">🚶</div>
+              <h4>3. Ekrandan Uzaklaş</h4>
+              <p>Monitörü ve telefonu kapat. Sadece 5 dakika pencereden dışarı ufuk çizgisine (panoramik görüş) bak.</p>
+            </div>
+          </div>
+
+          <div class="emergency-mantra-card">
+            <em>"Bu bir acil durum değil; bu sadece beynimin kimyasal bir dalgalanması. Dalga kıyıya vuracak ve çekilecek. Ben bu dalgadan büyüğüm."</em>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
 
   <!-- ==========================================

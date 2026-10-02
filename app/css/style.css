@@ -3171,5 +3171,739 @@ dialog.modern-modal[open]::backdrop {
   transform: rotateY(180deg);
 }
 
+/* ========================================================
+   TOPBAR EMERGENCY SOS BUTTON
+   ======================================================== */
+.sos-topbar-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.85rem;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: var(--radius-full);
+  color: #fca5a5;
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all var(--trans-fast);
+  position: relative;
+  overflow: hidden;
+}
+.sos-topbar-btn:hover {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: #ef4444;
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 0 16px rgba(239, 68, 68, 0.4);
+}
+.sos-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4444;
+  box-shadow: 0 0 8px #ef4444;
+  animation: sosPulseGlow 1.5s infinite;
+}
+@keyframes sosPulseGlow {
+  0% { transform: scale(0.9); opacity: 0.8; }
+  50% { transform: scale(1.35); opacity: 1; box-shadow: 0 0 14px #ef4444; }
+  100% { transform: scale(0.9); opacity: 0.8; }
+}
+
+/* ========================================================
+   DIMENSION 1: 🌌 CANLI ZİHİN SİNİR AĞI & GALAKSİ (GALAXY)
+   ======================================================== */
+.galaxy-controls-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.galaxy-filter-group {
+  display: inline-flex;
+  gap: 0.35rem;
+  background: rgba(15, 23, 42, 0.6);
+  padding: 0.25rem 0.4rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+}
+.galaxy-filter-pill {
+  background: transparent;
+  border: none;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--trans-fast);
+}
+.galaxy-filter-pill:hover {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.05);
+}
+.galaxy-filter-pill.active {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.3), rgba(99, 102, 241, 0.3));
+  color: #fff;
+  border: 1px solid rgba(6, 182, 212, 0.4);
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.25);
+}
+.galaxy-main-container {
+  width: 100%;
+}
+.galaxy-canvas-wrapper {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  background: radial-gradient(circle at center, #0a1128 0%, #030611 85%);
+  border: 1px solid rgba(6, 182, 212, 0.25);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), inset 0 0 60px rgba(6, 182, 212, 0.04);
+}
+#galaxy-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: grab;
+}
+#galaxy-canvas:active {
+  cursor: grabbing;
+}
+.galaxy-hud-card {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 280px;
+  padding: 1.15rem;
+  background: rgba(10, 15, 30, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(6, 182, 212, 0.4);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(6, 182, 212, 0.15);
+  z-index: 10;
+  animation: fadeIn 0.2s ease-out;
+  pointer-events: none;
+}
+.galaxy-stats-bottom {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.4rem 1.1rem;
+  background: rgba(10, 15, 30, 0.75);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-full);
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* ========================================================
+   DIMENSION 2: 👁️ DİJİTAL ZİHİN İKİZİM (ALTER-SELF)
+   ======================================================== */
+.twin-container-grid {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 1.5rem;
+  align-items: stretch;
+}
+@media (max-width: 900px) {
+  .twin-container-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.twin-profile-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1.75rem;
+  background: linear-gradient(180deg, rgba(20, 25, 45, 0.85) 0%, rgba(13, 17, 34, 0.95) 100%);
+  border-color: rgba(168, 85, 247, 0.3);
+}
+.twin-hologram-wrapper {
+  margin-bottom: 1.5rem;
+}
+.twin-avatar-orb {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 1rem auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.twin-avatar-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px dashed rgba(168, 85, 247, 0.7);
+  box-shadow: 0 0 25px rgba(168, 85, 247, 0.4), inset 0 0 15px rgba(168, 85, 247, 0.3);
+  animation: rotateRing 12s linear infinite;
+}
+@keyframes rotateRing {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.twin-avatar-core {
+  font-size: 2.5rem;
+  filter: drop-shadow(0 0 14px rgba(168, 85, 247, 0.8));
+  animation: floatTwin 3s ease-in-out infinite alternate;
+}
+@keyframes floatTwin {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-5px) scale(1.05); }
+}
+.twin-traits-list {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: left;
+  font-size: 0.83rem;
+}
+.twin-trait-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.twin-prompt-box {
+  width: 100%;
+  text-align: left;
+}
+.twin-chips-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+.twin-chip {
+  width: 100%;
+  text-align: left;
+  background: rgba(168, 85, 247, 0.08);
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  border-radius: var(--radius-md);
+  color: var(--text-main);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--trans-fast);
+}
+.twin-chip:hover {
+  background: rgba(168, 85, 247, 0.2);
+  border-color: #a855f7;
+  transform: translateX(4px);
+  color: #fff;
+}
+.twin-dialogue-card {
+  display: flex;
+  flex-direction: column;
+  height: 600px;
+  padding: 1.5rem;
+}
+.twin-chat-history {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-right: 0.5rem;
+  margin-bottom: 1rem;
+}
+.twin-message {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+  animation: fadeIn 0.25s ease-out;
+}
+.twin-message.user {
+  flex-direction: row-reverse;
+}
+.twin-message .msg-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(168, 85, 247, 0.2);
+  border: 1px solid rgba(168, 85, 247, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+.twin-message.user .msg-avatar {
+  background: rgba(99, 102, 241, 0.2);
+  border-color: rgba(99, 102, 241, 0.5);
+}
+.twin-message .msg-bubble {
+  max-width: 82%;
+  padding: 0.85rem 1.15rem;
+  border-radius: var(--radius-lg);
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+}
+.twin-message.ai .msg-bubble {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.12), rgba(99, 102, 241, 0.08));
+  border-color: rgba(168, 85, 247, 0.3);
+}
+.twin-message.user .msg-bubble {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: #fff;
+  border: none;
+}
+.twin-input-bar {
+  display: flex;
+  gap: 0.65rem;
+}
+
+/* ========================================================
+   DIMENSION 3: 🔮 GELECEK AĞACI & PARALEL YAŞAM SİMÜLATÖRÜ
+   ======================================================== */
+.trajectory-board {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.trajectory-root-card {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(6, 182, 212, 0.08));
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  text-align: center;
+  max-width: 500px;
+  margin: 0 auto;
+  position: relative;
+}
+.root-badge {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  border-radius: var(--radius-full);
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #34d399;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.05em;
+}
+.trajectory-branches-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+.trajectory-branch-col {
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: all var(--trans-fast);
+}
+.trajectory-branch-col:hover {
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+.branch-col-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.trajectory-node-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  transition: all var(--trans-fast);
+}
+.trajectory-node-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+.branch-horizon-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--secondary);
+  margin-bottom: 0.25rem;
+}
+.trajectory-metric-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+}
+.trajectory-verdict-card {
+  padding: 1.5rem;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.08));
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+/* ========================================================
+   DIMENSION 4: ☸️ 360° BÜTÜNSEL YAŞAM DENGESİ (LIFE OS)
+   ======================================================== */
+.life-os-grid {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+@media (max-width: 960px) {
+  .life-os-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.life-wheel-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+}
+.life-wheel-svg-box {
+  width: 100%;
+  max-width: 320px;
+  height: 320px;
+  margin: 1rem auto;
+}
+.burnout-warning-banner {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: var(--radius-md);
+  margin-top: 1rem;
+}
+.burnout-warning-banner.high-risk {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+.life-sliders-card {
+  padding: 1.5rem;
+}
+.life-sliders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.life-slider-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.slider-meta-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+.life-range-input {
+  width: 100%;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.1);
+  outline: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+.life-range-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #38bdf8;
+  border: 2px solid #0f172a;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+  transition: transform var(--trans-fast);
+}
+.life-range-input::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+/* ========================================================
+   DIMENSION 5: 🚨 ZİHİNSEL KRİZ & BİLİŞSEL SOS OVERLAY
+   ======================================================== */
+.emergency-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 7, 18, 0.94);
+  backdrop-filter: blur(24px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  animation: fadeIn 0.25s ease-out;
+}
+.emergency-container {
+  width: 100%;
+  max-width: 680px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: var(--radius-2xl);
+  padding: 2rem;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(239, 68, 68, 0.2);
+}
+.emergency-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.emergency-badge {
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #f87171;
+}
+.emergency-exit-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-full);
+  color: var(--text-main);
+  padding: 0.4rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--trans-fast);
+}
+.emergency-exit-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+.emergency-tab-nav {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+.emergency-tab-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.55rem 0.95rem;
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--trans-fast);
+}
+.emergency-tab-btn:hover {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.08);
+}
+.emergency-tab-btn.active {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.5);
+  color: #fca5a5;
+}
+.sos-breath-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1.5rem 0;
+}
+.sos-breath-orb {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.3) 0%, rgba(99, 102, 241, 0.15) 70%, transparent 100%);
+  border: 2px solid rgba(239, 68, 68, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 0 35px rgba(239, 68, 68, 0.3);
+  transition: transform 1.2s ease-in-out, box-shadow 1.2s ease-in-out;
+}
+.sos-breath-orb.inhale1 {
+  transform: scale(1.3);
+  box-shadow: 0 0 60px rgba(56, 189, 248, 0.6);
+  border-color: #38bdf8;
+}
+.sos-breath-orb.inhale2 {
+  transform: scale(1.5);
+  box-shadow: 0 0 80px rgba(168, 85, 247, 0.8);
+  border-color: #c084fc;
+}
+.sos-breath-orb.exhale {
+  transform: scale(0.85);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+  border-color: #10b981;
+}
+.sos-orb-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#sos-breath-phase {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.04em;
+}
+#sos-breath-timer {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #fca5a5;
+  margin-top: 0.2rem;
+}
+.sos-breath-guidance {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+  min-height: 2rem;
+  margin-bottom: 0.5rem;
+}
+.sos-breath-hint {
+  max-width: 480px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0 auto;
+}
+
+/* Grounding */
+.grounding-steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.grounding-step-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  transition: all var(--trans-fast);
+}
+.grounding-step-item.checked {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.4);
+}
+.step-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.step-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  font-size: 0.85rem;
+}
+.step-content strong {
+  color: var(--text-main);
+}
+.step-content span {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+.grounding-chk-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  padding: 0.35rem 0.65rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all var(--trans-fast);
+}
+.grounding-step-item.checked .grounding-chk-btn {
+  background: #10b981;
+  color: #fff;
+  border-color: #10b981;
+}
+
+/* Rules / Halt */
+.emergency-rules-box {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.rule-alert-banner {
+  padding: 0.85rem 1rem;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  color: #fca5a5;
+  line-height: 1.5;
+}
+.emergency-rules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.85rem;
+}
+.rule-card {
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+.rule-icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+.rule-card h4 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 0.35rem;
+}
+.rule-card p {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+.emergency-mantra-card {
+  padding: 1rem;
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  border-radius: var(--radius-md);
+  text-align: center;
+  font-size: 0.88rem;
+  color: #c7d2fe;
+}
+
+
 
 

@@ -3,7 +3,7 @@
  * Enables offline caching and mobile home-screen installation.
  */
 
-const CACHE_NAME = 'lumina-cache-v3';
+const CACHE_NAME = 'lumina-cache-v4';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

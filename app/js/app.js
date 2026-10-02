@@ -168,6 +168,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (viewName === 'focus') updateTimerDisplay();
     if (viewName === 'habits') renderHabitsAndChart();
     if (viewName === 'sanctum') initSanctumView();
+    if (viewName === 'galaxy') initGalaxyView();
+    if (viewName === 'twin') initTwinView();
+    if (viewName === 'trajectory') initTrajectoryView();
+    if (viewName === 'life-os') initLifeOsView();
   }
 
   dom.navItems.forEach(item => {
@@ -2348,7 +2352,1045 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // --- Initial Render ---
+  // =========================================================================
+  // DIMENSION 1: 🌌 CANLI ZİHİN SİNİR AĞI & İKİNCİ BEYİN GALAKSİSİ (GALAXY)
+  // =========================================================================
+  let galaxyCanvas = null;
+  let galaxyCtx = null;
+  let galaxyAnimId = null;
+  let galaxyNodes = [];
+  let galaxyLinks = [];
+  let galaxyFilter = 'all';
+  let hoveredNode = null;
+  let draggedNode = null;
+  let isDraggingGalaxy = false;
+  let galaxyStars = [];
+
+  function initGalaxyView() {
+    galaxyCanvas = document.getElementById('galaxy-canvas');
+    if (!galaxyCanvas) return;
+    galaxyCtx = galaxyCanvas.getContext('2d');
+
+    // Resize canvas to its container
+    resizeGalaxyCanvas();
+    window.removeEventListener('resize', resizeGalaxyCanvas);
+    window.addEventListener('resize', resizeGalaxyCanvas);
+
+    // Build neural dataset from tasks, notes, habits and sanctum
+    buildGalaxyNetwork();
+
+    // Start physics simulation loop
+    if (galaxyAnimId) cancelAnimationFrame(galaxyAnimId);
+    galaxyLoop();
+  }
+
+  function resizeGalaxyCanvas() {
+    if (!galaxyCanvas) return;
+    const rect = galaxyCanvas.parentElement.getBoundingClientRect();
+    galaxyCanvas.width = rect.width;
+    galaxyCanvas.height = rect.height || 600;
+
+    // Create background stars
+    galaxyStars = [];
+    for (let i = 0; i < 70; i++) {
+      galaxyStars.push({
+        x: Math.random() * galaxyCanvas.width,
+        y: Math.random() * galaxyCanvas.height,
+        r: Math.random() * 1.5 + 0.5,
+        alpha: Math.random() * 0.7 + 0.2,
+        speed: Math.random() * 0.2 + 0.05
+      });
+    }
+  }
+
+  function buildGalaxyNetwork() {
+    const tasks = window.LuminaStorage.getTasks() || [];
+    const notes = window.LuminaStorage.getNotes() || [];
+    const habits = window.LuminaStorage.getHabits() || [];
+    const width = galaxyCanvas ? galaxyCanvas.width : 800;
+    const height = galaxyCanvas ? galaxyCanvas.height : 600;
+    const cx = width / 2;
+    const cy = height / 2;
+
+    galaxyNodes = [];
+    galaxyLinks = [];
+
+    // Core central anchor
+    const coreNode = {
+      id: 'core-brain',
+      label: '🧠 Zihinsel Çekirdek',
+      type: 'core',
+      color: '#38bdf8',
+      x: cx,
+      y: cy,
+      vx: 0,
+      vy: 0,
+      radius: 22,
+      fixed: true,
+      snippet: 'Tüm düşünce, görev ve alışkanlıkların birleştiği bilinç merkezi.',
+      date: 'Canlı Biliş'
+    };
+    galaxyNodes.push(coreNode);
+
+    // 1. Task Nodes (blue/cyan)
+    tasks.slice(0, 15).forEach((t, i) => {
+      const angle = (i / Math.max(tasks.length, 1)) * Math.PI * 2;
+      const dist = 120 + Math.random() * 80;
+      galaxyNodes.push({
+        id: `task-${t.id}`,
+        label: t.title,
+        type: 'task',
+        color: '#06b6d4',
+        x: cx + Math.cos(angle) * dist,
+        y: cy + Math.sin(angle) * dist,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        radius: t.priority === 'high' ? 14 : 11,
+        snippet: t.notes || (t.completed ? 'Tamamlanmış Görev' : 'Aktif Odak Görevi'),
+        date: t.dueDate ? `Bitiş: ${t.dueDate}` : 'Genel Görev',
+        priority: t.priority
+      });
+    });
+
+    // 2. Note Nodes (emerald)
+    notes.slice(0, 12).forEach((n, i) => {
+      const angle = ((i + 0.5) / Math.max(notes.length, 1)) * Math.PI * 2;
+      const dist = 180 + Math.random() * 90;
+      galaxyNodes.push({
+        id: `note-${n.id}`,
+        label: n.title || 'Başlıksız Not',
+        type: 'note',
+        color: '#10b981',
+        x: cx + Math.cos(angle) * dist,
+        y: cy + Math.sin(angle) * dist,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        radius: 12,
+        snippet: (n.body || '').substring(0, 100) + '...',
+        date: n.updatedAt ? new Date(n.updatedAt).toLocaleDateString('tr-TR') : 'Not'
+      });
+    });
+
+    // 3. Habit Nodes (amber/gold)
+    habits.slice(0, 8).forEach((h, i) => {
+      const angle = ((i + 0.25) / Math.max(habits.length, 1)) * Math.PI * 2;
+      const dist = 150 + Math.random() * 70;
+      galaxyNodes.push({
+        id: `habit-${h.id}`,
+        label: h.title,
+        type: 'habit',
+        color: '#f59e0b',
+        x: cx + Math.cos(angle) * dist,
+        y: cy + Math.sin(angle) * dist,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        radius: 13,
+        snippet: `Seri: ${h.streak || 0} gün • Hedef: ${h.frequency || 'Günlük'}`,
+        date: 'Rutin Alışkanlık'
+      });
+    });
+
+    // 4. Sanctum Pillars (purple)
+    const sanctumPillars = [
+      { id: 's-stoic', label: 'Stoacı Duruş 🏛️', snippet: 'Kontrol alanı ve dilsiz kabul bilinci' },
+      { id: 's-chrono', label: 'Sirkadiyen Ritim ⏳', snippet: 'Biyolojik saat ve optimal odak saatleri' },
+      { id: 's-dopamine', label: 'Dopamin Orucu ⚡', snippet: 'Haz resetleme ve yüksek bilişsel berraklık' },
+      { id: 's-oracle', label: 'Delphi Kahini 🃏', snippet: 'Bilinçaltı ve felsefi ayna' }
+    ];
+    sanctumPillars.forEach((s, i) => {
+      const angle = (i / sanctumPillars.length) * Math.PI * 2 + 0.7;
+      const dist = 220 + Math.random() * 50;
+      galaxyNodes.push({
+        id: s.id,
+        label: s.label,
+        type: 'sanctum',
+        color: '#c084fc',
+        x: cx + Math.cos(angle) * dist,
+        y: cy + Math.sin(angle) * dist,
+        vx: 0,
+        vy: 0,
+        radius: 15,
+        snippet: s.snippet,
+        date: 'Felsefi Sütun'
+      });
+    });
+
+    // Generate Synapses (Edges)
+    galaxyNodes.forEach(n => {
+      if (n.id !== 'core-brain') {
+        // Connect each to core
+        galaxyLinks.push({ source: 'core-brain', target: n.id, strength: 0.05, spark: Math.random() });
+
+        // Connect nearby or related nodes
+        galaxyNodes.forEach(m => {
+          if (m.id !== n.id && m.id !== 'core-brain' && Math.random() < 0.12) {
+            galaxyLinks.push({ source: n.id, target: m.id, strength: 0.02, spark: Math.random() });
+          }
+        });
+      }
+    });
+
+    // Update stats bar
+    const statNodes = document.getElementById('galaxy-stat-nodes');
+    const statSynapses = document.getElementById('galaxy-stat-synapses');
+    if (statNodes) statNodes.textContent = `${galaxyNodes.length} Bilgi Düğümü`;
+    if (statSynapses) statSynapses.textContent = `${galaxyLinks.length} Canlı Sinaps`;
+  }
+
+  function galaxyLoop() {
+    if (state.currentView !== 'galaxy') return;
+    if (!galaxyCanvas || !galaxyCtx) return;
+
+    const width = galaxyCanvas.width;
+    const height = galaxyCanvas.height;
+    const cx = width / 2;
+    const cy = height / 2;
+
+    galaxyCtx.clearRect(0, 0, width, height);
+
+    // 1. Draw Starfield
+    galaxyCtx.save();
+    galaxyStars.forEach(s => {
+      s.y -= s.speed;
+      if (s.y < 0) s.y = height;
+      galaxyCtx.fillStyle = `rgba(255, 255, 255, ${s.alpha})`;
+      galaxyCtx.beginPath();
+      galaxyCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      galaxyCtx.fill();
+    });
+    galaxyCtx.restore();
+
+    // 2. Physics step (repulsion, centering & spring forces)
+    galaxyNodes.forEach(n => {
+      if (n.fixed) {
+        n.x = cx;
+        n.y = cy;
+        return;
+      }
+
+      // Gravitational pull to center
+      const dx = cx - n.x;
+      const dy = cy - n.y;
+      n.vx += dx * 0.0006;
+      n.vy += dy * 0.0006;
+
+      // Node repulsion
+      galaxyNodes.forEach(m => {
+        if (m.id === n.id) return;
+        const rx = n.x - m.x;
+        const ry = n.y - m.y;
+        const dist = Math.sqrt(rx * rx + ry * ry) || 1;
+        const minDist = n.radius + m.radius + 35;
+        if (dist < minDist) {
+          const force = (minDist - dist) / dist * 0.08;
+          n.vx += rx * force;
+          n.vy += ry * force;
+        }
+      });
+
+      // Damping
+      n.vx *= 0.92;
+      n.vy *= 0.92;
+
+      // Apply velocity if not dragged
+      if (n !== draggedNode) {
+        n.x += n.vx;
+        n.y += n.vy;
+      }
+
+      // Bounds constraint
+      n.x = Math.max(n.radius + 10, Math.min(width - n.radius - 10, n.x));
+      n.y = Math.max(n.radius + 10, Math.min(height - n.radius - 10, n.y));
+    });
+
+    // 3. Draw Synaptic Links
+    galaxyLinks.forEach(link => {
+      const sourceNode = galaxyNodes.find(n => n.id === link.source);
+      const targetNode = galaxyNodes.find(n => n.id === link.target);
+      if (!sourceNode || !targetNode) return;
+
+      const isFiltered = (galaxyFilter !== 'all' && sourceNode.type !== galaxyFilter && targetNode.type !== galaxyFilter && sourceNode.type !== 'core');
+      const isHovered = hoveredNode && (hoveredNode.id === sourceNode.id || hoveredNode.id === targetNode.id);
+
+      galaxyCtx.save();
+      galaxyCtx.beginPath();
+      galaxyCtx.moveTo(sourceNode.x, sourceNode.y);
+      galaxyCtx.lineTo(targetNode.x, targetNode.y);
+
+      if (isHovered) {
+        galaxyCtx.strokeStyle = 'rgba(56, 189, 248, 0.8)';
+        galaxyCtx.lineWidth = 2.5;
+        galaxyCtx.shadowColor = '#38bdf8';
+        galaxyCtx.shadowBlur = 10;
+      } else if (isFiltered) {
+        galaxyCtx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+        galaxyCtx.lineWidth = 0.5;
+      } else {
+        galaxyCtx.strokeStyle = 'rgba(99, 102, 241, 0.22)';
+        galaxyCtx.lineWidth = 1;
+      }
+      galaxyCtx.stroke();
+      galaxyCtx.restore();
+
+      // Traveling action potential spark
+      link.spark = (link.spark + 0.008) % 1;
+      if (!isFiltered) {
+        const sx = sourceNode.x + (targetNode.x - sourceNode.x) * link.spark;
+        const sy = sourceNode.y + (targetNode.y - sourceNode.y) * link.spark;
+        galaxyCtx.fillStyle = isHovered ? '#38bdf8' : 'rgba(168, 85, 247, 0.7)';
+        galaxyCtx.beginPath();
+        galaxyCtx.arc(sx, sy, isHovered ? 2.5 : 1.5, 0, Math.PI * 2);
+        galaxyCtx.fill();
+      }
+    });
+
+    // 4. Draw Nodes
+    galaxyNodes.forEach(node => {
+      const isFiltered = (galaxyFilter !== 'all' && node.type !== galaxyFilter && node.type !== 'core');
+      const isHovered = (hoveredNode && hoveredNode.id === node.id);
+
+      galaxyCtx.save();
+      galaxyCtx.globalAlpha = isFiltered ? 0.18 : 1.0;
+
+      // Glow halo
+      galaxyCtx.shadowColor = node.color;
+      galaxyCtx.shadowBlur = isHovered ? 24 : 12;
+
+      // Node Body Circle
+      galaxyCtx.fillStyle = node.color;
+      galaxyCtx.beginPath();
+      galaxyCtx.arc(node.x, node.y, node.radius * (isHovered ? 1.3 : 1.0), 0, Math.PI * 2);
+      galaxyCtx.fill();
+
+      // Inner Dark core
+      galaxyCtx.fillStyle = '#0f172a';
+      galaxyCtx.beginPath();
+      galaxyCtx.arc(node.x, node.y, (node.radius * (isHovered ? 1.3 : 1.0)) * 0.65, 0, Math.PI * 2);
+      galaxyCtx.fill();
+
+      // Center bright pip
+      galaxyCtx.fillStyle = node.color;
+      galaxyCtx.beginPath();
+      galaxyCtx.arc(node.x, node.y, 3, 0, Math.PI * 2);
+      galaxyCtx.fill();
+
+      // Label
+      galaxyCtx.shadowBlur = 0;
+      galaxyCtx.fillStyle = isHovered ? '#ffffff' : 'rgba(241, 245, 249, 0.85)';
+      galaxyCtx.font = `${isHovered ? 'bold 12px' : '10px'} Inter, sans-serif`;
+      galaxyCtx.textAlign = 'center';
+      galaxyCtx.fillText(node.label.length > 18 ? node.label.substring(0, 16) + '..' : node.label, node.x, node.y + node.radius + 14);
+
+      galaxyCtx.restore();
+    });
+
+    galaxyAnimId = requestAnimationFrame(galaxyLoop);
+  }
+
+  function initGalaxyEvents() {
+    const canvas = document.getElementById('galaxy-canvas');
+    const hud = document.getElementById('galaxy-hud-card');
+    const resetBtn = document.getElementById('btn-reset-galaxy-view');
+    const filterPills = document.querySelectorAll('.galaxy-filter-pill');
+
+    if (!canvas) return;
+
+    // Mouse Move & Hover
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+
+      if (draggedNode) {
+        draggedNode.x = mx;
+        draggedNode.y = my;
+        draggedNode.vx = 0;
+        draggedNode.vy = 0;
+        return;
+      }
+
+      // Detect hover
+      let found = null;
+      for (let i = galaxyNodes.length - 1; i >= 0; i--) {
+        const n = galaxyNodes[i];
+        const dist = Math.hypot(n.x - mx, n.y - my);
+        if (dist <= n.radius + 8) {
+          found = n;
+          break;
+        }
+      }
+
+      hoveredNode = found;
+      if (found && hud) {
+        hud.style.display = 'block';
+        const typeLabels = { core: 'Bilişsel Çekirdek', task: 'Görev', note: 'AI Notu', habit: 'Alışkanlık', sanctum: 'Zihin Mabedi' };
+        document.getElementById('hud-node-type').textContent = typeLabels[found.type] || 'Düğüm';
+        document.getElementById('hud-node-date').textContent = found.date || '';
+        document.getElementById('hud-node-title').textContent = found.label;
+        document.getElementById('hud-node-snippet').textContent = found.snippet || 'Detay bulunmuyor.';
+        const conns = galaxyLinks.filter(l => l.source === found.id || l.target === found.id).length;
+        document.getElementById('hud-node-connections').textContent = `🔗 ${conns} Canlı Sinirsel Bağlantı`;
+      } else if (hud) {
+        hud.style.display = 'none';
+      }
+    });
+
+    // Drag start
+    canvas.addEventListener('mousedown', (e) => {
+      if (hoveredNode) {
+        draggedNode = hoveredNode;
+        isDraggingGalaxy = true;
+      }
+    });
+
+    // Drag end
+    window.addEventListener('mouseup', () => {
+      draggedNode = null;
+      isDraggingGalaxy = false;
+    });
+
+    // Filter pills
+    filterPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        filterPills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        galaxyFilter = pill.getAttribute('data-filter') || 'all';
+      });
+    });
+
+    // Reset button
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        buildGalaxyNetwork();
+        window.LuminaAudio.playBeep(440, 'sine', 0.1);
+      });
+    }
+  }
+
+  // =========================================================================
+  // DIMENSION 2: 👁️ DİJİTAL ZİHİN İKİZİ (ALTER-SELF)
+  // =========================================================================
+  function initTwinView() {
+    // Populate profile from RPG state and archetype
+    const rpg = window.LuminaSanctum ? window.LuminaSanctum.getRPGState() : { level: 1, title: 'Uyanış Yolcusu' };
+    const arch = localStorage.getItem('lumina_jungian_result') || 'Kahraman / Mimar';
+    const chrono = localStorage.getItem('lumina_chronotype') || 'Ayı (Standart Odak)';
+
+    const levelTag = document.getElementById('twin-level-tag');
+    const archTag = document.getElementById('twin-archetype');
+    const chronoTag = document.getElementById('twin-chrono');
+
+    if (levelTag) levelTag.textContent = `${rpg.title} (LVL ${rpg.level})`;
+    if (archTag) archTag.textContent = arch;
+    if (chronoTag) chronoTag.textContent = chrono;
+  }
+
+  function initTwinEvents() {
+    const sendBtn = document.getElementById('btn-twin-send');
+    const input = document.getElementById('twin-user-input');
+    const history = document.getElementById('twin-chat-history');
+    const chips = document.querySelectorAll('.twin-chip');
+
+    async function handleTwinAsk(promptText) {
+      const q = promptText || (input ? input.value.trim() : '');
+      if (!q) return;
+
+      if (input) input.value = '';
+
+      // Append user bubble
+      appendTwinMessage('user', q);
+
+      // Scroll to bottom
+      if (history) history.scrollTop = history.scrollHeight;
+
+      // Thinking placeholder
+      const thinkingBubble = appendTwinMessage('ai', '<em>Zihin İkizin senin felsefi pusulana danışıyor... 👁️</em>');
+
+      try {
+        const apiKey = state.settings.geminiApiKey;
+        let responseText = '';
+
+        if (apiKey && window.LuminaAI && window.LuminaAI.askGemini) {
+          const systemContext = "Sen kullanıcının 'Dijital Zihin İkizi'sin (Alter-Self). Kullanıcının hedeflerine, Stoacı erdemlerine ve potansiyeline dürüst bir aynasın. Samimi, derin, net ve yapmacık olmayan bir tonda konuş. Kendi kendini kandırmasına izin verme, doğrudan çözüme odakla.";
+          responseText = await window.LuminaAI.askGemini(`${systemContext}\n\nKullanıcı Sorusı: ${q}`);
+        } else {
+          // Heuristic Built-In Wisdom Engine
+          responseText = generateTwinLocalWisdom(q);
+        }
+
+        if (thinkingBubble) {
+          thinkingBubble.innerHTML = responseText;
+        }
+
+        window.LuminaAudio.playBeep(480, 'triangle', 0.12);
+      } catch (err) {
+        if (thinkingBubble) {
+          thinkingBubble.innerHTML = generateTwinLocalWisdom(q);
+        }
+      }
+
+      if (history) history.scrollTop = history.scrollHeight;
+    }
+
+    function appendTwinMessage(sender, htmlContent) {
+      if (!history) return null;
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `twin-message ${sender}`;
+      msgDiv.innerHTML = `
+        <div class="msg-avatar">${sender === 'ai' ? '👁️' : '👤'}</div>
+        <div class="msg-bubble">${htmlContent}</div>
+      `;
+      history.appendChild(msgDiv);
+      return msgDiv.querySelector('.msg-bubble');
+    }
+
+    function generateTwinLocalWisdom(prompt) {
+      const lower = prompt.toLowerCase();
+      if (lower.includes('yalan') || lower.includes('erte')) {
+        return "Kendine en büyük yalanın 'yarın daha fazla motivasyonum olacak' demek. Motivasyon eylemin sebebi değil, sonucudur. Şimdi yapabileceğin en küçük 2 dakikalık adıma odaklan ve hemen başla.";
+      }
+      if (lower.includes('kork') || lower.includes('ego')) {
+        return "Korktuğun şey fiziksel bir ölüm tehlikesi değil; başkalarının önünde başarısız görünme korkusu, yani egonun kırılganlığı. Stoacı felsefede ne denir hatırla: Kontrol edemeyeceğin görüşleri bırak, sadece kendi emeğine odaklan.";
+      }
+      if (lower.includes('80 yaş') || lower.includes('gelecek')) {
+        return "80 yaşındaki sen buraya gelseydi, sana ne kadar para kazandığını değil, hangi potansiyeli korkudan dolayı heba ettiğini sorardı. Hata yapmak bir kayıp değildir; hiç denememek en büyük pişmanlıktır.";
+      }
+      if (lower.includes('karakter') || lower.includes('değer')) {
+        return "Temel değerin bilgelik ve disiplindir. Şu an canının istemediği o zor işi yapmak, tam olarak karakterini inşa ettiğin andır. Ruhun kolay yolu değil, seni onurlandıracak doğru yolu seçmeni bekliyor.";
+      }
+      return `Zihnindeki bu soruyu inceledim: <strong>"${prompt}"</strong>. İkizin olarak sana şunu hatırlatayım: Gerçek güç dış koşullarda değil, senin bu duruma vereceğin tepkide saklıdır. Şimdi sakinleş, durumu kontrol edebileceğin parçalara ayır ve ilk eylemini belirle.`;
+    }
+
+    if (sendBtn) {
+      sendBtn.addEventListener('click', () => handleTwinAsk());
+    }
+    if (input) {
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') handleTwinAsk();
+      });
+    }
+    chips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        const q = chip.getAttribute('data-q');
+        if (q) handleTwinAsk(q);
+      });
+    });
+  }
+
+  // =========================================================================
+  // DIMENSION 3: 🔮 GELECEK AĞACI & PARALEL YAŞAM SİMÜLATÖRÜ (TRAJECTORY)
+  // =========================================================================
+  const defaultTrajectories = [
+    {
+      id: 'traj-startup',
+      name: '🚀 Girişim & Derin İnovasyon',
+      color: '#38bdf8',
+      desc: 'Yüksek risk, mutlak otonomi ve inovatif bir ürün inşa etme yolu.',
+      nodes: [
+        { year: '1. Yıl (2027)', focus: 'MVP Lansmanı & İlk 1000 Kullanıcı', stress: '7/10', learning: '%85 Hızlı Adaptasyon', financial: 'Düşük / Yatırım Aşaması' },
+        { year: '3. Yıl (2029)', focus: 'Ürün-Pazar Uyumu & Nakit Akışı', stress: '5/10', learning: '%90 Liderlik', financial: 'Ölçeklenebilir Gelir' },
+        { year: '5. Yıl (2031)', focus: 'Sektör Öncülüğü & Finansal Özgürlük', stress: '3/10', learning: '%98 Ustalık', financial: 'Tam Bağımsızlık' }
+      ],
+      regretScore: '%92 Pişmanlık Önleme'
+    },
+    {
+      id: 'traj-corp',
+      name: '🏛️ Kurumsal Uzmanlık & Liderlik',
+      color: '#10b981',
+      desc: 'Güvenli nakit akışı, net kariyer basamakları ve kurumsal ağ gücü.',
+      nodes: [
+        { year: '1. Yıl (2027)', focus: 'Kıdemli Pozisyon & Düzenli Tasarruf', stress: '4/10', learning: '%60 Sistemik Öğrenme', financial: 'Sabit & Öngörülebilir' },
+        { year: '3. Yıl (2029)', focus: 'Departman / Proje Yönetimi', stress: '6/10', learning: '%70 Politika & Yönetim', financial: 'Yüksek Maaş + Prim' },
+        { year: '5. Yıl (2031)', focus: 'Direktörlük veya Bağımsız Danışmanlık', stress: '7/10', learning: '%75 Rutinleşme Riski', financial: 'Konfor Alanı Zirvesi' }
+      ],
+      regretScore: '%65 Pişmanlık Önleme'
+    },
+    {
+      id: 'traj-nomad',
+      name: '🌿 Minimalist & Dijital Otonomi',
+      color: '#a855f7',
+      desc: 'Düşük masraf, seçici serbest projeler, coğrafi özgürlük ve dinginlik.',
+      nodes: [
+        { year: '1. Yıl (2027)', focus: 'Sadeleşme & 3 Çekirdek Müşteri', stress: '3/10', learning: '%75 Çok Yönlülük', financial: 'Yeterli & Düşük Maliyet' },
+        { year: '3. Yıl (2029)', focus: 'Pasif Gelir Kaynakları & Seyahat', stress: '2/10', learning: '%80 Kültürel Biliş', financial: 'Sürdürülebilir Serbest Akış' },
+        { year: '5. Yıl (2031)', focus: 'Kendi Zamanının Mutlak Sahibi Olma', stress: '1/10', learning: '%85 Felsefi Derinlik', financial: 'Dingin Yaşam' }
+      ],
+      regretScore: '%88 Pişmanlık Önleme'
+    }
+  ];
+
+  function initTrajectoryView() {
+    renderTrajectoryPaths();
+  }
+
+  function renderTrajectoryPaths() {
+    const grid = document.getElementById('trajectory-branches-grid');
+    const verdict = document.getElementById('trajectory-verdict-card');
+    if (!grid) return;
+
+    let paths = defaultTrajectories;
+    const stored = localStorage.getItem('lumina_user_trajectories');
+    if (stored) {
+      try {
+        const custom = JSON.parse(stored);
+        paths = [...defaultTrajectories, ...custom];
+      } catch (e) {}
+    }
+
+    grid.innerHTML = paths.map(p => `
+      <div class="trajectory-branch-col" style="border-top: 3px solid ${p.color};">
+        <div class="branch-col-header">
+          <div>
+            <h4 style="font-size:1.1rem; font-weight:800; color:var(--text-main);">${p.name}</h4>
+            <p style="font-size:0.78rem; color:var(--text-muted); margin-top:0.2rem;">${p.desc}</p>
+          </div>
+          <span class="badge-tag" style="background:${p.color}22; color:${p.color}; border:1px solid ${p.color}55;">${p.regretScore}</span>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:0.75rem;">
+          ${p.nodes.map(n => `
+            <div class="trajectory-node-card">
+              <div class="branch-horizon-tag">${n.year}</div>
+              <div style="font-weight:700; font-size:0.88rem; color:var(--text-main); margin-bottom:0.4rem;">${n.focus}</div>
+              <div class="trajectory-metric-row">
+                <span style="color:var(--text-muted);">Stres: <strong style="color:#f87171;">${n.stress}</strong></span>
+                <span style="color:var(--text-muted);">Öğrenme: <strong style="color:#38bdf8;">${n.learning}</strong></span>
+                <span style="color:var(--text-muted);">Finans: <strong style="color:#34d399;">${n.financial}</strong></span>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+
+    if (verdict) {
+      verdict.innerHTML = `
+        <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.75rem;">
+          <span style="font-size:1.5rem;">⚖️</span>
+          <div>
+            <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-main);">AI Karar Matrisi & Pişmanlık Simülasyonu</h3>
+            <span style="font-size:0.8rem; color:var(--text-muted);">Jeff Bezos Regret Minimization Framework tabanlı kıyaslama</span>
+          </div>
+        </div>
+        <p style="font-size:0.88rem; color:var(--text-main); line-height:1.6;">
+          Mevcut alışkanlık istikrarın ve yüksek öğrenme hızın göz önüne alındığında, <strong>"Girişim & Derin İnovasyon"</strong> dalı kısa vadede yüksek belirsizlik barındırsa da, 80 yaş perspektifinde en yüksek tatmini (%92) vaat ediyor. Riskleri dengelemek için ilk 1 yıl minimalist bir bütçe ile prototip odaklı ilerlemek en optimal rotadır.
+        </p>
+      `;
+    }
+  }
+
+  function initTrajectoryEvents() {
+    const addBtn = document.getElementById('btn-add-trajectory-path');
+    const input = document.getElementById('new-trajectory-name');
+
+    if (addBtn && input) {
+      addBtn.addEventListener('click', () => {
+        const name = input.value.trim();
+        if (!name) return;
+
+        const newPath = {
+          id: `traj-custom-${Date.now()}`,
+          name: `✨ ${name}`,
+          color: '#fbbf24',
+          desc: 'Kullanıcı tarafından modellenen özel yaşam rotası.',
+          nodes: [
+            { year: '1. Yıl (2027)', focus: 'Temel Hazırlık & Pilot Adımlar', stress: '5/10', learning: '%75 Odak', financial: 'Gelişme Aşaması' },
+            { year: '3. Yıl (2029)', focus: 'Yetkinlik & İstikrar', stress: '4/10', learning: '%80 Olgunlaşma', financial: 'Dengeli Gelir' },
+            { year: '5. Yıl (2031)', focus: 'Hedefe Ulaşma & Meyveleri Toplama', stress: '2/10', learning: '%90 Ustalık', financial: 'Özgürlük' }
+          ],
+          regretScore: '%85 Pişmanlık Önleme'
+        };
+
+        const stored = localStorage.getItem('lumina_user_trajectories');
+        let list = stored ? JSON.parse(stored) : [];
+        list.push(newPath);
+        localStorage.setItem('lumina_user_trajectories', JSON.stringify(list));
+
+        input.value = '';
+        renderTrajectoryPaths();
+        window.LuminaAudio.playBeep(520, 'sine', 0.1);
+      });
+    }
+  }
+
+  // =========================================================================
+  // DIMENSION 4: ☸️ 360° BÜTÜNSEL YAŞAM DENGESİ (LIFE OS)
+  // =========================================================================
+  const defaultLifePillars = [
+    { id: 'career', name: 'Kariyer & Üretim', icon: '💼', val: 8, color: '#38bdf8' },
+    { id: 'health', name: 'Fiziksel Sağlık & Beden', icon: '🏃', val: 7, color: '#10b981' },
+    { id: 'mind', name: 'Zihin & İç Huzur', icon: '🧠', val: 8, color: '#a855f7' },
+    { id: 'social', name: 'İlişkiler & Sosyal Bağ', icon: '🤝', val: 6, color: '#ec4899' },
+    { id: 'finance', name: 'Finansal Güvenlik', icon: '💰', val: 7, color: '#f59e0b' },
+    { id: 'learning', name: 'Öğrenme & Gelişim', icon: '📚', val: 9, color: '#6366f1' },
+    { id: 'rest', name: 'Dinlenme & Uyku', icon: '🛌', val: 6, color: '#06b6d4' },
+    { id: 'meaning', name: 'Anlam & Yaşam Amacı', icon: '🌌', val: 8, color: '#8b5cf6' }
+  ];
+
+  let currentLifePillars = [...defaultLifePillars];
+
+  function initLifeOsView() {
+    const saved = localStorage.getItem('lumina_life_pillars');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        currentLifePillars = defaultLifePillars.map(p => {
+          const found = parsed.find(x => x.id === p.id);
+          return found ? { ...p, val: found.val } : p;
+        });
+      } catch (e) {}
+    }
+
+    renderLifeSliders();
+    drawLifeWheelSVG();
+    updateLifeBurnoutStatus();
+  }
+
+  function renderLifeSliders() {
+    const list = document.getElementById('life-sliders-list');
+    if (!list) return;
+
+    list.innerHTML = currentLifePillars.map(p => `
+      <div class="life-slider-row" data-id="${p.id}">
+        <div class="slider-meta-header">
+          <span>${p.icon} ${p.name}</span>
+          <strong id="val-tag-${p.id}" style="color:${p.color};">${p.val} / 10</strong>
+        </div>
+        <input type="range" class="life-range-input" id="slider-${p.id}" min="1" max="10" step="1" value="${p.val}">
+      </div>
+    `).join('');
+
+    currentLifePillars.forEach(p => {
+      const slider = document.getElementById(`slider-${p.id}`);
+      if (slider) {
+        slider.addEventListener('input', (e) => {
+          const newVal = parseInt(e.target.value, 10);
+          p.val = newVal;
+          const tag = document.getElementById(`val-tag-${p.id}`);
+          if (tag) tag.textContent = `${newVal} / 10`;
+
+          localStorage.setItem('lumina_life_pillars', JSON.stringify(currentLifePillars));
+          drawLifeWheelSVG();
+          updateLifeBurnoutStatus();
+        });
+      }
+    });
+  }
+
+  function drawLifeWheelSVG() {
+    const svg = document.getElementById('life-wheel-svg');
+    if (!svg) return;
+
+    const size = 320;
+    const cx = size / 2;
+    const cy = size / 2;
+    const maxR = 110;
+    const numAxes = currentLifePillars.length;
+
+    let svgHtml = '';
+
+    // Concentric Web Grid (Levels 2, 4, 6, 8, 10)
+    [0.2, 0.4, 0.6, 0.8, 1.0].forEach(level => {
+      let gridPoints = [];
+      for (let i = 0; i < numAxes; i++) {
+        const angle = (i / numAxes) * Math.PI * 2 - Math.PI / 2;
+        const x = cx + Math.cos(angle) * (maxR * level);
+        const y = cy + Math.sin(angle) * (maxR * level);
+        gridPoints.push(`${x.toFixed(1)},${y.toFixed(1)}`);
+      }
+      svgHtml += `<polygon points="${gridPoints.join(' ')}" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>`;
+    });
+
+    // Radial Axis Lines & Labels
+    currentLifePillars.forEach((p, i) => {
+      const angle = (i / numAxes) * Math.PI * 2 - Math.PI / 2;
+      const x2 = cx + Math.cos(angle) * maxR;
+      const y2 = cy + Math.sin(angle) * maxR;
+      svgHtml += `<line x1="${cx}" y1="${cy}" x2="${x2}" y2="${y2}" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>`;
+
+      // Icon/Label outside
+      const lx = cx + Math.cos(angle) * (maxR + 24);
+      const ly = cy + Math.sin(angle) * (maxR + 24);
+      svgHtml += `<text x="${lx}" y="${ly}" font-size="12" text-anchor="middle" dominant-baseline="central">${p.icon}</text>`;
+    });
+
+    // Filled User Polygon
+    let polyPoints = [];
+    currentLifePillars.forEach((p, i) => {
+      const angle = (i / numAxes) * Math.PI * 2 - Math.PI / 2;
+      const r = (p.val / 10) * maxR;
+      const x = cx + Math.cos(angle) * r;
+      const y = cy + Math.sin(angle) * r;
+      polyPoints.push(`${x.toFixed(1)},${y.toFixed(1)}`);
+    });
+
+    svgHtml += `
+      <polygon points="${polyPoints.join(' ')}" fill="url(#lifeWheelGrad)" stroke="#38bdf8" stroke-width="2.5" filter="url(#glowFilter)"/>
+      <defs>
+        <linearGradient id="lifeWheelGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.45"/>
+          <stop offset="100%" stop-color="#a855f7" stop-opacity="0.3"/>
+        </linearGradient>
+        <filter id="glowFilter" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="3" result="blur" />
+          <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+        </filter>
+      </defs>
+    `;
+
+    // Vertex points
+    currentLifePillars.forEach((p, i) => {
+      const angle = (i / numAxes) * Math.PI * 2 - Math.PI / 2;
+      const r = (p.val / 10) * maxR;
+      const x = cx + Math.cos(angle) * r;
+      const y = cy + Math.sin(angle) * r;
+      svgHtml += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4" fill="${p.color}" stroke="#0f172a" stroke-width="1.5"/>`;
+    });
+
+    svg.innerHTML = svgHtml;
+  }
+
+  function updateLifeBurnoutStatus() {
+    const totalScore = currentLifePillars.reduce((acc, p) => acc + p.val, 0);
+    const avgScore = Math.round((totalScore / (currentLifePillars.length * 10)) * 100);
+
+    const scoreTag = document.getElementById('life-balance-score-tag');
+    if (scoreTag) scoreTag.textContent = `Denge: %${avgScore}`;
+
+    // Burnout heuristic: Work/Finance vs Rest/Health/Mind
+    const workIntensity = (currentLifePillars.find(p => p.id === 'career')?.val || 5) + (currentLifePillars.find(p => p.id === 'finance')?.val || 5);
+    const recoveryCapacity = (currentLifePillars.find(p => p.id === 'rest')?.val || 5) + (currentLifePillars.find(p => p.id === 'health')?.val || 5) + (currentLifePillars.find(p => p.id === 'mind')?.val || 5);
+
+    const gap = workIntensity - (recoveryCapacity / 1.5);
+    const banner = document.getElementById('burnout-warning-banner');
+    const icon = document.getElementById('burnout-status-icon');
+    const title = document.getElementById('burnout-status-title');
+    const desc = document.getElementById('burnout-status-desc');
+
+    if (!banner || !title || !desc) return;
+
+    if (gap > 4) {
+      banner.className = 'burnout-warning-banner high-risk';
+      if (icon) icon.textContent = '🚨';
+      title.textContent = 'Tükenmişlik Riski: Yüksek (%78)';
+      desc.textContent = 'Üretim ve kariyer talepleri, dinlenme ve beden yenilenmesini ciddi oranda aşıyor. Bugün acil dinlenme blokları planla!';
+    } else if (gap > 1.5) {
+      banner.className = 'burnout-warning-banner';
+      if (icon) icon.textContent = '🟡';
+      title.textContent = 'Tükenmişlik Riski: Orta (%42)';
+      desc.textContent = 'Kariyer ve tempo yüksek, ancak uyku ve zihin dengesini korumak için sınır koymalısın.';
+    } else {
+      banner.className = 'burnout-warning-banner';
+      if (icon) icon.textContent = '🟢';
+      title.textContent = 'Tükenmişlik Riski: Düşük (%15)';
+      desc.textContent = 'Bütünsel yaşam alanların uyumlu ve dengeli seyrediyor. Zihinsel dayanıklılık zirvede.';
+    }
+  }
+
+  function initLifeOsEvents() {
+    const blueprintBtn = document.getElementById('btn-rebalance-blueprint');
+    const outputCard = document.getElementById('rebalance-blueprint-output');
+
+    if (blueprintBtn && outputCard) {
+      blueprintBtn.addEventListener('click', () => {
+        // Find 2 lowest pillars
+        const sorted = [...currentLifePillars].sort((a, b) => a.val - b.val);
+        const low1 = sorted[0];
+        const low2 = sorted[1];
+
+        outputCard.style.display = 'block';
+        outputCard.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:0.75rem;">
+            <div style="display:flex; align-items:center; gap:0.6rem;">
+              <span style="font-size:1.4rem;">⚡</span>
+              <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-main);">7 Günlük Bilişsel Denge Blueprint'i</h3>
+            </div>
+            <span class="badge-tag" style="background:#10b98122; color:#34d399; border:1px solid #10b98144;">Otomatik Optimize Edildi</span>
+          </div>
+
+          <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:1rem;">
+            Analiz sonucu yaşam çarkında en çok ihmal edilen iki sütun: <strong style="color:${low1.color};">${low1.icon} ${low1.name} (${low1.val}/10)</strong> ve <strong style="color:${low2.color};">${low2.icon} ${low2.name} (${low2.val}/10)</strong>. Sistem dengesini yeniden kurmak için 3 mikro eylem:
+          </p>
+
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:1rem;">
+            <div style="padding:1rem; background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:var(--radius-md); border-left:3px solid ${low1.color};">
+              <div style="font-size:0.78rem; font-weight:700; color:${low1.color}; margin-bottom:0.25rem;">GÜN 1-3 • KÖK MÜDAHALE</div>
+              <strong style="color:var(--text-main); font-size:0.9rem;">${low1.name} için 20 Dakikalık Blok</strong>
+              <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0.35rem;">Her gün sabah ilk iş bu alana yönelik tek bir mikrotask tamamla.</p>
+            </div>
+            <div style="padding:1rem; background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:var(--radius-md); border-left:3px solid ${low2.color};">
+              <div style="font-size:0.78rem; font-weight:700; color:${low2.color}; margin-bottom:0.25rem;">GÜN 4-5 • DENGELEME</div>
+              <strong style="color:var(--text-main); font-size:0.9rem;">${low2.name} Sınırı Koy</strong>
+              <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0.35rem;">Aşırı efor harcanan alanlardan %10 kısıp bu alana aktar.</p>
+            </div>
+            <div style="padding:1rem; background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:var(--radius-md); border-left:3px solid #38bdf8;">
+              <div style="font-size:0.78rem; font-weight:700; color:#38bdf8; margin-bottom:0.25rem;">GÜN 6-7 • GÖZDEN GEÇİRME</div>
+              <strong style="color:var(--text-main); font-size:0.9rem;">Haftalık Çark Kalibrasyonu</strong>
+              <p style="font-size:0.8rem; color:var(--text-muted); margin-top:0.35rem;">Pazar akşamı Life OS çarkını yeniden puanlayarak ilerlemeyi teyit et.</p>
+            </div>
+          </div>
+        `;
+
+        window.LuminaAudio.playBeep(600, 'sine', 0.15);
+      });
+    }
+  }
+
+  // =========================================================================
+  // DIMENSION 5: 🚨 ZİHİNSEL KRİZ & BİLİŞSEL SOS OVERLAY
+  // =========================================================================
+  let sosBreathActive = false;
+  let sosBreathInterval = null;
+  let sosPhaseTime = 0;
+  let sosTotalSeconds = 60;
+  let sosPhase = 'inhale1'; // 'inhale1' (2.5s) -> 'inhale2' (1.0s) -> 'exhale' (5.0s)
+
+  function initEmergencySOS() {
+    const sosBtn = document.getElementById('btn-emergency-sos');
+    const overlay = document.getElementById('emergency-overlay');
+    const closeBtn = document.getElementById('btn-close-emergency');
+    const tabs = document.querySelectorAll('.emergency-tab-btn');
+    const tabPanels = document.querySelectorAll('.emergency-tab-panel');
+    const breathBtn = document.getElementById('btn-toggle-sos-breath');
+    const groundingChecks = document.querySelectorAll('.grounding-chk-btn');
+
+    if (!sosBtn || !overlay) return;
+
+    function openEmergency() {
+      overlay.style.display = 'flex';
+      window.LuminaAudio.playBeep(330, 'sine', 0.2);
+    }
+
+    function closeEmergency() {
+      overlay.style.display = 'none';
+      stopSosBreathing();
+    }
+
+    sosBtn.addEventListener('click', openEmergency);
+    if (closeBtn) closeBtn.addEventListener('click', closeEmergency);
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && overlay.style.display === 'flex') {
+        closeEmergency();
+      }
+    });
+
+    // Tab Navigation
+    tabs.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tabPanels.forEach(p => p.style.display = 'none');
+
+        btn.classList.add('active');
+        const target = btn.getAttribute('data-tab');
+        const panel = document.getElementById(`emergency-tab-${target}`);
+        if (panel) panel.style.display = 'block';
+      });
+    });
+
+    // Physiological Sigh Loop
+    if (breathBtn) {
+      breathBtn.addEventListener('click', () => {
+        if (sosBreathActive) {
+          stopSosBreathing();
+        } else {
+          startSosBreathing();
+        }
+      });
+    }
+
+    function startSosBreathing() {
+      sosBreathActive = true;
+      sosTotalSeconds = 60;
+      sosPhase = 'inhale1';
+      sosPhaseTime = 3;
+      if (breathBtn) breathBtn.querySelector('span').textContent = 'Döngüyü Duraklat';
+
+      updateBreathUI();
+
+      sosBreathInterval = setInterval(() => {
+        sosPhaseTime--;
+        sosTotalSeconds--;
+
+        if (sosPhaseTime <= 0) {
+          if (sosPhase === 'inhale1') {
+            sosPhase = 'inhale2';
+            sosPhaseTime = 1;
+            window.LuminaAudio.playBeep(520, 'sine', 0.08);
+          } else if (sosPhase === 'inhale2') {
+            sosPhase = 'exhale';
+            sosPhaseTime = 5;
+            window.LuminaAudio.playBeep(380, 'sine', 0.15);
+          } else {
+            sosPhase = 'inhale1';
+            sosPhaseTime = 3;
+            window.LuminaAudio.playBeep(440, 'sine', 0.1);
+          }
+        }
+
+        updateBreathUI();
+
+        if (sosTotalSeconds <= 0) {
+          stopSosBreathing();
+          const guide = document.getElementById('sos-breath-guidance');
+          if (guide) guide.innerHTML = '✨ <strong>Harika.</strong> Nabzın ve kandaki karbondioksit dengelendi.';
+        }
+      }, 1000);
+    }
+
+    function stopSosBreathing() {
+      sosBreathActive = false;
+      if (sosBreathInterval) clearInterval(sosBreathInterval);
+      sosBreathInterval = null;
+      if (breathBtn) breathBtn.querySelector('span').textContent = 'Nefes Döngüsünü Başlat';
+
+      const orb = document.getElementById('sos-breath-orb');
+      if (orb) orb.className = 'sos-breath-orb';
+    }
+
+    function updateBreathUI() {
+      const orb = document.getElementById('sos-breath-orb');
+      const phaseTag = document.getElementById('sos-breath-phase');
+      const timerTag = document.getElementById('sos-breath-timer');
+      const guidance = document.getElementById('sos-breath-guidance');
+
+      if (!orb || !phaseTag || !timerTag || !guidance) return;
+
+      orb.className = `sos-breath-orb ${sosPhase}`;
+      timerTag.textContent = `${sosPhaseTime}s`;
+
+      if (sosPhase === 'inhale1') {
+        phaseTag.textContent = '1. Derin Burun Nefesi';
+        guidance.textContent = 'Burnundan ciğerlerini %80 doldur...';
+      } else if (sosPhase === 'inhale2') {
+        phaseTag.textContent = '2. Hızlı Ekstra Çekiş';
+        guidance.textContent = 'Ciğerlerinin en tepesine küçük bir hava daha ekle!';
+      } else {
+        phaseTag.textContent = '3. Yavaş Ağız Nefesi';
+        guidance.textContent = 'Dudaklarını büz ve havayı yavaşça bırak...';
+      }
+    }
+
+    // Grounding Checklist
+    groundingChecks.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('.grounding-step-item');
+        if (item) {
+          item.classList.toggle('checked');
+          window.LuminaAudio.playBeep(item.classList.contains('checked') ? 600 : 350, 'sine', 0.08);
+        }
+      });
+    });
+  }
+
+  // --- Initial Render & Dimension Event Wiring ---
+  initEmergencySOS();
+  initGalaxyEvents();
+  initTwinEvents();
+  initTrajectoryEvents();
+  initLifeOsEvents();
+
   updateTopbarRPG();
   renderDashboard();
 });
+
