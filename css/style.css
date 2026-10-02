@@ -2784,11 +2784,392 @@ dialog.modern-modal[open]::backdrop {
 }
 
 @media (max-width: 768px) {
-  .multiverse-input-grid, .multiverse-results-grid, .dopamine-tools-grid, .dilemma-options-grid {
-    grid-template-columns: 1fr;
+  .multiverse-input-grid, .multiverse-results-grid, .dopamine-tools-grid, .dilemma-options-grid, .circadian-tools-row, .dichotomy-board-grid {
+    grid-template-columns: 1fr !important;
   }
   .void-canvas-wrapper {
     height: 320px;
   }
 }
+
+/* --- Topbar RPG Level Pill --- */
+.rpg-topbar-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  background: rgba(168, 85, 247, 0.12);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--trans-fast);
+}
+.rpg-topbar-pill:hover {
+  background: rgba(168, 85, 247, 0.22);
+  border-color: #a855f7;
+  transform: translateY(-1px);
+}
+.rpg-level-tag {
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.15rem 0.45rem;
+  background: linear-gradient(135deg, #a855f7, #6366f1);
+  color: #fff;
+  border-radius: var(--radius-full);
+  letter-spacing: 0.5px;
+}
+.rpg-title-tag {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+.rpg-mini-xp-bar {
+  width: 45px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.rpg-mini-xp-fill {
+  height: 100%;
+  background: #06b6d4;
+  transition: width 0.3s ease;
+}
+
+/* --- RPG Dashboard Panel --- */
+.rpg-dashboard-card {
+  padding: 1.5rem;
+  background: rgba(6, 9, 18, 0.65);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+}
+.rpg-header-row {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+.rpg-big-level {
+  font-size: 2.75rem;
+  font-weight: 900;
+  font-family: var(--font-heading);
+  background: linear-gradient(135deg, #a855f7, #06b6d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+}
+.rpg-attributes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 1rem;
+}
+.rpg-attr-card {
+  padding: 1.15rem;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  text-align: center;
+  transition: all var(--trans-fast);
+}
+.rpg-attr-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(168, 85, 247, 0.35);
+}
+.attr-icon {
+  font-size: 1.75rem;
+  margin-bottom: 0.35rem;
+}
+.attr-val {
+  font-size: 1.6rem;
+  font-weight: 800;
+  font-family: var(--font-heading);
+  color: #06b6d4;
+}
+.attr-name {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--text-main);
+  margin-top: 0.2rem;
+}
+.attr-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+}
+
+/* --- Circadian Neuro-Clock --- */
+.chronotype-selector-row {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+.chrono-pill {
+  padding: 0.5rem 1rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--trans-fast);
+}
+.chrono-pill.active {
+  background: rgba(6, 182, 212, 0.2);
+  border-color: #06b6d4;
+  color: #fff;
+  box-shadow: 0 0 12px rgba(6, 182, 212, 0.25);
+}
+.circadian-live-card {
+  padding: 1.25rem;
+  background: rgba(6, 9, 18, 0.7);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  border-radius: var(--radius-lg);
+}
+
+/* --- Dichotomy of Control --- */
+.dichotomy-board-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+.dichotomy-column {
+  padding: 1.25rem;
+  background: rgba(15, 23, 42, 0.65);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+}
+.dichotomy-column.internal {
+  border-top: 3px solid #10b981;
+}
+.dichotomy-column.external {
+  border-top: 3px solid #f43f5e;
+}
+.dichotomy-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+.dichotomy-list li {
+  padding: 0.65rem 0.85rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  color: var(--text-main);
+  border-left: 2px solid transparent;
+}
+.dichotomy-column.internal li { border-left-color: #10b981; }
+.dichotomy-column.external li { border-left-color: #f43f5e; }
+
+/* --- Models & Socratic Cards --- */
+.models-results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+.model-result-card {
+  padding: 1.15rem;
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+.model-result-card h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--secondary);
+  margin-bottom: 0.5rem;
+}
+.model-result-card p {
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: var(--text-main);
+  white-space: pre-line;
+}
+
+/* --- Time Capsule Cards --- */
+.capsules-list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+.capsule-sealed-card {
+  padding: 1.25rem;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.capsule-seal-icon {
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem;
+}
+.capsule-days-tag {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #f59e0b;
+}
+
+@media (max-width: 600px) {
+  .rpg-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  .rpg-topbar-pill .rpg-title-tag {
+    display: none;
+  }
+}
+
+/* ==========================================
+   CHAMBERS 21-25 STYLES
+   ========================================== */
+
+/* 21. Jungian Radar */
+.jung-questions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 0.85rem;
+}
+
+.jung-q-card {
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.jung-q-text {
+  font-size: 0.88rem;
+  color: var(--text-main);
+  line-height: 1.4;
+  margin-bottom: 0.75rem;
+}
+
+.jung-options {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.25rem;
+}
+
+.jung-opt-btn {
+  flex: 1;
+  padding: 0.4rem 0.2rem;
+  font-size: 0.75rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  cursor: pointer;
+  text-align: center;
+  transition: all var(--transition-fast);
+}
+
+.jung-opt-btn.active {
+  background: #a855f7;
+  color: #fff;
+  border-color: #a855f7;
+  font-weight: 700;
+}
+
+.jung-result-card {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 1.5rem;
+  align-items: center;
+  padding: 1.5rem;
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  border-radius: var(--radius-lg);
+}
+
+@media (max-width: 768px) {
+  .jung-result-card {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 22. Quantum Decision Collapser */
+.quantum-result-card {
+  padding: 1.5rem;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(6, 182, 212, 0.35);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 10px 30px rgba(6, 182, 212, 0.1);
+}
+
+.quantum-grid-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+@media (max-width: 650px) {
+  .quantum-inputs-grid,
+  .quantum-grid-box {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 23. Kaizen Compound */
+.kaizen-micro-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.kaizen-micro-item {
+  padding: 1.15rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  border-left: 3px solid #10b981;
+}
+
+/* 24. Solfeggio & Bio-Synth */
+.solfeggio-card {
+  padding: 1.25rem;
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.solfeggio-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.solfeggio-card.active-playing {
+  border-color: #38bdf8;
+  box-shadow: 0 0 25px rgba(56, 189, 248, 0.25);
+  background: rgba(56, 189, 248, 0.08);
+}
+
+.solfeggio-card.active-gold {
+  border-color: rgba(251, 191, 36, 0.4);
+}
+
+.solfeggio-card.active-gold.active-playing {
+  border-color: #fbbf24;
+  box-shadow: 0 0 25px rgba(251, 191, 36, 0.3);
+}
+
+/* 25. Delphi Oracle 3D Card */
+.oracle-card-3d.flipped {
+  transform: rotateY(180deg);
+}
+
+
 
