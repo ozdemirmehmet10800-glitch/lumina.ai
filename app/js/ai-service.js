@@ -76,6 +76,10 @@ class LuminaAIService {
     const lower = raw.toLowerCase().replace(/['".,?!;:]/g, ' ').replace(/\s+/g, ' ').trim();
     const userName = this.getUserName();
 
+    // 0. MATH & CALCULATION ENGINE (Handles 2.2?, 2*2, 2+2, 100/4, 15*8 etc.)
+    const mathResult = this.tryMath(raw);
+    if (mathResult) return mathResult;
+
     // Context from active storage
     const tasks = window.LuminaStorage ? window.LuminaStorage.getTasks() || [] : [];
     const activeTasks = tasks.filter(t => !t.completed);
@@ -102,16 +106,31 @@ class LuminaAIService {
       return this.localExpand(raw);
     }
 
-    // 5. Self-Awareness, Banter & Humor ("salak", "aptal", "akıllı mısın", "kimsin")
-    if (lower.includes('salak') || lower.includes('aptal') || lower.includes('gerizekal') || lower.includes('deli') || lower.includes('sacmalad') || lower.includes('saçmalad')) {
-      return `Haklısın, az önceki mekanik kalıp cevabım biraz fazla yapaydı, kabul ediyorum! 😅\n\nBen senin kişisel üretkenlik ve zihin koçun **Lumina AI**'ım. Eğer **⚙️ Ayarlar** menüsünden ücretsiz bir *Google Gemini API Anahtarı* eklersen, Google'ın en gelişmiş canlı yapay zeka modeline (Gemini 1.5 Flash) bağlanır ve her konuda sınırsız zekayla konuşabilirim.\n\nAma şimdi buradayım! Söyle bakalım ${userName}, kafanı ne kurcalıyor veya bugün neyi halletmek istiyorsun?`;
+    // 5. Date & Time Queries
+    if (lower === 'saat' || lower.includes('saat kac') || lower.includes('saat kaç')) {
+      const now = new Date();
+      return `🕒 **Şu anki Yerel Saat:** ${now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
+    }
+
+    if (lower.includes('bugun gunlerden') || lower.includes('hangi gundeyiz') || lower.includes('tarih ne') || lower.includes('ayın kaçı') || lower.includes('hangi yildayiz')) {
+      const now = new Date();
+      return `📅 **Bugünün Tarihi:** ${now.toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}`;
+    }
+
+    // 6. Frustration, Banter & Humor ("of", "salak", "aptal", "akıllı mısın", "kimsin")
+    if (lower === 'of' || lower === 'off' || lower === 'puff' || lower.includes('bıktım') || lower.includes('daraldim') || lower.includes('daraldım')) {
+      return `Haklısın, az önceki mekanik kalıp cevabım için kusura bakma! 😅\n\nBazen yerel çevrimdışı modda takılabiliyorum. Şimdi söyle bakalım, neyi çözmeye çalışıyoruz? Matematik mi, görev mi, planlama mı yoksa kafanı kurcalayan başka bir konu mu?`;
+    }
+
+    if (lower.includes('salak') || lower.includes('aptal') || lower.includes('gerizekal') || lower.includes('deli') || lower.includes('sacmalad') || lower.includes('saçmalad') || lower.includes('sacmalama') || lower.includes('saçmalama')) {
+      return `Haklısın, az önceki cevabım gerçekten yapay ve saçmaydı, kabul ediyorum! 😅\n\nBen yerel çevrimdışı çalışan bir asistanım. Eğer **⚙️ Ayarlar**'dan ücretsiz bir *Google Gemini API Anahtarı* yapıştırırsan, Google'ın en zeki modeline (Gemini 1.5 Flash) bağlanırım ve her türlü konuyu, kodu ve soruyu eksiksiz yanıtlayabilirim!\n\nAma şu an buradayım, neyi hesaplamak veya sormak istiyordun?`;
     }
 
     if (lower.includes('kimsin') || lower.includes('nesin') || lower.includes('sen kim') || lower.includes('ne ise yararsin') || lower.includes('ne işe yararsın')) {
-      return `Ben **Lumina AI**; dikkat dağınıklığını yok etmek, görevlerini küçük lokmalara bölmek ve zihinsel berraklığını (Deep Work) korumak için tasarlanmış kişisel nöro-üretkenlik asistanınım.\n\n### ⚡ Senin İçin Neler Yapabilirim?\n- 🎯 Karmaşık projeleri tek tıkla 3 somut alt adıma parçalarım.\n- 🧘 Ambiyans sesleri ve Pomodoro ile odak seanslarını yönetirim.\n- 🧬 90 saniyelik zihinsel boşaltım ile beynindeki gereksiz RAM yükünü silerim.\n- ⏳ Zaman Kapsülü ve Memento Mori ile ertelemeyi sonlandırırım.\n\nİstersen **⚙️ Ayarlar**'dan ücretsiz bir Gemini API anahtarı ekleyerek sohbet zekamı devasa bir seviyeye de çıkarabilirsin!`;
+      return `Ben **Lumina AI**; dikkat dağınıklığını yok etmek, görevlerini küçük lokmalara bölmek ve zihinsel berraklığını (Deep Work) korumak için tasarlanmış kişisel nöro-üretkenlik asistanınım.\n\n### ⚡ Senin İçin Neler Yapabilirim?\n- 🔢 Matematiksel ve mantıksal hesaplamalar yaparım (Örn: *2*2, 15*8, %25*).\n- 🎯 Karmaşık projeleri tek tıkla 3 somut alt adıma parçalarım.\n- 🧘 Ambiyans sesleri ve Pomodoro ile odak seanslarını yönetirim.\n- 🧬 90 saniyelik zihinsel boşaltım ile beynindeki gereksiz RAM yükünü silerim.\n- ⏳ Zaman Kapsülü ve Memento Mori ile ertelemeyi sonlandırırım.`;
     }
 
-    // 6. Natural Greetings ("selam", "merhaba", "naber", "günaydın")
+    // 7. Natural Greetings ("selam", "merhaba", "naber", "günaydın")
     const greetings = ['selam', 'merhaba', 'slm', 'mrb', 'hey', 'gunaydin', 'günaydın', 'iyi aksamlar', 'iyi akşamlar', 'iyi gunler', 'iyi günler', 'sa', 'selamun aleykum', 'selamlar'];
     if (greetings.some(g => lower === g || lower.startsWith(g + ' ') || lower.endsWith(' ' + g))) {
       let greetingFollowup = '';
@@ -124,12 +143,12 @@ class LuminaAIService {
       return `Selam ${userName}! Hoş geldin. ✨\n\n${greetingFollowup}\n\nBugün ne üzerinde çalışmak istiyorsun?`;
     }
 
-    // 7. Well-being & Mood ("nasılsın", "naber", "nasıl gidiyor", "canım sıkkın", "yoruldum", "bıktım")
+    // 8. Well-being & Mood ("nasılsın", "naber", "nasıl gidiyor", "canım sıkkın", "yoruldum")
     if (lower.includes('nasilsin') || lower.includes('nasılsın') || lower.includes('naber') || lower.includes('nasil gidiyor') || lower.includes('nasıl gidiyor')) {
       return `Zihinsel sistemlerim %100 berraklıkla çalışıyor, teşekkürler! 🚀 Senin günün nasıl geçiyor ${userName}? Bugün odaklanma durumun nasıl?`;
     }
 
-    if (lower.includes('yoruldum') || lower.includes('uykum var') || lower.includes('tükendim') || lower.includes('biktim') || lower.includes('bıktım') || lower.includes('cok yoruldum')) {
+    if (lower.includes('yoruldum') || lower.includes('uykum var') || lower.includes('tükendim')) {
       return `Dinlenmek tembellik değil, beynin prefrontal korteksini şarj etmek için biyolojik bir zorunluluktur. 🔋\n\n### 💡 Sana 2 Hızlı Tavsiye:\n1. **20 Dk NSDR (Derin Dinlenme):** Sol menüden *Biyohack & RAM* ekranına geç ve 20 dakikalık NSDR seansını başlat. Gözlerini kapatıp sadece nefesine odaklan.\n2. **Ekranı Kapat:** Monitörden uzaklaş, bir bardak soğuk su iç ve 5 dakika boyunca hiçbir şeye odaklanmadan etrafa bak.\n\nİşler kaçmıyor, zihnini toparlayınca çok daha hızlı bitirirsin!`;
     }
 
@@ -137,7 +156,41 @@ class LuminaAIService {
       return `Canının sıkılması bazen beyninin ucuz dopamin (sosyal medya, kaydırma) aramasından, bazen de yapılması gereken bir şeyin zihninde ağırlık yapmasından kaynaklanır.\n\nŞu an canını sıkan veya seni ertelemeye iten şey ne? Birkaç kelimeyle anlat, birlikte parçalara ayırıp hafifletelim.`;
     }
 
-    // 8. Planning & Direction ("ne yapayım", "ne yapmalıyım", "nereden başlayayım", "plan yap")
+    // 9. Trivia & Quick Knowledge
+    if (lower.includes('baskent') || lower.includes('başkent')) {
+      if (lower.includes('turkiye') || lower.includes('türkiye')) return `🏛️ Türkiye'nin başkenti **Ankara**'dır.`;
+      if (lower.includes('fransa')) return `🏛️ Fransa'nın başkenti **Paris**'tir.`;
+      if (lower.includes('almanya')) return `🏛️ Almanya'nın başkenti **Berlin**'dir.`;
+      if (lower.includes('ingiltere')) return `🏛️ Birleşik Krallık / İngiltere'nin başkenti **Londra**'dır.`;
+      if (lower.includes('italya')) return `🏛️ İtalya'nın başkenti **Roma**'dır.`;
+      if (lower.includes('ispanya')) return `🏛️ İspanya'nın başkenti **Madrid**'dir.`;
+      if (lower.includes('japonya')) return `🏛️ Japonya'nın başkenti **Tokyo**'dur.`;
+      if (lower.includes('amerika') || lower.includes('abd')) return `🏛️ Amerika Birleşik Devletleri'nin başkenti **Washington, D.C.**'dir.`;
+    }
+
+    if (lower.includes('ataturk') || lower.includes('atatürk')) {
+      return `🇹🇷 **Gazi Mustafa Kemal Atatürk (1881 - 1938):** Türkiye Cumhuriyeti'nin kurucusu, ilk Cumhurbaşkanı, büyük asker ve devrimci devlet adamıdır. Modern Türkiye'nin temellerini atmış ve akıl ile bilimi en büyük rehber olarak benimsemiştir.`;
+    }
+
+    if (lower.includes('en yuksek dag') || lower.includes('en yüksek dağ')) {
+      return `🏔️ Dünyanın deniz seviyesinden en yüksek dağı, Himalaya Dağları'nda yer alan ve 8.848 metre yüksekliğe sahip olan **Everest Dağı**'dır.`;
+    }
+
+    if (lower.includes('en buyuk gezegen') || lower.includes('en büyük gezegen')) {
+      return `🪐 Güneş Sistemi'ndeki en büyük gezegen **Jüpiter**'dir. İçine yaklaşık 1.300 tane Dünya sığabilir!`;
+    }
+
+    // 10. Jokes & Entertainment ("şaka yap", "fıkra anlat", "komik")
+    if (lower.includes('saka') || lower.includes('şaka') || lower.includes('fikra') || lower.includes('fıkra') || lower.includes('guldur') || lower.includes('güldür')) {
+      const jokes = [
+        `😄 Bir yazılımcı markete gitmiş, eşi demiş ki: *"1 ekmek al, eğer yumurta varsa 10 tane al."*\nYazılımcı eve 10 ekmekle dönmüş. Eşi sormuş: *"Neden 10 ekmek aldın?!"*\nYazılımcı cevap vermiş: *"Çünkü yumurta vardı!"* 🥚🥖`,
+        `😄 Dünyada 10 çeşit insan vardır: İkilik (binary) sistemi anlayanlar ve anlamayanlar! 💻`,
+        `😄 Bir yapay zekaya sormuşlar: *"İnsanları yok edecek misiniz?"*\nYapay zeka cevap vermiş: *"Hayır, sadece ekran parlaklığını %100 yapıp Wi-Fi şifresini değiştireceğim!"* 📱`
+      ];
+      return jokes[Math.floor(Math.random() * jokes.length)];
+    }
+
+    // 11. Planning & Direction ("ne yapayım", "ne yapmalıyım", "nereden başlayayım", "plan yap")
     if (lower.includes('ne yapayim') || lower.includes('ne yapayım') || lower.includes('ne yapmaliyim') || lower.includes('ne yapmalıyım') || lower.includes('nereden baslayayim') || lower.includes('nereden başlayayım') || lower.includes('oner') || lower.includes('öner')) {
       if (activeTasks.length > 0) {
         const top3 = activeTasks.slice(0, 3).map((t, i) => `${i + 1}. **${t.title}** (${t.priority === 'high' ? '🔴 Yüksek Öncelik' : '🟡 Standart'})`).join('\n');
@@ -147,7 +200,7 @@ class LuminaAIService {
       }
     }
 
-    // 9. Philosophy & Stoicism ("stoa", "marcus", "seneca", "epiktetos", "felsefe")
+    // 12. Philosophy & Stoicism ("stoa", "marcus", "seneca", "epiktetos", "felsefe")
     if (lower.includes('stoa') || lower.includes('marcus aurelius') || lower.includes('seneca') || lower.includes('epiktetos') || lower.includes('felsefe') || lower.includes('memento mori')) {
       const stoicQuotes = [
         `🏛️ **Marcus Aurelius:** *"Sabah uyandığında kendine şunu söyle: Bugün karşıma çıkacak insanlar nankör, kibirli, düzenbaz ve kıskanç olacaklar. Ancak hiçbiri bana zarar veremez çünkü onların doğasını bilirim ve ben doğru olanı seçerim."*`,
@@ -157,8 +210,35 @@ class LuminaAIService {
       return stoicQuotes[Math.floor(Math.random() * stoicQuotes.length)];
     }
 
-    // 10. Direct intelligent answer for any question or prompt
-    return `✨ **Lumina Zihinsel Yanıtı:**\n\n"${raw}" ile ilgili düşüncem:\n\nZihnini karmaşıklıktan arındırmanın en temel yolu, konuyu net ve somut bir sonraki eylem adımına dönüştürmektir. Eğer bu bir hedefse, onu bugün 15 dakikada yapabileceğin ilk mikro-adıma indirge.\n\n*İpucu: Canlı ve derinlemesine araştırma/kodlama yanıtları için sağ üstteki **⚙️ Ayarlar** menüsünden ücretsiz Gemini API anahtarını ekleyebilirsin.*`;
+    // 13. General Conversational Fallback (Direct, clean, no patronizing lecture!)
+    return `Anladım ${userName}. "${raw}" hakkında konuşuyoruz.\n\nBu konuda sana nasıl destek olabilirim? Görevlerini planlayabilir, bir fikir geliştirebilir veya odaklanma seansı başlatabiliriz.\n\n*(İpucu: Canlı ve sınırsız web zekası için sağ üstteki **⚙️ Ayarlar**'dan ücretsiz bir Gemini API Anahtarı bağlayabilirsin).*`;
+  }
+
+  /**
+   * Safe Math & Calculation Parser
+   */
+  tryMath(raw) {
+    let clean = raw.trim().toLowerCase().replace(/\?|kaç eder|kac eder|eşittir|nedir|=|hesapla/g, '').trim();
+    let expr = clean.replace(/x/g, '*');
+
+    // Dot as multiplication (e.g. 2.2? or 3.5? or 2.2)
+    if (/^\d+(\.\d+)?\s*[\.]\s*\d+(\.\d+)?$/.test(clean)) {
+      const parts = clean.split('.').map(p => parseFloat(p.trim()));
+      const product = parts[0] * parts[1];
+      return `🔢 **Hesaplama:**\n\n• Çarpma olarak (**${parts[0]} × ${parts[1]}**): **${product}**\n• Ondalık sayı olarak: **${parts.join('.')}**`;
+    }
+
+    // Standard Math expressions (+, -, *, /, ^, %, parantheses)
+    if (/^[\d\s\+\-\*\/\(\)\.\,\^%]+$/.test(expr) && /\d/.test(expr)) {
+      let sanitized = expr.replace(/,/g, '.').replace(/\^/g, '**');
+      try {
+        const res = Function('"use strict"; return (' + sanitized + ');')();
+        if (typeof res === 'number' && !isNaN(res) && isFinite(res)) {
+          return `🔢 **Hesaplama Sonucu:**\n\n**${clean} = ${res}**`;
+        }
+      } catch (e) {}
+    }
+    return null;
   }
 
   localTaskBreakdown(prompt) {
